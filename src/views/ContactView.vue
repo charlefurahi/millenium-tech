@@ -26,7 +26,7 @@
             <span class="gradient-text">Anytime</span>
           </h2>
           <p class="contact-info__sub">
-            We're available Monday to Saturday, 8am – 6pm. For urgent matters, WhatsApp us directly.
+            We're available Monday to Saturday, 8am - 6pm. For urgent matters, WhatsApp us directly.
           </p>
 
           <div class="contact-cards">
@@ -64,7 +64,7 @@
               </div>
               <div>
                 <span class="contact-card__label">Location</span>
-                <span class="contact-card__value">Tanzania 🇹🇿</span>
+                <span class="contact-card__value">Tanzania</span>
               </div>
             </div>
           </div>
@@ -84,14 +84,22 @@
             <h3 class="contact-form__title">Send Us a Message</h3>
             <p class="contact-form__sub">We'll reply within 24 hours.</p>
 
+            <!-- Success State -->
             <div v-if="submitted" class="form-success">
               <span class="form-success__icon">✅</span>
               <h4>Message Received!</h4>
-              <p>Thank you for reaching out. We'll get back to you very soon.</p>
+              <p>Thank you for reaching out. We will get back to you very soon.</p>
               <button class="btn btn-outline" @click="submitted = false" style="margin-top: 1.5rem;">Send Another</button>
             </div>
 
+            <!-- Form -->
             <form v-else class="form" @submit.prevent="handleSubmit">
+
+              <!-- Global error banner -->
+              <div v-if="globalError" class="form-global-error">
+                ⚠️ {{ globalError }}
+              </div>
+
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Full Name *</label>
@@ -152,11 +160,15 @@
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-primary form-submit" :class="{ loading: submitting }">
+              <button type="submit" class="btn btn-primary form-submit" :disabled="submitting">
                 <span v-if="!submitting">Send Message</span>
-                <span v-else>Sending...</span>
+                <span v-else class="sending-state">
+                  <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                  Sending...
+                </span>
                 <svg v-if="!submitting" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
+
             </form>
           </div>
         </div>
@@ -170,6 +182,7 @@ import { ref, reactive } from 'vue'
 
 const submitted = ref(false)
 const submitting = ref(false)
+const globalError = ref('')
 
 const form = reactive({
   name: '',
@@ -196,17 +209,18 @@ const serviceOptions = [
   'Other',
 ]
 
-const budgets = ['< 50k TZS', '50k–200k', '200k–500k', '500k+']
+const budgets = ['< 50k TZS', '50k-200k', '200k-500k', '500k+']
 
 const hours = [
-  { days: 'Mon – Fri',  time: '8:00 AM – 6:00 PM' },
-  { days: 'Saturday',   time: '9:00 AM – 4:00 PM' },
-  { days: 'Sunday',     time: 'Closed' },
+  { days: 'Mon - Fri', time: '8:00 AM - 6:00 PM' },
+  { days: 'Saturday',  time: '9:00 AM - 4:00 PM' },
+  { days: 'Sunday',    time: 'Closed' },
 ]
 
 function validate(): boolean {
   let valid = true
   errors.name = errors.contact = errors.service = errors.message = ''
+  globalError.value = ''
 
   if (!form.name.trim()) { errors.name = 'Name is required.'; valid = false }
   if (!form.contact.trim()) { errors.contact = 'Phone or email is required.'; valid = false }
@@ -218,13 +232,38 @@ function validate(): boolean {
 
 async function handleSubmit() {
   if (!validate()) return
+
   submitting.value = true
-  // Simulate submission (replace with real API later)
-  await new Promise(r => setTimeout(r, 1500))
-  submitting.value = false
-  submitted.value = true
-  // Reset form
-  Object.assign(form, { name: '', contact: '', service: '', message: '', budget: '' })
+  globalError.value = ''
+
+  try {
+    const response = await fetch('https://formspree.io/f/xkokypwg', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        name: form.name,
+        contact: form.contact,
+        service: form.service,
+        message: form.message,
+        budget: form.budget || 'Not specified',
+      }),
+    })
+
+    if (response.ok) {
+      submitted.value = true
+      Object.assign(form, { name: '', contact: '', service: '', message: '', budget: '' })
+    } else {
+      const data = await response.json()
+      globalError.value = data?.errors?.[0]?.message || 'Something went wrong. Please try again.'
+    }
+  } catch {
+    globalError.value = 'Network error. Please check your connection and try again.'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -256,8 +295,6 @@ async function handleSubmit() {
   font-size: 1.1rem; color: var(--white-70);
   max-width: 560px; margin: 0 auto; line-height: 1.7;
 }
-
-/* Contact Layout */
 .contact-inner {
   display: grid;
   grid-template-columns: 1fr 1.4fr;
@@ -278,8 +315,6 @@ async function handleSubmit() {
   line-height: 1.7;
   margin-bottom: 2rem;
 }
-
-/* Contact Cards */
 .contact-cards {
   display: flex;
   flex-direction: column;
@@ -327,11 +362,7 @@ a.contact-card { cursor: pointer; }
   color: var(--white);
 }
 .contact-card__arrow { margin-left: auto; color: var(--white-40); }
-
-/* Hours */
-.contact-hours {
-  padding: 1.5rem;
-}
+.contact-hours { padding: 1.5rem; }
 .contact-hours__title {
   font-family: var(--font-display);
   font-size: 0.82rem;
@@ -351,11 +382,7 @@ a.contact-card { cursor: pointer; }
 }
 .contact-hours__row:last-child { border-bottom: none; }
 .contact-hours__time { color: var(--cyan-400); font-weight: 500; }
-
-/* Form */
-.contact-form {
-  padding: 2.5rem;
-}
+.contact-form { padding: 2.5rem; }
 .contact-form__title {
   font-family: var(--font-display);
   font-size: 1.5rem;
@@ -402,8 +429,15 @@ a.contact-card { cursor: pointer; }
 option { background: var(--navy-800); color: var(--white); }
 .form-textarea { resize: vertical; min-height: 130px; }
 .form-error { font-size: 0.75rem; color: #f87171; margin-top: -0.2rem; }
-
-/* Budget */
+.form-global-error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #f87171;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
 .budget-options { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .budget-btn {
   background: var(--white-05);
@@ -429,13 +463,10 @@ option { background: var(--navy-800); color: var(--white); }
   font-size: 0.95rem;
   margin-top: 0.5rem;
 }
-.form-submit.loading { opacity: 0.7; pointer-events: none; }
-
-/* Success */
-.form-success {
-  text-align: center;
-  padding: 3rem 1rem;
-}
+.form-submit:disabled { opacity: 0.7; pointer-events: none; }
+.sending-state { display: flex; align-items: center; gap: 0.5rem; }
+.spinner { animation: spin-slow 1s linear infinite; }
+.form-success { text-align: center; padding: 3rem 1rem; }
 .form-success__icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
 .form-success h4 {
   font-family: var(--font-display);
@@ -444,8 +475,7 @@ option { background: var(--navy-800); color: var(--white); }
   color: var(--white);
   margin-bottom: 0.5rem;
 }
-.form-success p { color: var(--white-70); font-size: 0.9rem; }
-
+.form-success p { color: var(--white-70); font-size: 0.9rem; line-height: 1.6; }
 @media (max-width: 1024px) {
   .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
 }

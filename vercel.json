@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install && npx vite build",
+  "buildCommand": "npm install --prefer-offline && chmod -R 755 node_modules/.bin && npx vite build",
   "outputDirectory": "dist",
   "framework": "vue"
 }

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "build": "npx vue-tsc && npx vite build",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },

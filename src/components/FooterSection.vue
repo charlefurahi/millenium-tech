@@ -68,7 +68,7 @@
 
       <div class="footer__bottom">
         <p>© {{ new Date().getFullYear() }} Millenium Tech. All rights reserved.</p>
-        <p class="footer__bottom-right">Crafted with <span class="text-cyan">❤</span> in Tanzania</p>
+        <p class="footer__bottom-right">Crafted with <span class="text-cyan">Millenium-Tech</span> in Tanzania</p>
       </div>
     </div>
   </footer>

@@ -673,7 +673,7 @@ const features = [
   .hero__inner { grid-template-columns: 1fr; text-align: center; }
   .hero__subtitle { max-width: 100%; }
   .hero__actions, .hero__contacts { justify-content: center; }
-  .hero__visual { display: none; }
+  .hero__visual { display: flex; margin-top: 2rem; }
   .services-preview__header { grid-template-columns: 1fr; }
   .why-us__inner { grid-template-columns: 1fr; gap: 3rem; }
 }

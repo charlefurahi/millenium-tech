@@ -121,8 +121,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   text-decoration: none;
 }
 .navbar__logo-img {
-  width: 44px;
-  height: 44px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
 }
 .navbar__logo-text {

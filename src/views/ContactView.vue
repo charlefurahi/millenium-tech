@@ -26,7 +26,7 @@
             <span class="gradient-text">Anytime</span>
           </h2>
           <p class="contact-info__sub">
-            We're available Monday to Saturday, 8am - 6pm. For urgent matters, WhatsApp us directly.
+            We're available Sunday to Friday, 8am - 6pm. For urgent matters, WhatsApp us directly.
           </p>
 
           <div class="contact-cards">

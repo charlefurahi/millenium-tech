@@ -60,7 +60,7 @@
             </li>
             <li>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span>Tanzania</span>
+              <span>Dar es Salaam - Tanzania</span>
             </li>
           </ul>
         </div>
@@ -68,7 +68,7 @@
 
       <div class="footer__bottom">
         <p>© {{ new Date().getFullYear() }} Millenium Tech. All rights reserved.</p>
-        <p class="footer__bottom-right">Crafted with <span class="text-cyan">Millenium-Tech</span> in Tanzania</p>
+        <p class="footer__bottom-right">Crafted with <span class="text-cyan">Millenium-Tech</span>Tz</p>
       </div>
     </div>
   </footer>

@@ -670,13 +670,47 @@ const features = [
   box-shadow: 0 6px 24px rgba(37,211,102,0.12);
 }
 @media (max-width: 1024px) {
-  .hero__inner { grid-template-columns: 1fr; text-align: center; }
+  .hero__inner { 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+  }
+
   .hero__subtitle { max-width: 100%; }
-  .hero__actions, .hero__contacts { justify-content: center; }
-  .hero__visual { display: none; }
+
+  .hero__actions, 
+  .hero__contacts { 
+    justify-content: center; 
+  }
+
+  /* ✅ SHOW IMAGE ON MOBILE */
+  .hero__visual { 
+    display: flex; 
+    margin-top: 2rem;
+  }
+
+  /* ✅ KEEP IMAGE NICE SIZE */
+  .hero__img-wrapper {
+    width: 280px;
+    margin: 0 auto;
+  }
+
+  /* ✅ MOVE BADGES AWAY FROM FACE */
+  .hero__img-badge--top {
+    top: 8%;
+    right: -10px;   /* moved closer, less overlap */
+    transform: scale(0.85);
+  }
+
+  .hero__img-badge--bottom {
+    bottom: 8%;
+    left: -10px;    /* moved closer, less overlap */
+    transform: scale(0.85);
+  }
+
   .services-preview__header { grid-template-columns: 1fr; }
   .why-us__inner { grid-template-columns: 1fr; gap: 3rem; }
 }
+
 @media (max-width: 768px) {
   .services-preview__grid { grid-template-columns: 1fr 1fr; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); }

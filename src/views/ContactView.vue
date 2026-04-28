@@ -25,7 +25,7 @@
             Reach Us Anytime
           </h2>
           <p class="contact-info__sub">
-            We're available Monday to Saturday, 8am – 6pm. For urgent matters, WhatsApp us directly.
+            We're available Sunday to Friday, 8am – 6pm. For urgent matters, WhatsApp us directly.
           </p>
 
           <div class="contact-cards">
@@ -208,9 +208,8 @@ const serviceOptions = [
 const budgets = ['< 50k TZS', '50k-200k', '200k-500k', '500k+']
 
 const hours = [
-  { days: 'Mon – Fri', time: '8:00 AM – 6:00 PM' },
-  { days: 'Saturday',  time: '9:00 AM – 4:00 PM' },
-  { days: 'Sunday',    time: 'Closed' },
+  { days: 'Sunday – Fri', time: '8:00 AM – 6:00 PM' },
+  { days: 'Saturday',    time: 'Closed' },
 ]
 
 function validate(): boolean {

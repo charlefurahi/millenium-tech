@@ -213,8 +213,8 @@ const budgets = ['< 50k TZS', '50k-200k', '200k-500k', '500k+']
 
 const hours = [
   { days: 'Mon - Fri', time: '8:00 AM - 6:00 PM' },
-  { days: 'Saturday',  time: '9:00 AM - 4:00 PM' },
-  { days: 'Sunday',    time: 'Closed' },
+  { days: 'Saturday',  time: 'CLOSED' },
+  { days: 'Sunday',    time: '8:00 AM - 6:00 PM' },
 ]
 
 function validate(): boolean {

@@ -697,7 +697,7 @@ const features = [
   /* ✅ MOVE BADGES AWAY FROM FACE */
   .hero__img-badge--top {
     top: 8%;
-    right: 40px;   /* moved closer, less overlap */
+    right: -140px;   /* moved closer, less overlap */
     transform: scale(0.85);
   }
 

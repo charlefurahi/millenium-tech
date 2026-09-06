@@ -1,5 +1,8 @@
 {
   "buildCommand": "npm install --prefer-offline && chmod -R 755 node_modules/.bin && npx vite build",
   "outputDirectory": "dist",
-  "framework": "vue"
+  "framework": "vue",
+  "env": {
+    "VITE_API_BASE_URL": "https://millebot-api.onrender.com/api"
+  }
 }

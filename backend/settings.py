@@ -76,7 +76,7 @@ CORS_ALLOWED_ORIGINS = [
         "CORS_ALLOWED_ORIGINS",
         "http://localhost:5173,"
         "http://127.0.0.1:5173,"
-        "https://millenium-tech-ucqa-git-main-charlefurahis-projects.vercel.app",
+        "https://millenium-tech-ucqa.vercel.app",
     ).split(",")
     if origin.strip()
 ]

@@ -1,12 +1,9 @@
 # backend/ai/serializers.py
 from rest_framework import serializers
+from .models import ChatMessage
 
 
-class ChatMessageSerializer(serializers.Serializer):
-    role = serializers.ChoiceField(choices=["user", "assistant", "system"])
-    content = serializers.CharField(allow_blank=False)
-
-
-class ChatRequestSerializer(serializers.Serializer):
-    message = serializers.CharField(allow_blank=False)
-    history = ChatMessageSerializer(many=True, required=False, default=list)
+class ChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = ["id", "message", "response", "timestamp", "session_id"]

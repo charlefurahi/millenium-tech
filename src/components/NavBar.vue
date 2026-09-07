@@ -60,26 +60,6 @@
         </router-link>
       </nav>
 
-      <!-- Mobile inline navigation: first 3 links only.
-           Hidden on desktop by default; only shown at the
-           same breakpoint where `.navbar__links` (the full
-           desktop nav) hides itself. -->
-      <nav
-        class="navbar__links-mobile"
-        aria-label="Primary navigation (mobile)"
-      >
-        <router-link
-          v-for="link in mobileTopLinks"
-          :key="link.path"
-          :to="link.path"
-          class="navbar__link-mobile"
-          :class="{ active: isActive(link.path) }"
-          :aria-current="isActive(link.path) ? 'page' : undefined"
-        >
-          {{ link.label }}
-        </router-link>
-      </nav>
-
       <!-- Actions -->
       <div class="navbar__actions">
 
@@ -216,7 +196,7 @@
             aria-label="Mobile navigation"
           >
             <router-link
-              v-for="link in mobileSidebarLinks"
+              v-for="link in navLinks"
               :key="link.path"
               :to="link.path"
               class="navbar__mobile-link"
@@ -416,6 +396,11 @@ const { theme, toggleTheme, initTheme } = useTheme()
 
 /* --------------------------------------------------
    Navigation
+
+   Standard pattern: desktop shows the full list inline,
+   mobile shows the full list inside the hamburger
+   drawer. No partial/inline split on mobile — one
+   source of truth for both breakpoints.
 -------------------------------------------------- */
 
 const navLinks = [
@@ -445,19 +430,6 @@ const navLinks = [
     num: '05'
   }
 ]
-
-/* --------------------------------------------------
-   Mobile link split
-   - First 3 links show inline in the mobile navbar
-     itself (Home / Services / About).
-   - The remaining links stay only in the mobile
-     sidebar/drawer (Portfolio / Contact).
-   - Desktop is untouched: it keeps using the full
-     `navLinks` list via `.navbar__links` as before.
--------------------------------------------------- */
-
-const mobileTopLinks = navLinks.slice(0, 3)
-const mobileSidebarLinks = navLinks.slice(3)
 
 /* --------------------------------------------------
    Navigation state
@@ -936,57 +908,6 @@ onUnmounted(() => {
   transform:
     translateX(-50%)
     scaleX(1.08);
-}
-
-/* ==================================================
-   MOBILE INLINE NAVIGATION (Home / Services / About)
-
-   Hidden by default so desktop is completely unaffected —
-   only becomes visible inside the same max-width: 900px
-   breakpoint where `.navbar__links` (the full desktop nav)
-   is hidden, further down in this file.
-================================================== */
-
-.navbar__links-mobile {
-  display: none;
-  align-items: center;
-
-  gap: 0.1rem;
-}
-
-.navbar__link-mobile {
-  display: inline-flex;
-  align-items: center;
-
-  min-height: 36px;
-
-  padding: 0 0.55rem;
-
-  border-radius: 6px;
-
-  color: var(--text-secondary);
-
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
-
-  letter-spacing: 0.01em;
-
-  text-decoration: none;
-  white-space: nowrap;
-
-  transition:
-    color 0.25s ease,
-    background-color 0.25s ease;
-}
-
-.navbar__link-mobile:hover,
-.navbar__link-mobile.active {
-  color: var(--text-primary);
-}
-
-.navbar__link-mobile:active {
-  background: var(--surface-bg-soft);
 }
 
 /* ==================================================
@@ -1637,7 +1558,6 @@ onUnmounted(() => {
 
 .navbar__logo:focus-visible,
 .navbar__link:focus-visible,
-.navbar__link-mobile:focus-visible,
 .navbar__theme-toggle:focus-visible,
 .navbar__cta:focus-visible,
 .navbar__burger:focus-visible,
@@ -1664,10 +1584,6 @@ onUnmounted(() => {
 
   .navbar__links {
     display: none;
-  }
-
-  .navbar__links-mobile {
-    display: flex;
   }
 
   .navbar__cta {
@@ -1711,15 +1627,6 @@ onUnmounted(() => {
 
   .navbar__theme-label {
     display: none;
-  }
-
-  .navbar__links-mobile {
-    gap: 0;
-  }
-
-  .navbar__link-mobile {
-    padding: 0 0.4rem;
-    font-size: 0.78rem;
   }
 
   .navbar__theme-toggle {

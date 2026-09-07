@@ -12,6 +12,7 @@
     </a>
 
     <div class="container navbar__inner">
+
       <!-- Logo -->
       <router-link
         to="/"
@@ -52,12 +53,83 @@
           :aria-current="isActive(link.path) ? 'page' : undefined"
         >
           <span>{{ link.label }}</span>
-          <span class="navbar__link-dot" aria-hidden="true"></span>
+          <span
+            class="navbar__link-dot"
+            aria-hidden="true"
+          ></span>
         </router-link>
       </nav>
 
       <!-- Actions -->
       <div class="navbar__actions">
+
+        <!-- Theme Toggle -->
+        <button
+          type="button"
+          class="navbar__theme-toggle"
+          :aria-label="
+            theme === 'dark'
+              ? 'Switch to light mode'
+              : 'Switch to dark mode'
+          "
+          :title="
+            theme === 'dark'
+              ? 'Switch to light mode'
+              : 'Switch to dark mode'
+          "
+          @click="toggleTheme"
+        >
+          <!-- Sun -->
+          <svg
+            v-if="theme === 'dark'"
+            class="navbar__theme-icon"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.42 1.42" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+
+          <!-- Moon -->
+          <svg
+            v-else
+            class="navbar__theme-icon"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 12.79A9 9 0 1 1 11.21 3
+              7 7 0 0 0 21 12.79Z"
+            />
+          </svg>
+
+          <span class="navbar__theme-label">
+            {{ theme === 'dark' ? 'Light' : 'Dark' }}
+          </span>
+        </button>
+
+        <!-- Desktop CTA -->
         <router-link
           to="/contact"
           class="navbar__cta"
@@ -89,7 +161,11 @@
           :class="{ 'navbar__burger--open': menuOpen }"
           :aria-expanded="menuOpen"
           aria-controls="mobile-navigation"
-          :aria-label="menuOpen ? 'Close navigation menu' : 'Open navigation menu'"
+          :aria-label="
+            menuOpen
+              ? 'Close navigation menu'
+              : 'Open navigation menu'
+          "
           @click="toggleMenu"
         >
           <span class="burger-line"></span>
@@ -107,11 +183,14 @@
         class="navbar__mobile"
       >
         <div class="navbar__mobile-inner">
+
+          <!-- Mobile heading -->
           <div class="navbar__mobile-heading">
             <span>Navigation</span>
             <span class="navbar__mobile-line"></span>
           </div>
 
+          <!-- Mobile links -->
           <nav
             class="navbar__mobile-links"
             aria-label="Mobile navigation"
@@ -122,7 +201,11 @@
               :to="link.path"
               class="navbar__mobile-link"
               :class="{ active: isActive(link.path) }"
-              :aria-current="isActive(link.path) ? 'page' : undefined"
+              :aria-current="
+                isActive(link.path)
+                  ? 'page'
+                  : undefined
+              "
               @click="closeMenu"
             >
               <span class="mobile-link-num">
@@ -150,6 +233,81 @@
               </svg>
             </router-link>
           </nav>
+
+          <!-- Mobile Theme Toggle -->
+          <button
+            type="button"
+            class="navbar__mobile-theme"
+            @click="toggleTheme"
+          >
+            <span class="navbar__mobile-theme-left">
+
+              <span class="navbar__mobile-theme-icon">
+
+                <!-- Sun -->
+                <svg
+                  v-if="theme === 'dark'"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2" />
+                  <path d="M12 20v2" />
+                  <path d="m4.93 4.93 1.42 1.42" />
+                  <path d="m17.66 17.66 1.41 1.41" />
+                  <path d="M2 12h2" />
+                  <path d="M20 12h2" />
+                  <path d="m6.34 17.66-1.41 1.41" />
+                  <path d="m19.07 4.93-1.41 1.41" />
+                </svg>
+
+                <!-- Moon -->
+                <svg
+                  v-else
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M21 12.79A9 9 0 1 1 11.21 3
+                    7 7 0 0 0 21 12.79Z"
+                  />
+                </svg>
+
+              </span>
+
+              <span>
+                {{ theme === 'dark'
+                  ? 'Light mode'
+                  : 'Dark mode'
+                }}
+              </span>
+            </span>
+
+            <span
+              class="navbar__theme-switch"
+              :class="{
+                'navbar__theme-switch--light':
+                  theme === 'light'
+              }"
+              aria-hidden="true"
+            >
+              <span class="navbar__theme-switch-thumb"></span>
+            </span>
+          </button>
 
           <!-- Mobile CTA -->
           <router-link
@@ -191,12 +349,14 @@
               </a>
             </div>
           </div>
+
         </div>
       </div>
     </Transition>
   </header>
 
   <!-- Mobile backdrop -->
+
   <Transition name="backdrop">
     <div
       v-if="menuOpen"
@@ -209,18 +369,34 @@
 
 <script setup lang="ts">
 import {
-  ref,
   onMounted,
   onUnmounted,
   watch
 } from 'vue'
 
 import { useRoute } from 'vue-router'
+import { ref } from 'vue'
+import { useTheme } from '@/composables/useTheme'
 
 const route = useRoute()
 
 const scrolled = ref(false)
 const menuOpen = ref(false)
+
+/* --------------------------------------------------
+   Theme
+
+   Uses the shared composable (single source of truth,
+   see src/composables/useTheme.ts) instead of keeping
+   its own local copy — this is what actually makes the
+   toggle affect the whole app, not just this component.
+-------------------------------------------------- */
+
+const { theme, toggleTheme, initTheme } = useTheme()
+
+/* --------------------------------------------------
+   Navigation
+-------------------------------------------------- */
 
 const navLinks = [
   {
@@ -259,7 +435,10 @@ const isActive = (path: string) => {
     return route.path === '/'
   }
 
-  return route.path === path || route.path.startsWith(`${path}/`)
+  return (
+    route.path === path ||
+    route.path.startsWith(`${path}/`)
+  )
 }
 
 /* --------------------------------------------------
@@ -279,15 +458,25 @@ const closeMenu = () => {
 -------------------------------------------------- */
 
 const handleScroll = () => {
-  scrolled.value = window.scrollY > 24
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  scrolled.value =
+    window.scrollY > 24
 }
 
 /* --------------------------------------------------
    Keyboard controls
 -------------------------------------------------- */
 
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && menuOpen.value) {
+const handleKeydown = (
+  event: KeyboardEvent
+) => {
+  if (
+    event.key === 'Escape' &&
+    menuOpen.value
+  ) {
     closeMenu()
   }
 }
@@ -297,46 +486,89 @@ const handleKeydown = (event: KeyboardEvent) => {
 -------------------------------------------------- */
 
 const handleResize = () => {
-  if (window.innerWidth > 900 && menuOpen.value) {
+  if (
+    typeof window === 'undefined'
+  ) {
+    return
+  }
+
+  if (
+    window.innerWidth > 900 &&
+    menuOpen.value
+  ) {
     closeMenu()
   }
 }
 
 /* --------------------------------------------------
-   Prevent background scrolling while mobile menu
-   is open.
+   Prevent background scrolling
 -------------------------------------------------- */
 
-watch(menuOpen, (isOpen) => {
-  if (typeof document === 'undefined') return
+watch(
+  menuOpen,
+  (isOpen) => {
+    if (
+      typeof document === 'undefined'
+    ) {
+      return
+    }
 
-  document.body.style.overflow = isOpen ? 'hidden' : ''
-})
+    document.body.style.overflow =
+      isOpen
+        ? 'hidden'
+        : ''
+  }
+)
 
 /* --------------------------------------------------
    Lifecycle
 -------------------------------------------------- */
 
 onMounted(() => {
+  initTheme()
   handleScroll()
 
-  window.addEventListener('scroll', handleScroll, {
-    passive: true
-  })
+  window.addEventListener(
+    'scroll',
+    handleScroll,
+    { passive: true }
+  )
 
-  window.addEventListener('resize', handleResize, {
-    passive: true
-  })
+  window.addEventListener(
+    'resize',
+    handleResize,
+    { passive: true }
+  )
 
-  window.addEventListener('keydown', handleKeydown)
+  window.addEventListener(
+    'keydown',
+    handleKeydown
+  )
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-  window.removeEventListener('resize', handleResize)
-  window.removeEventListener('keydown', handleKeydown)
+  if (
+    typeof window !== 'undefined'
+  ) {
+    window.removeEventListener(
+      'scroll',
+      handleScroll
+    )
 
-  if (typeof document !== 'undefined') {
+    window.removeEventListener(
+      'resize',
+      handleResize
+    )
+
+    window.removeEventListener(
+      'keydown',
+      handleKeydown
+    )
+  }
+
+  if (
+    typeof document !== 'undefined'
+  ) {
     document.body.style.overflow = ''
   }
 })
@@ -359,22 +591,31 @@ onUnmounted(() => {
     background-color 0.35s ease,
     border-color 0.35s ease,
     box-shadow 0.35s ease;
+
+  color: var(--text-primary);
 }
 
-/* Subtle glass state after scrolling */
+/* ==================================================
+   SCROLLED NAVBAR
+================================================== */
+
 .navbar--scrolled {
   padding: 0.75rem 0;
 
-  background: rgba(6, 8, 46, 0.84);
+  background: var(--header-bg);
 
-  border-bottom: 1px solid var(--white-08);
+  border-bottom: 1px solid var(--border-color);
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 
   box-shadow:
-    0 10px 35px rgba(0, 0, 0, 0.18);
+    0 10px 35px rgba(0, 0, 0, 0.12);
 }
+
+/* ==================================================
+   INNER
+================================================== */
 
 .navbar__inner {
   display: flex;
@@ -422,7 +663,7 @@ onUnmounted(() => {
 
   gap: 0.65rem;
 
-  color: var(--white);
+  color: var(--text-primary);
   text-decoration: none;
 
   flex-shrink: 0;
@@ -434,22 +675,33 @@ onUnmounted(() => {
 
   display: grid;
   place-items: center;
+  border-radius: 10px;
+  background: var(--surface-bg-soft);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
 
   transition:
     transform 0.35s var(--ease-out),
-    opacity 0.3s ease;
+    opacity 0.3s ease,
+    background-color var(--transition-base),
+    border-color var(--transition-base);
 }
 
-.navbar__logo:hover .navbar__logo-mark {
+.navbar__logo:hover
+.navbar__logo-mark {
   transform: translateY(-1px);
 }
-
+/* Base styles scoped strictly to the logo class */
 .navbar__logo-img {
   width: 100%;
   height: 100%;
-
   object-fit: contain;
+  /* Prevent browser-level rendering bleed */
+  isolation: isolate;
+  transition: filter 0.2s ease-in-out;
 }
+
+
 
 .navbar__logo-text {
   display: flex;
@@ -462,11 +714,11 @@ onUnmounted(() => {
   font-family: var(--font-display);
 
   font-size: 1.08rem;
-  font-weight: 800;
+  font-weight: ;
 
   letter-spacing: -0.025em;
 
-  color: var(--white);
+  color: var(--text-primary);
 }
 
 .navbar__logo-sub {
@@ -475,7 +727,7 @@ onUnmounted(() => {
   font-size: 0.55rem;
   font-weight: 500;
 
-  color: var(--white-40);
+  color: var(--text-muted);
 
   letter-spacing: 0.095em;
   text-transform: uppercase;
@@ -507,7 +759,7 @@ onUnmounted(() => {
 
   border-radius: 7px;
 
-  color: var(--white-60);
+  color: var(--text-secondary);
 
   font-family: var(--font-display);
   font-size: 0.82rem;
@@ -523,15 +775,16 @@ onUnmounted(() => {
 }
 
 .navbar__link:hover {
-  color: var(--white);
-  background: var(--white-05);
+  color: var(--text-primary);
+  background: var(--surface-bg-soft);
 }
 
 .navbar__link.active {
-  color: var(--white);
+  color: var(--text-primary);
 }
 
-/* Small active indicator */
+/* Active indicator */
+
 .navbar__link-dot {
   position: absolute;
 
@@ -556,7 +809,8 @@ onUnmounted(() => {
     opacity 0.25s ease;
 }
 
-.navbar__link.active .navbar__link-dot {
+.navbar__link.active
+.navbar__link-dot {
   transform:
     translateX(-50%)
     scale(1);
@@ -565,15 +819,80 @@ onUnmounted(() => {
 }
 
 /* ==================================================
-   DESKTOP CTA
+   ACTIONS
 ================================================== */
 
 .navbar__actions {
   display: flex;
   align-items: center;
 
-  gap: 0.8rem;
+  gap: 0.65rem;
 }
+
+/* ==================================================
+   THEME TOGGLE
+================================================== */
+
+.navbar__theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.45rem;
+
+  min-height: 40px;
+
+  padding: 0 0.75rem;
+
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+
+  background: var(--surface-bg-soft);
+  color: var(--text-primary);
+
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.navbar__theme-toggle:hover {
+  color: var(--cyan-400);
+
+  border-color: var(--cyan-400);
+
+  background: rgba(
+    34,
+    211,
+    238,
+    0.08
+  );
+
+  transform: translateY(-1px);
+}
+
+.navbar__theme-toggle:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 3px;
+}
+
+.navbar__theme-icon {
+  flex-shrink: 0;
+}
+
+/* ==================================================
+   DESKTOP CTA
+================================================== */
 
 .navbar__cta {
   display: inline-flex;
@@ -586,12 +905,12 @@ onUnmounted(() => {
 
   padding: 0.65rem 1.05rem;
 
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--surface-bg-soft);
 
-  color: var(--white);
+  color: var(--text-primary);
 
   font-family: var(--font-display);
   font-size: 0.78rem;
@@ -602,6 +921,7 @@ onUnmounted(() => {
   transition:
     background-color 0.25s ease,
     border-color 0.25s ease,
+    color 0.25s ease,
     transform 0.25s var(--ease-out);
 }
 
@@ -615,10 +935,12 @@ onUnmounted(() => {
 }
 
 .navbar__cta-icon {
-  transition: transform 0.25s var(--ease-out);
+  transition:
+    transform 0.25s var(--ease-out);
 }
 
-.navbar__cta:hover .navbar__cta-icon {
+.navbar__cta:hover
+.navbar__cta-icon {
   transform: translateX(3px);
 }
 
@@ -640,10 +962,12 @@ onUnmounted(() => {
 
   gap: 5px;
 
-  border: 1px solid var(--white-08);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-bg-soft);
+
+  color: var(--text-primary);
 
   cursor: pointer;
 
@@ -654,8 +978,8 @@ onUnmounted(() => {
 
 .navbar__burger:hover,
 .navbar__burger--open {
-  background: var(--white-05);
-  border-color: var(--white-15);
+  background: var(--surface-bg-soft);
+  border-color: var(--cyan-400);
 }
 
 .burger-line {
@@ -666,7 +990,7 @@ onUnmounted(() => {
 
   border-radius: 2px;
 
-  background: var(--white);
+  background: currentColor;
 
   transform-origin: center;
 
@@ -675,17 +999,24 @@ onUnmounted(() => {
     opacity 0.2s ease;
 }
 
-.navbar__burger--open .burger-line:nth-child(1) {
-  transform: translateY(6.5px) rotate(45deg);
+.navbar__burger--open
+.burger-line:nth-child(1) {
+  transform:
+    translateY(6.5px)
+    rotate(45deg);
 }
 
-.navbar__burger--open .burger-line:nth-child(2) {
+.navbar__burger--open
+.burger-line:nth-child(2) {
   opacity: 0;
   transform: scaleX(0);
 }
 
-.navbar__burger--open .burger-line:nth-child(3) {
-  transform: translateY(-6.5px) rotate(-45deg);
+.navbar__burger--open
+.burger-line:nth-child(3) {
+  transform:
+    translateY(-6.5px)
+    rotate(-45deg);
 }
 
 /* ==================================================
@@ -699,31 +1030,43 @@ onUnmounted(() => {
   left: 0;
   right: 0;
 
-  max-height: calc(100vh - 70px);
+  max-height:
+    calc(100vh - 70px);
 
   overflow-y: auto;
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(8, 11, 55, 0.98),
-      rgba(6, 8, 46, 0.98)
-    );
+    var(--surface-bg);
 
-  border-top: 1px solid var(--white-08);
-  border-bottom: 1px solid var(--white-08);
+  color: var(--text-primary);
+
+  border-top:
+    1px solid var(--border-color);
+
+  border-bottom:
+    1px solid var(--border-color);
 
   box-shadow:
-    0 25px 60px rgba(0, 0, 0, 0.35);
+    0 25px 60px rgba(
+      0,
+      0,
+      0,
+      0.20
+    );
 
   overscroll-behavior: contain;
 }
 
 .navbar__mobile-inner {
-  padding: 1.25rem 1.25rem 1.5rem;
+  padding:
+    1.25rem
+    1.25rem
+    1.5rem;
 }
 
-/* Mobile heading */
+/* ==================================================
+   MOBILE HEADING
+================================================== */
 
 .navbar__mobile-heading {
   display: flex;
@@ -733,7 +1076,7 @@ onUnmounted(() => {
 
   margin-bottom: 0.5rem;
 
-  color: var(--white-40);
+  color: var(--text-muted);
 
   font-size: 0.65rem;
   font-weight: 600;
@@ -744,12 +1087,16 @@ onUnmounted(() => {
 
 .navbar__mobile-line {
   flex: 1;
+
   height: 1px;
 
-  background: var(--white-08);
+  background:
+    var(--border-color);
 }
 
-/* Links */
+/* ==================================================
+   MOBILE LINKS
+================================================== */
 
 .navbar__mobile-links {
   display: flex;
@@ -759,7 +1106,10 @@ onUnmounted(() => {
 .navbar__mobile-link {
   display: grid;
 
-  grid-template-columns: 32px 1fr auto;
+  grid-template-columns:
+    32px
+    1fr
+    auto;
 
   align-items: center;
 
@@ -767,9 +1117,10 @@ onUnmounted(() => {
 
   min-height: 62px;
 
-  border-bottom: 1px solid var(--white-05);
+  border-bottom:
+    1px solid var(--border-soft);
 
-  color: var(--white-65);
+  color: var(--text-secondary);
 
   text-decoration: none;
 
@@ -780,7 +1131,7 @@ onUnmounted(() => {
 
 .navbar__mobile-link:hover,
 .navbar__mobile-link.active {
-  color: var(--white);
+  color: var(--text-primary);
 }
 
 .navbar__mobile-link:hover {
@@ -806,20 +1157,137 @@ onUnmounted(() => {
 }
 
 .mobile-link-arrow {
-  opacity: 0.25;
+  opacity: 0.35;
 
   transition:
     opacity 0.25s ease,
     transform 0.25s var(--ease-out);
 }
 
-.navbar__mobile-link:hover .mobile-link-arrow,
-.navbar__mobile-link.active .mobile-link-arrow {
+.navbar__mobile-link:hover
+.mobile-link-arrow,
+.navbar__mobile-link.active
+.mobile-link-arrow {
   opacity: 1;
   transform: translateX(3px);
 }
 
-/* Mobile CTA */
+/* ==================================================
+   MOBILE THEME
+================================================== */
+
+.navbar__mobile-theme {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 52px;
+
+  margin-top: 1rem;
+  padding: 0 0.9rem;
+
+  border: 1px solid var(--border-color);
+  border-radius: 9px;
+
+  background: var(--surface-bg-soft);
+  color: var(--text-primary);
+
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.navbar__mobile-theme:hover {
+  border-color: var(--cyan-400);
+
+  color: var(--cyan-400);
+}
+
+.navbar__mobile-theme-left {
+  display: flex;
+  align-items: center;
+
+  gap: 0.7rem;
+}
+
+.navbar__mobile-theme-icon {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      34,
+      211,
+      238,
+      0.08
+    );
+
+  color: var(--cyan-400);
+}
+
+/* Theme switch */
+
+.navbar__theme-switch {
+  position: relative;
+
+  width: 42px;
+  height: 24px;
+
+  padding: 3px;
+
+  border-radius: 999px;
+
+  background: var(--border-color);
+
+  transition:
+    background-color 0.25s ease;
+}
+
+.navbar__theme-switch--light {
+  background: var(--cyan-400);
+}
+
+.navbar__theme-switch-thumb {
+  display: block;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: var(--text-primary);
+
+  transform: translateX(0);
+
+  transition:
+    transform 0.25s var(--ease-out),
+    background-color 0.25s ease;
+}
+
+.navbar__theme-switch--light
+.navbar__theme-switch-thumb {
+  transform: translateX(18px);
+
+  background: var(--navy-950);
+}
+
+/* ==================================================
+   MOBILE CTA
+================================================== */
 
 .navbar__mobile-cta {
   display: flex;
@@ -853,7 +1321,9 @@ onUnmounted(() => {
   filter: brightness(1.05);
 }
 
-/* Mobile contact footer */
+/* ==================================================
+   MOBILE CONTACT FOOTER
+================================================== */
 
 .navbar__mobile-footer {
   display: flex;
@@ -864,11 +1334,12 @@ onUnmounted(() => {
   margin-top: 1.5rem;
   padding-top: 1.15rem;
 
-  border-top: 1px solid var(--white-08);
+  border-top:
+    1px solid var(--border-color);
 }
 
 .navbar__mobile-footer-label {
-  color: var(--white-30);
+  color: var(--text-subtle);
 
   font-size: 0.62rem;
   font-weight: 600;
@@ -885,13 +1356,14 @@ onUnmounted(() => {
 }
 
 .navbar__mobile-contacts a {
-  color: var(--white-55);
+  color: var(--text-secondary);
 
   font-size: 0.78rem;
 
   text-decoration: none;
 
-  transition: color 0.25s ease;
+  transition:
+    color 0.25s ease;
 }
 
 .navbar__mobile-contacts a:hover {
@@ -908,7 +1380,8 @@ onUnmounted(() => {
 
   z-index: -1;
 
-  background: rgba(2, 4, 20, 0.65);
+  background:
+    rgba(2, 4, 20, 0.55);
 
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
@@ -923,6 +1396,7 @@ onUnmounted(() => {
   transition:
     opacity 0.25s ease,
     transform 0.3s var(--ease-out);
+
   transform-origin: top;
 }
 
@@ -934,7 +1408,8 @@ onUnmounted(() => {
 
 .backdrop-enter-active,
 .backdrop-leave-active {
-  transition: opacity 0.25s ease;
+  transition:
+    opacity 0.25s ease;
 }
 
 .backdrop-enter-from,
@@ -947,6 +1422,7 @@ onUnmounted(() => {
 ================================================== */
 
 @media (max-width: 900px) {
+
   .navbar {
     padding: 0.8rem 0;
   }
@@ -979,9 +1455,17 @@ onUnmounted(() => {
   .navbar__logo-sub {
     font-size: 0.5rem;
   }
+
+  .navbar__theme-toggle {
+    min-height: 38px;
+
+    padding:
+      0 0.65rem;
+  }
 }
 
 @media (max-width: 480px) {
+
   .navbar__logo-text {
     display: none;
   }
@@ -992,7 +1476,22 @@ onUnmounted(() => {
   }
 
   .navbar__inner {
-    gap: 0.75rem;
+    gap: 0.55rem;
+  }
+
+  .navbar__actions {
+    gap: 0.45rem;
+  }
+
+  .navbar__theme-label {
+    display: none;
+  }
+
+  .navbar__theme-toggle {
+    width: 40px;
+    height: 40px;
+
+    padding: 0;
   }
 
   .navbar__mobile-inner {
@@ -1006,10 +1505,14 @@ onUnmounted(() => {
 ================================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
   .navbar *,
   .navbar__backdrop {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
+    transition-duration:
+      0.01ms !important;
+
+    animation-duration:
+      0.01ms !important;
   }
 }
 </style>

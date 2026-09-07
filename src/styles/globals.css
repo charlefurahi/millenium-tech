@@ -2,7 +2,7 @@
 
 /* =========================================================
    MILLENIUM TECH
-   Global Design System
+   GLOBAL DESIGN SYSTEM
 ========================================================= */
 
 :root {
@@ -39,8 +39,11 @@
   --gold-soft: rgba(251, 191, 36, 0.08);
   --gold-glow: rgba(251, 191, 36, 0.15);
 
+  --cyan-text: var(--cyan-400);
+  --gold-text: var(--gold-400);
+
   /* -------------------------------------------------------
-     WHITE / TEXT OPACITY
+     WHITE / OPACITY PALETTE
   ------------------------------------------------------- */
 
   --white: #ffffff;
@@ -66,6 +69,56 @@
   --white-03: rgba(255, 255, 255, 0.03);
 
   /* -------------------------------------------------------
+     DARK THEME
+  ------------------------------------------------------- */
+
+  --bg-primary: var(--navy-950);
+  --bg-secondary: var(--navy-900);
+
+  --surface-bg: var(--navy-900);
+  --surface-bg-soft: var(--white-05);
+  --surface-bg-strong: var(--navy-850);
+
+  --header-bg: rgba(6, 8, 46, 0.92);
+
+  --border-color: var(--white-12);
+  --border-soft: var(--white-08);
+
+  --text-primary: var(--white);
+  --text-secondary: var(--white-70);
+  --text-muted: var(--white-60);
+  --text-subtle: var(--white-40);
+
+  /* -------------------------------------------------------
+     GLASS
+  ------------------------------------------------------- */
+
+  --glass-bg-1: rgba(255, 255, 255, 0.075);
+  --glass-bg-2: rgba(255, 255, 255, 0.025);
+
+  --glass-bg-1-hover: rgba(255, 255, 255, 0.09);
+  --glass-bg-2-hover: rgba(255, 255, 255, 0.035);
+
+  --glass-border: var(--white-10);
+  --glass-border-hover: rgba(34, 211, 238, 0.18);
+
+  /* -------------------------------------------------------
+     INPUTS
+  ------------------------------------------------------- */
+
+  --input-bg: rgba(255, 255, 255, 0.035);
+  --input-bg-focus: rgba(255, 255, 255, 0.055);
+  --input-border: var(--white-12);
+
+  /* -------------------------------------------------------
+     SCROLLBAR
+  ------------------------------------------------------- */
+
+  --scrollbar-track: var(--navy-900);
+  --scrollbar-thumb: var(--navy-600);
+  --scrollbar-thumb-hover: var(--cyan-600);
+
+  /* -------------------------------------------------------
      TYPOGRAPHY
   ------------------------------------------------------- */
 
@@ -81,6 +134,14 @@
 
   --section-pad: clamp(5rem, 9vw, 8.5rem);
   --section-pad-small: clamp(3.5rem, 7vw, 6rem);
+
+  /*
+   * Fixed navbar compensation.
+   *
+   * Prevents the first page section from sitting
+   * underneath the fixed navbar.
+   */
+  --navbar-height: 78px;
 
   /* -------------------------------------------------------
      RADIUS
@@ -121,6 +182,81 @@
   --transition-slow: 450ms var(--ease-out);
 }
 
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+[data-theme='light'] {
+
+  --bg-primary: #f6f7fb;
+  --bg-secondary: #ffffff;
+
+  --surface-bg: #ffffff;
+  --surface-bg-soft: rgba(6, 8, 46, 0.045);
+  --surface-bg-strong: #eef0f8;
+
+  --header-bg: rgba(255, 255, 255, 0.94);
+
+  --border-color: rgba(6, 8, 46, 0.14);
+  --border-soft: rgba(6, 8, 46, 0.08);
+
+  --text-primary: #0a0e2e;
+  --text-secondary: rgba(10, 14, 46, 0.78);
+  --text-muted: rgba(10, 14, 46, 0.62);
+  --text-subtle: rgba(10, 14, 46, 0.48);
+
+  /* -------------------------------------------------------
+     LIGHT GLASS
+  ------------------------------------------------------- */
+
+  --glass-bg-1: rgba(255, 255, 255, 0.97);
+  --glass-bg-2: rgba(246, 247, 251, 0.94);
+
+  --glass-bg-1-hover: rgba(255, 255, 255, 1);
+  --glass-bg-2-hover: rgba(246, 247, 251, 0.98);
+
+  --glass-border: rgba(6, 8, 46, 0.13);
+  --glass-border-hover: rgba(8, 145, 178, 0.42);
+
+  /* -------------------------------------------------------
+     INPUTS
+  ------------------------------------------------------- */
+
+  --input-bg: rgba(6, 8, 46, 0.035);
+  --input-bg-focus: rgba(6, 8, 46, 0.06);
+  --input-border: rgba(6, 8, 46, 0.15);
+
+  /* -------------------------------------------------------
+     SCROLLBAR
+  ------------------------------------------------------- */
+
+  --scrollbar-track: #eef0f8;
+  --scrollbar-thumb: rgba(6, 8, 46, 0.25);
+  --scrollbar-thumb-hover: var(--cyan-600);
+
+  /* -------------------------------------------------------
+     LIGHT ACCENTS
+  ------------------------------------------------------- */
+
+  --cyan-text: #0e7490;
+  --gold-text: #b45309;
+
+  /* -------------------------------------------------------
+     LIGHT SHADOWS
+  ------------------------------------------------------- */
+
+  --shadow-card:
+    0 18px 45px rgba(6, 8, 46, 0.09);
+
+  --shadow-deep:
+    0 24px 60px rgba(6, 8, 46, 0.12);
+
+  --shadow-cyan:
+    0 12px 32px rgba(8, 145, 178, 0.16);
+}
+
+
 /* =========================================================
    RESET
 ========================================================= */
@@ -133,189 +269,682 @@
   padding: 0;
 }
 
+
+/* =========================================================
+   ROOT
+========================================================= */
+
 html {
   scroll-behavior: smooth;
+
   font-size: 16px;
 
-  background: var(--navy-950);
+  background:
+    var(--bg-primary);
+
+  color:
+    var(--text-primary);
+
+  transition:
+    background-color var(--transition-slow),
+    color var(--transition-slow);
 }
+
+
+/* =========================================================
+   BODY
+========================================================= */
 
 body {
   min-width: 320px;
   min-height: 100vh;
 
-  font-family: var(--font-body);
+  font-family:
+    var(--font-body);
 
-  background: var(--navy-950);
-  color: var(--white);
+  background:
+    var(--bg-primary);
 
-  line-height: 1.6;
+  color:
+    var(--text-primary);
 
-  overflow-x: hidden;
+  line-height:
+    1.6;
 
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overflow-x:
+    hidden;
 
-  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing:
+    antialiased;
+
+  -moz-osx-font-smoothing:
+    grayscale;
+
+  text-rendering:
+    optimizeLegibility;
+
+  transition:
+    background-color var(--transition-slow),
+    color var(--transition-slow);
 }
+
+
+/* =========================================================
+   FIXED NAVBAR COMPENSATION
+========================================================= */
+
+#app {
+  min-height: 100vh;
+}
+
+
+/*
+ * The navbar is fixed.
+ * Give the application content a safe starting position.
+ *
+ * Individual hero sections can override this when necessary.
+ */
+
+.app-wrapper {
+  min-height: 100vh;
+}
+
+
+/* =========================================================
+   FORM FONT INHERITANCE
+========================================================= */
 
 body,
 button,
 input,
 textarea,
 select {
-  font-family: var(--font-body);
+  font-family:
+    var(--font-body);
 }
 
 button,
 input,
 textarea,
 select {
-  font-size: inherit;
+  font-size:
+    inherit;
 }
 
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
 button {
-  color: inherit;
+  color:
+    inherit;
+
+  font: inherit;
 }
+
+
+/* =========================================================
+   MEDIA
+========================================================= */
 
 img,
 svg,
 video,
 canvas {
-  display: block;
-  max-width: 100%;
+  display:
+    block;
+
+  max-width:
+    100%;
 }
 
 img {
-  height: auto;
+  height:
+    auto;
 }
 
+
+/* =========================================================
+   LINKS
+========================================================= */
+
 a {
-  color: inherit;
-  text-decoration: none;
+  color:
+    inherit;
+
+  text-decoration:
+    none;
 }
 
 button,
 a {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color:
+    transparent;
 }
+
 
 /* =========================================================
    ACCESSIBILITY
 ========================================================= */
 
 :focus-visible {
-  outline: 2px solid var(--cyan-400);
-  outline-offset: 4px;
+  outline:
+    2px solid var(--cyan-400);
+
+  outline-offset:
+    4px;
+}
+
+[data-theme='light'] :focus-visible {
+  outline-color:
+    var(--cyan-text);
 }
 
 ::selection {
-  background: var(--cyan-400);
-  color: var(--navy-950);
+  background:
+    var(--cyan-400);
+
+  color:
+    var(--navy-950);
 }
+
 
 /* =========================================================
    SCROLLBAR
 ========================================================= */
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width:
+    7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--navy-900);
+  background:
+    var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--navy-600);
-  border-radius: var(--radius-pill);
+  background:
+    var(--scrollbar-thumb);
+
+  border-radius:
+    var(--radius-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-600);
+  background:
+    var(--scrollbar-thumb-hover);
 }
 
-/* Firefox */
 html {
-  scrollbar-color: var(--navy-600) var(--navy-900);
-  scrollbar-width: thin;
+  scrollbar-color:
+    var(--scrollbar-thumb)
+    var(--scrollbar-track);
+
+  scrollbar-width:
+    thin;
 }
+
 
 /* =========================================================
    CONTAINER
 ========================================================= */
 
 .container {
-  width: 100%;
-  max-width: var(--container);
+  width:
+    100%;
 
-  margin-inline: auto;
+  max-width:
+    var(--container);
 
-  padding-inline: clamp(1.1rem, 4vw, 2.5rem);
+  margin-inline:
+    auto;
+
+  padding-inline:
+    clamp(1.1rem, 4vw, 2.5rem);
 }
 
 .container--wide {
-  max-width: var(--container-wide);
+  max-width:
+    var(--container-wide);
 }
+
+
+/* =========================================================
+   =========================================================
+   NAVBAR GLOBAL SAFETY SYSTEM
+   =========================================================
+========================================================= */
+
+
+/*
+ * These rules intentionally use high specificity and !important
+ * only where necessary.
+ *
+ * Their purpose is to stop old navbar CSS from interfering with
+ * the new NavBar.vue structure.
+ */
+
+
+/* ---------------------------------------------------------
+   NAVBAR ROOT
+--------------------------------------------------------- */
+
+.navbar {
+  position:
+    fixed !important;
+
+  top:
+    0 !important;
+
+  left:
+    0 !important;
+
+  right:
+    0 !important;
+
+  z-index:
+    1000 !important;
+
+  width:
+    100% !important;
+
+  max-width:
+    100vw !important;
+
+  box-sizing:
+    border-box !important;
+
+  overflow:
+    visible !important;
+
+  isolation:
+    isolate;
+}
+
+
+/* ---------------------------------------------------------
+   NAVBAR INNER
+--------------------------------------------------------- */
+
+.navbar .navbar__inner {
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  width:
+    100% !important;
+
+  min-width:
+    0 !important;
+
+  max-width:
+    var(--container) !important;
+
+  margin-inline:
+    auto !important;
+}
+
+
+/* ---------------------------------------------------------
+   LOGO
+--------------------------------------------------------- */
+
+.navbar .navbar__logo {
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  flex:
+    0 0 auto !important;
+
+  width:
+    205px !important;
+
+  height:
+    52px !important;
+
+  min-width:
+    0 !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    hidden !important;
+
+  text-decoration:
+    none !important;
+}
+
+.navbar .navbar__logo-image {
+  display:
+    block !important;
+
+  width:
+    100% !important;
+
+  height:
+    100% !important;
+
+  max-width:
+    100% !important;
+
+  object-fit:
+    contain !important;
+
+  object-position:
+    left center !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+}
+
+
+/* ---------------------------------------------------------
+   DESKTOP NAV
+--------------------------------------------------------- */
+
+.navbar .navbar__desktop-nav {
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  flex:
+    1 1 auto !important;
+
+  min-width:
+    0 !important;
+
+  gap:
+    0.1rem !important;
+
+  margin:
+    0 1rem !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    visible !important;
+}
+
+
+/*
+ * Every desktop link is an independent flex item.
+ * This prevents text from sitting on top of another link.
+ */
+
+.navbar .navbar__desktop-nav .navbar__link {
+  position:
+    relative !important;
+
+  display:
+    inline-flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  flex:
+    0 0 auto !important;
+
+  width:
+    auto !important;
+
+  min-width:
+    max-content !important;
+
+  height:
+    40px !important;
+
+  min-height:
+    40px !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 0.75rem !important;
+
+  white-space:
+    nowrap !important;
+
+  word-break:
+    normal !important;
+
+  overflow:
+    visible !important;
+
+  text-decoration:
+    none !important;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE QUICK NAV
+--------------------------------------------------------- */
+
+/*
+ * Desktop:
+ * Completely hidden.
+ */
+
+.navbar .navbar__mobile-quick {
+  display:
+    none !important;
+}
+
+
+/* ---------------------------------------------------------
+   NAVBAR ACTIONS
+--------------------------------------------------------- */
+
+.navbar .navbar__actions {
+  display:
+    flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    flex-end !important;
+
+  flex:
+    0 0 auto !important;
+
+  min-width:
+    max-content !important;
+
+  gap:
+    0.65rem !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+}
+
+
+/* ---------------------------------------------------------
+   THEME BUTTON
+--------------------------------------------------------- */
+
+.navbar .navbar__theme {
+  display:
+    inline-flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  flex:
+    0 0 auto !important;
+
+  white-space:
+    nowrap !important;
+
+  writing-mode:
+    horizontal-tb !important;
+}
+
+
+/* ---------------------------------------------------------
+   CTA
+--------------------------------------------------------- */
+
+.navbar .navbar__cta {
+  display:
+    inline-flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  flex:
+    0 0 auto !important;
+
+  white-space:
+    nowrap !important;
+}
+
+
+/* ---------------------------------------------------------
+   HAMBURGER
+--------------------------------------------------------- */
+
+.navbar .navbar__hamburger {
+  display:
+    none !important;
+
+  flex:
+    0 0 auto !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+}
+
+
+/* ---------------------------------------------------------
+   LEGACY NAVBAR PROTECTION
+--------------------------------------------------------- */
+
+/*
+ * If an older version of the navbar CSS remains somewhere,
+ * these common old navigation containers cannot accidentally
+ * render a second copy of the links.
+ *
+ * The NEW navbar uses:
+ * .navbar__desktop-nav
+ * .navbar__mobile-quick
+ */
+
+.navbar > .navbar__links,
+.navbar .navbar-links,
+.navbar .nav-links,
+.navbar .desktop-links,
+.navbar .desktop-nav,
+.navbar .mobile-links {
+  display:
+    none !important;
+}
+
 
 /* =========================================================
    SECTIONS
 ========================================================= */
 
 .section {
-  position: relative;
+  position:
+    relative;
 
-  width: 100%;
+  width:
+    100%;
 
-  padding-block: var(--section-pad);
+  padding-block:
+    var(--section-pad);
 
-  isolation: isolate;
+  isolation:
+    isolate;
+
+  background:
+    transparent;
+
+  color:
+    var(--text-primary);
+
+  transition:
+    background-color var(--transition-slow),
+    color var(--transition-slow);
 }
 
 .section--small {
-  padding-block: var(--section-pad-small);
+  padding-block:
+    var(--section-pad-small);
 }
 
 .section--tight {
-  padding-block: 3rem;
+  padding-block:
+    3rem;
 }
+
 
 /* =========================================================
    TYPOGRAPHY
 ========================================================= */
 
 .text-cyan {
-  color: var(--cyan-400);
+  color:
+    var(--cyan-text);
 }
 
 .text-gold {
-  color: var(--gold-400);
+  color:
+    var(--gold-text);
 }
 
 .text-muted {
-  color: var(--white-60);
+  color:
+    var(--text-muted);
 }
 
 .text-soft {
-  color: var(--white-70);
+  color:
+    var(--text-secondary);
 }
 
-.text-gradient {
-  background:
-    linear-gradient(
-      110deg,
-      var(--cyan-300),
-      var(--cyan-400)
-    );
 
-  -webkit-background-clip: text;
-  background-clip: text;
+/* =========================================================
+   GRADIENT TEXT
+========================================================= */
 
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-/* Keep this for compatibility with existing views */
+.text-gradient,
 .gradient-text {
   background:
     linear-gradient(
@@ -324,109 +953,209 @@ html {
       var(--cyan-400)
     );
 
-  -webkit-background-clip: text;
-  background-clip: text;
+  -webkit-background-clip:
+    text;
 
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  background-clip:
+    text;
+
+  -webkit-text-fill-color:
+    transparent;
+
+  color:
+    transparent;
 }
 
+[data-theme='light'] .text-gradient,
+[data-theme='light'] .gradient-text {
+  background:
+    linear-gradient(
+      110deg,
+      var(--cyan-600),
+      #0c4a6e
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  -webkit-text-fill-color:
+    transparent;
+
+  color:
+    transparent;
+}
+
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
 .section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
+  display:
+    inline-flex;
 
-  margin-bottom: 1.15rem;
+  align-items:
+    center;
 
-  color: var(--cyan-400);
+  gap:
+    0.65rem;
 
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 700;
+  margin-bottom:
+    1.15rem;
 
-  letter-spacing: 0.16em;
-  line-height: 1.2;
+  color:
+    var(--cyan-text);
 
-  text-transform: uppercase;
+  font-family:
+    var(--font-display);
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.16em;
+
+  line-height:
+    1.2;
+
+  text-transform:
+    uppercase;
 }
 
 .section-label::before {
-  content: '';
+  content:
+    '';
 
-  width: 26px;
-  height: 1px;
+  width:
+    26px;
 
-  flex: 0 0 auto;
+  height:
+    1px;
 
-  background: var(--cyan-400);
+  flex:
+    0 0 auto;
+
+  background:
+    var(--cyan-text);
 }
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
 
 .section-title {
-  max-width: 780px;
+  max-width:
+    780px;
 
-  color: var(--white);
+  color:
+    var(--text-primary);
 
-  font-family: var(--font-display);
+  font-family:
+    var(--font-display);
 
-  font-size: clamp(
-    2rem,
-    4.5vw,
-    3.35rem
-  );
+  font-size:
+    clamp(
+      2rem,
+      4.5vw,
+      3.35rem
+    );
 
-  font-weight: 800;
+  font-weight:
+    800;
 
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -0.035em;
 }
+
+
+/* =========================================================
+   SECTION DESCRIPTION
+========================================================= */
 
 .section-description {
-  max-width: 680px;
+  max-width:
+    680px;
 
-  margin-top: 1.25rem;
+  margin-top:
+    1.25rem;
 
-  color: var(--white-60);
+  color:
+    var(--text-muted);
 
-  font-size: clamp(
-    0.95rem,
-    1.5vw,
-    1.05rem
-  );
+  font-size:
+    clamp(
+      0.95rem,
+      1.5vw,
+      1.05rem
+    );
 
-  line-height: 1.8;
+  line-height:
+    1.8;
 }
+
 
 /* =========================================================
    BUTTON SYSTEM
 ========================================================= */
 
 .btn {
-  position: relative;
+  position:
+    relative;
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display:
+    inline-flex;
 
-  gap: 0.55rem;
+  align-items:
+    center;
 
-  min-height: 46px;
+  justify-content:
+    center;
 
-  padding: 0.75rem 1.35rem;
+  gap:
+    0.55rem;
 
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  min-height:
+    46px;
 
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
+  padding:
+    0.75rem 1.35rem;
 
-  letter-spacing: 0.015em;
+  border:
+    1px solid transparent;
 
-  text-decoration: none;
+  border-radius:
+    var(--radius-sm);
 
-  cursor: pointer;
+  font-family:
+    var(--font-display);
 
-  overflow: hidden;
+  font-size:
+    0.82rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.015em;
+
+  text-decoration:
+    none;
+
+  cursor:
+    pointer;
+
+  overflow:
+    hidden;
 
   transition:
     transform var(--transition-base),
@@ -437,81 +1166,111 @@ html {
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform:
+    translateY(0);
 }
 
-/* Primary */
+
+/* ---------------------------------------------------------
+   PRIMARY
+--------------------------------------------------------- */
 
 .btn-primary {
-  background: var(--cyan-400);
-  color: var(--navy-950);
+  background:
+    var(--cyan-400);
+
+  color:
+    var(--navy-950);
 
   box-shadow:
-    0 8px 25px rgba(34, 211, 238, 0.12);
+    0 8px 25px
+    rgba(34, 211, 238, 0.12);
 }
 
 .btn-primary:hover {
-  background: var(--cyan-300);
+  background:
+    var(--cyan-300);
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 
   box-shadow:
-    0 12px 32px rgba(34, 211, 238, 0.22);
+    0 12px 32px
+    rgba(34, 211, 238, 0.22);
 }
 
-/*
- * Keep content above any decorative layer
- * used by older components.
- */
 .btn-primary span,
 .btn-primary svg {
-  position: relative;
-  z-index: 1;
+  position:
+    relative;
+
+  z-index:
+    1;
 }
 
-/* Outline */
+
+/* ---------------------------------------------------------
+   OUTLINE
+--------------------------------------------------------- */
 
 .btn-outline {
-  background: transparent;
+  background:
+    transparent;
 
-  color: var(--white);
+  color:
+    var(--text-primary);
 
-  border-color: var(--white-15);
+  border-color:
+    var(--border-color);
 }
 
 .btn-outline:hover {
-  background: var(--white-05);
+  background:
+    var(--surface-bg-soft);
 
-  border-color: var(--white-30);
+  border-color:
+    var(--cyan-text);
 
-  color: var(--white);
+  color:
+    var(--text-primary);
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
+
 
 /* =========================================================
    CARDS
 ========================================================= */
 
 .glass-card {
-  position: relative;
+  position:
+    relative;
 
   background:
     linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.075),
-      rgba(255, 255, 255, 0.025)
+      var(--glass-bg-1),
+      var(--glass-bg-2)
     );
 
-  border: 1px solid var(--white-10);
+  border:
+    1px solid var(--glass-border);
 
-  border-radius: var(--radius-lg);
+  border-radius:
+    var(--radius-lg);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
 
   box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.10);
+    var(--shadow-card);
+
+  color:
+    var(--text-primary);
 
   transition:
     transform var(--transition-slow),
@@ -521,51 +1280,118 @@ html {
 }
 
 .glass-card:hover {
-  border-color: rgba(34, 211, 238, 0.18);
+  border-color:
+    var(--glass-border-hover);
 
   background:
     linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.09),
-      rgba(255, 255, 255, 0.035)
+      var(--glass-bg-1-hover),
+      var(--glass-bg-2-hover)
     );
 
-  transform: translateY(-4px);
+  transform:
+    translateY(-4px);
 
   box-shadow:
-    0 22px 55px rgba(0, 0, 0, 0.18);
+    var(--shadow-deep);
 }
+
+
+/* =========================================================
+   LIGHT MODE CARD SAFETY
+========================================================= */
+
+[data-theme='light'] .glass-card {
+  color:
+    var(--text-primary);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(246, 247, 251, 0.95)
+    );
+
+  box-shadow:
+    0 14px 40px
+    rgba(6, 8, 46, 0.075);
+}
+
+[data-theme='light'] .glass-card:hover {
+  box-shadow:
+    0 22px 55px
+    rgba(6, 8, 46, 0.11);
+}
+
+
+/*
+ * Ensure common card children cannot inherit transparent
+ * or dark-on-dark colors accidentally.
+ */
+
+[data-theme='light'] .glass-card h1,
+[data-theme='light'] .glass-card h2,
+[data-theme='light'] .glass-card h3,
+[data-theme='light'] .glass-card h4,
+[data-theme='light'] .glass-card h5,
+[data-theme='light'] .glass-card h6 {
+  color:
+    var(--text-primary);
+}
+
+[data-theme='light'] .glass-card p {
+  color:
+    var(--text-secondary);
+}
+
+[data-theme='light'] .glass-card small {
+  color:
+    var(--text-muted);
+}
+
 
 /* =========================================================
    SURFACE HELPERS
 ========================================================= */
 
 .surface {
-  background: var(--navy-900);
+  background:
+    var(--surface-bg);
 
-  border: 1px solid var(--white-08);
+  border:
+    1px solid var(--border-soft);
+
+  color:
+    var(--text-primary);
 }
 
 .surface-soft {
-  background: var(--white-03);
+  background:
+    var(--surface-bg-soft);
 
-  border: 1px solid var(--white-08);
+  border:
+    1px solid var(--border-soft);
+
+  color:
+    var(--text-primary);
 }
 
 .surface-cyan {
-  background: var(--cyan-soft);
+  background:
+    var(--cyan-soft);
 
-  border: 1px solid rgba(34, 211, 238, 0.14);
+  border:
+    1px solid rgba(34, 211, 238, 0.14);
+
+  color:
+    var(--text-primary);
 }
+
 
 /* =========================================================
    DECORATIVE BACKGROUNDS
 ========================================================= */
-
-/*
- * Use these selectively.
- * The website should not have every section decorated.
- */
 
 .dot-pattern {
   background-image:
@@ -575,36 +1401,68 @@ html {
       transparent 1px
     );
 
-  background-size: 28px 28px;
+  background-size:
+    28px 28px;
 }
 
+[data-theme='light'] .dot-pattern {
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(6, 8, 46, 0.075) 1px,
+      transparent 1px
+    );
+}
+
+
+/* =========================================================
+   NOISE
+========================================================= */
+
 .noise {
-  position: relative;
-  isolation: isolate;
+  position:
+    relative;
+
+  isolation:
+    isolate;
 }
 
 .noise::before {
-  content: '';
+  content:
+    '';
 
-  position: absolute;
-  inset: 0;
+  position:
+    absolute;
+
+  inset:
+    0;
 
   background-image:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
 
-  opacity: 0.25;
+  opacity:
+    0.25;
 
-  pointer-events: none;
+  pointer-events:
+    none;
 
-  z-index: -1;
+  z-index:
+    -1;
 }
+
+
+/* =========================================================
+   GLOW
+========================================================= */
 
 .glow-cyan {
   filter:
     drop-shadow(
-      0 0 18px rgba(34, 211, 238, 0.35)
+      0 0 18px
+      rgba(34, 211, 238, 0.35)
     );
 }
+
 
 /* =========================================================
    PAGE TRANSITIONS
@@ -618,103 +1476,142 @@ html {
 }
 
 .page-enter-from {
-  opacity: 0;
-  transform: translateY(6px);
+  opacity:
+    0;
+
+  transform:
+    translateY(6px);
 }
 
 .page-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
+  opacity:
+    0;
+
+  transform:
+    translateY(-4px);
 }
+
 
 /* =========================================================
    REVEAL ANIMATIONS
 ========================================================= */
 
-/*
- * These remain available to existing pages.
- * We keep their movement restrained.
- */
-
 @keyframes fadeUp {
   from {
-    opacity: 0;
-    transform: translateY(24px);
+    opacity:
+      0;
+
+    transform:
+      translateY(24px);
   }
 
   to {
-    opacity: 1;
-    transform: translateY(0);
+    opacity:
+      1;
+
+    transform:
+      translateY(0);
   }
 }
+
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
+    opacity:
+      0;
   }
 
   to {
-    opacity: 1;
+    opacity:
+      1;
   }
 }
+
 
 @keyframes slideRight {
   from {
-    opacity: 0;
-    transform: translateX(-24px);
+    opacity:
+      0;
+
+    transform:
+      translateX(-24px);
   }
 
   to {
-    opacity: 1;
-    transform: translateX(0);
+    opacity:
+      1;
+
+    transform:
+      translateX(0);
   }
 }
+
 
 @keyframes scaleIn {
   from {
-    opacity: 0;
-    transform: scale(0.96);
+    opacity:
+      0;
+
+    transform:
+      scale(0.96);
   }
 
   to {
-    opacity: 1;
-    transform: scale(1);
+    opacity:
+      1;
+
+    transform:
+      scale(1);
   }
 }
+
 
 @keyframes pulse-cyan {
   0%,
   100% {
     box-shadow:
-      0 0 0 0 rgba(34, 211, 238, 0.28);
+      0 0 0 0
+      rgba(34, 211, 238, 0.28);
   }
 
   50% {
     box-shadow:
-      0 0 0 10px rgba(34, 211, 238, 0);
+      0 0 0 10px
+      rgba(34, 211, 238, 0);
   }
 }
+
 
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0);
+    transform:
+      translateY(0);
   }
 
   50% {
-    transform: translateY(-7px);
+    transform:
+      translateY(-7px);
   }
 }
+
 
 @keyframes spin-slow {
   from {
-    transform: rotate(0deg);
+    transform:
+      rotate(0deg);
   }
 
   to {
-    transform: rotate(360deg);
+    transform:
+      rotate(360deg);
   }
 }
+
+
+/* =========================================================
+   ANIMATION UTILITIES
+========================================================= */
 
 .animate-fade-up {
   animation:
@@ -741,33 +1638,41 @@ html {
     float 4.5s ease-in-out infinite;
 }
 
+
 /* =========================================================
    ANIMATION DELAYS
 ========================================================= */
 
 .delay-100 {
-  animation-delay: 0.1s;
+  animation-delay:
+    0.1s;
 }
 
 .delay-200 {
-  animation-delay: 0.2s;
+  animation-delay:
+    0.2s;
 }
 
 .delay-300 {
-  animation-delay: 0.3s;
+  animation-delay:
+    0.3s;
 }
 
 .delay-400 {
-  animation-delay: 0.4s;
+  animation-delay:
+    0.4s;
 }
 
 .delay-500 {
-  animation-delay: 0.5s;
+  animation-delay:
+    0.5s;
 }
 
 .delay-600 {
-  animation-delay: 0.6s;
+  animation-delay:
+    0.6s;
 }
+
 
 /* =========================================================
    FORM ELEMENTS
@@ -776,118 +1681,546 @@ html {
 input,
 textarea,
 select {
-  width: 100%;
+  width:
+    100%;
 
-  border: 1px solid var(--white-12);
-  border-radius: var(--radius-sm);
+  border:
+    1px solid var(--input-border);
 
-  background: rgba(255, 255, 255, 0.035);
+  border-radius:
+    var(--radius-sm);
 
-  color: var(--white);
+  background:
+    var(--input-bg);
 
-  outline: none;
+  color:
+    var(--text-primary);
+
+  outline:
+    none;
 
   transition:
     border-color var(--transition-base),
     background-color var(--transition-base),
-    box-shadow var(--transition-base);
+    box-shadow var(--transition-base),
+    color var(--transition-base);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: rgba(34, 211, 238, 0.55);
+  border-color:
+    rgba(34, 211, 238, 0.55);
 
-  background: rgba(255, 255, 255, 0.055);
+  background:
+    var(--input-bg-focus);
 
   box-shadow:
-    0 0 0 3px rgba(34, 211, 238, 0.08);
+    0 0 0 3px
+    rgba(34, 211, 238, 0.08);
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--white-40);
+  color:
+    var(--text-subtle);
 }
 
 textarea {
-  resize: vertical;
+  resize:
+    vertical;
 }
 
+
 /* =========================================================
-   RESPONSIVE
+   SELECT / OPTION LIGHT MODE
+========================================================= */
+
+[data-theme='light'] select,
+[data-theme='light'] option {
+  background-color:
+    #ffffff;
+
+  color:
+    var(--text-primary);
+}
+
+
+/* =========================================================
+   RESPONSIVE NAVBAR
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .navbar .navbar__desktop-nav {
+    margin-inline:
+      0.35rem;
+  }
+
+  .navbar .navbar__desktop-nav .navbar__link {
+    padding-inline:
+      0.55rem;
+  }
+
+  .navbar .navbar__logo {
+    width:
+      185px !important;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
 ========================================================= */
 
 @media (max-width: 900px) {
+
   :root {
-    --section-pad: clamp(4.5rem, 12vw, 6.5rem);
+    --section-pad:
+      clamp(4.5rem, 12vw, 6.5rem);
+
+    --navbar-height:
+      66px;
   }
+
 
   .container {
-    padding-inline: 1.15rem;
+    padding-inline:
+      1.15rem;
   }
 
+
   .section-title {
-    letter-spacing: -0.025em;
+    letter-spacing:
+      -0.025em;
   }
+
+
+  /* -------------------------------------------------------
+     DESKTOP NAV OFF
+  ------------------------------------------------------- */
+
+  .navbar .navbar__desktop-nav {
+    display:
+      none !important;
+  }
+
+
+  /* -------------------------------------------------------
+     MOBILE QUICK NAV ON
+  ------------------------------------------------------- */
+
+  .navbar .navbar__mobile-quick {
+    display:
+      flex !important;
+
+    align-items:
+      center !important;
+
+    justify-content:
+      flex-end !important;
+
+    flex:
+      1 1 auto !important;
+
+    min-width:
+      0 !important;
+
+    gap:
+      0.8rem !important;
+
+    margin:
+      0 0.55rem 0 0.75rem !important;
+
+    padding:
+      0 !important;
+
+    overflow:
+      hidden !important;
+  }
+
+
+  .navbar .navbar__mobile-link {
+    display:
+      inline-flex !important;
+
+    align-items:
+      center !important;
+
+    flex:
+      0 0 auto !important;
+
+    width:
+      auto !important;
+
+    min-width:
+      max-content !important;
+
+    height:
+      36px !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      0 !important;
+
+    white-space:
+      nowrap !important;
+
+    font-family:
+      var(--font-display) !important;
+
+    font-size:
+      0.67rem !important;
+
+    font-weight:
+      700 !important;
+
+    color:
+      var(--text-secondary) !important;
+
+    text-decoration:
+      none !important;
+  }
+
+
+  .navbar .navbar__mobile-link:hover,
+  .navbar .navbar__mobile-link--active {
+    color:
+      var(--cyan-text) !important;
+  }
+
+
+  /* -------------------------------------------------------
+     MOBILE ACTIONS
+  ------------------------------------------------------- */
+
+  .navbar .navbar__actions {
+    flex:
+      0 0 auto !important;
+
+    gap:
+      0.4rem !important;
+  }
+
+
+  /* -------------------------------------------------------
+     CTA OFF
+  ------------------------------------------------------- */
+
+  .navbar .navbar__cta {
+    display:
+      none !important;
+  }
+
+
+  /* -------------------------------------------------------
+     HAMBURGER ON
+  ------------------------------------------------------- */
+
+  .navbar .navbar__hamburger {
+    display:
+      flex !important;
+
+    width:
+      40px !important;
+
+    height:
+      40px !important;
+
+    min-width:
+      40px !important;
+
+    min-height:
+      40px !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      0 !important;
+  }
+
+
+  /* -------------------------------------------------------
+     THEME
+  ------------------------------------------------------- */
+
+  .navbar .navbar__theme {
+    width:
+      40px !important;
+
+    height:
+      40px !important;
+
+    min-width:
+      40px !important;
+
+    min-height:
+      40px !important;
+
+    padding:
+      0 !important;
+  }
+
+
+  .navbar .navbar__theme-text {
+    display:
+      none !important;
+  }
+
+
+  /* -------------------------------------------------------
+     LOGO
+  ------------------------------------------------------- */
+
+  .navbar .navbar__logo {
+    width:
+      175px !important;
+
+    height:
+      46px !important;
+
+    flex:
+      0 0 175px !important;
+  }
+
 }
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
 
 @media (max-width: 600px) {
+
   html {
-    font-size: 15px;
+    font-size:
+      15px;
   }
+
 
   .container {
-    padding-inline: 1rem;
+    padding-inline:
+      1rem;
   }
+
 
   .section {
-    padding-block: 4.25rem;
+    padding-block:
+      4.25rem;
   }
+
 
   .section-label {
-    font-size: 0.66rem;
-    letter-spacing: 0.14em;
+    font-size:
+      0.66rem;
+
+    letter-spacing:
+      0.14em;
   }
+
 
   .section-label::before {
-    width: 20px;
+    width:
+      20px;
   }
+
 
   .section-title {
-    font-size: clamp(
-      1.9rem,
-      9vw,
-      2.6rem
-    );
+    font-size:
+      clamp(
+        1.9rem,
+        9vw,
+        2.6rem
+      );
 
-    line-height: 1.1;
+    line-height:
+      1.1;
   }
+
 
   .section-description {
-    font-size: 0.94rem;
-    line-height: 1.75;
+    font-size:
+      0.94rem;
+
+    line-height:
+      1.75;
   }
 
+
   .btn {
-    min-height: 44px;
-    padding-inline: 1.1rem;
+    min-height:
+      44px;
+
+    padding-inline:
+      1.1rem;
   }
+
+
+  /* -------------------------------------------------------
+     SMALL MOBILE NAVBAR
+  ------------------------------------------------------- */
+
+  .navbar .navbar__logo {
+    width:
+      145px !important;
+
+    height:
+      42px !important;
+
+    flex:
+      0 0 145px !important;
+  }
+
+
+  .navbar .navbar__mobile-quick {
+    gap:
+      0.55rem !important;
+
+    margin-left:
+      0.45rem !important;
+
+    margin-right:
+      0.35rem !important;
+  }
+
+
+  .navbar .navbar__mobile-link {
+    font-size:
+      0.61rem !important;
+  }
+
+
+  .navbar .navbar__actions {
+    gap:
+      0.3rem !important;
+  }
+
+
+  .navbar .navbar__theme,
+  .navbar .navbar__hamburger {
+    width:
+      37px !important;
+
+    height:
+      37px !important;
+
+    min-width:
+      37px !important;
+
+    min-height:
+      37px !important;
+  }
+
 }
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+
+  .navbar .navbar__logo {
+    width:
+      115px !important;
+
+    height:
+      38px !important;
+
+    flex:
+      0 0 115px !important;
+  }
+
+
+  .navbar .navbar__mobile-quick {
+    gap:
+      0.35rem !important;
+
+    margin-left:
+      0.3rem !important;
+  }
+
+
+  .navbar .navbar__mobile-link {
+    font-size:
+      0.56rem !important;
+  }
+
+
+  .navbar .navbar__theme,
+  .navbar .navbar__hamburger {
+    width:
+      35px !important;
+
+    height:
+      35px !important;
+
+    min-width:
+      35px !important;
+
+    min-height:
+      35px !important;
+  }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL — PREVENT NAV COLLISION
+========================================================= */
+
+@media (max-width: 350px) {
+
+  .navbar .navbar__logo {
+    width:
+      100px !important;
+
+    flex-basis:
+      100px !important;
+  }
+
+
+  .navbar .navbar__mobile-quick {
+    gap:
+      0.25rem !important;
+  }
+
+
+  .navbar .navbar__mobile-link {
+    font-size:
+      0.52rem !important;
+  }
+
+}
+
 
 /* =========================================================
    REDUCED MOTION
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+
   html {
-    scroll-behavior: auto;
+    scroll-behavior:
+      auto;
   }
+
 
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
   }
-  }
+
+}

@@ -1,321 +1,959 @@
 <template>
   <div class="not-found noise">
-    <!-- Background orbs -->
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
     <div class="nf__orb nf__orb--1"></div>
     <div class="nf__orb nf__orb--2"></div>
     <div class="nf__orb nf__orb--3"></div>
 
-    <!-- Animated grid lines -->
-    <div class="nf__grid">
-      <div class="nf__grid-line" v-for="n in 8" :key="n" :style="{ animationDelay: `${n * 0.15}s` }"></div>
+    <div class="nf__grid" aria-hidden="true">
+
+      <div
+        v-for="n in 8"
+        :key="n"
+        class="nf__grid-line"
+        :style="{
+          animationDelay: `${n * 0.12}s`
+        }"
+      ></div>
+
     </div>
 
-    <div class="container nf__inner">
-      <!-- Glitching 404 -->
-      <div class="nf__code-wrap animate-fade-up">
-        <span class="nf__code" data-text="404">404</span>
+    <!-- =====================================================
+         CONTENT
+    ====================================================== -->
+
+    <main class="nf__inner">
+
+      <!-- 404 -->
+
+      <div
+        class="nf__code-wrap animate-fade-up"
+        aria-hidden="true"
+      >
+
+        <span
+          class="nf__code"
+          data-text="404"
+        >
+          404
+        </span>
+
       </div>
 
-      <!-- Icon -->
-      <div class="nf__icon-ring animate-scale-in delay-100">
+      <!-- ICON -->
+
+      <div
+        class="
+          nf__icon-ring
+          animate-scale-in
+          delay-100
+        "
+      >
+
         <div class="nf__icon-inner animate-float">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
-            <path d="M11 8v3M11 14h.01" stroke-linecap="round"/>
+
+          <svg
+            width="42"
+            height="42"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true"
+          >
+
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+            />
+
+            <path
+              d="M21 21l-4.35-4.35"
+            />
+
+            <path
+              d="M11 8v3M11 14h.01"
+              stroke-linecap="round"
+            />
+
           </svg>
+
         </div>
+
       </div>
 
-      <!-- Text -->
-      <h1 class="nf__title animate-fade-up delay-200">
-        Page Not <span class="gradient-text">Found</span>
-      </h1>
-      <p class="nf__subtitle animate-fade-up delay-300">
-        Looks like this page took a wrong turn somewhere in Tanzania.<br />
-        Let's get you back on track.
-      </p>
+      <!-- TEXT -->
 
-      <!-- Actions -->
-      <div class="nf__actions animate-fade-up delay-400">
-        <router-link to="/" class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span>Back to Home</span>
+      <div
+        class="
+          nf__copy
+          animate-fade-up
+          delay-200
+        "
+      >
+
+        <span class="nf__eyebrow">
+          ERROR 404
+        </span>
+
+        <h1 class="nf__title">
+
+          Page Not
+
+          <span class="gradient-text">
+            Found
+          </span>
+
+        </h1>
+
+        <p class="nf__subtitle">
+
+          Looks like this page took a wrong turn
+          somewhere in Tanzania.
+
+          <br />
+
+          Let's get you back on track.
+
+        </p>
+
+      </div>
+
+      <!-- ACTIONS -->
+
+      <div
+        class="
+          nf__actions
+          animate-fade-up
+          delay-300
+        "
+      >
+
+        <router-link
+          to="/"
+          class="btn btn-primary nf__primary-action"
+        >
+
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+          >
+
+            <path
+              d="
+                M3 9
+                l9-7
+                9 7
+                v11
+                a2 2 0 01-2 2
+                H5
+                a2 2 0 01-2-2
+                z
+              "
+            />
+
+            <polyline
+              points="
+                9 22
+                9 12
+                15 12
+                15 22
+              "
+            />
+
+          </svg>
+
+          <span>
+            Back to Home
+          </span>
+
         </router-link>
-        <router-link to="/contact" class="btn btn-outline">
+
+        <router-link
+          to="/contact"
+          class="btn btn-outline nf__secondary-action"
+        >
           Contact Support
         </router-link>
+
       </div>
 
-      <!-- Quick nav links -->
-      <div class="nf__nav animate-fade-up delay-500">
-        <span class="nf__nav-label">Or explore:</span>
+      <!-- QUICK NAV -->
+
+      <nav
+        class="
+          nf__nav
+          animate-fade-up
+          delay-400
+        "
+        aria-label="Quick navigation"
+      >
+
+        <span class="nf__nav-label">
+          Or explore
+        </span>
+
         <div class="nf__nav-links">
+
           <router-link
             v-for="link in quickLinks"
             :key="link.path"
             :to="link.path"
             class="nf__nav-link"
           >
-            <span class="nf__nav-link-icon">{{ link.icon }}</span>
-            {{ link.label }}
+
+            <span class="nf__nav-link-icon">
+              {{ link.icon }}
+            </span>
+
+            <span>
+              {{ link.label }}
+            </span>
+
+            <svg
+              class="nf__nav-link-arrow"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+
           </router-link>
+
         </div>
-      </div>
+
+      </nav>
+
+    </main>
+
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+
+    <div
+      class="
+        nf__stamp
+        animate-fade-in
+        delay-500
+      "
+    >
+
+      <img
+        src="@/assets/logo.png"
+        alt="Millenium Tech"
+        class="nf__stamp-logo"
+      />
+
+      <span class="nf__stamp-name">
+        Millenium<span>Tech</span>
+      </span>
+
     </div>
 
-    <!-- Bottom brand stamp -->
-    <div class="nf__stamp animate-fade-in delay-600">
-      <img src="@/assets/logo.png" alt="Millenium Tech" class="nf__stamp-logo" />
-      <span>Millenium<span class="text-cyan">Tech</span></span>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+
 const quickLinks = [
-  { path: '/services',  label: 'Services',  icon: '⚙️' },
-  { path: '/portfolio', label: 'Portfolio', icon: '🎨' },
-  { path: '/about',     label: 'About Us',  icon: '👋' },
+  {
+    path: '/services',
+    label: 'Services',
+    icon: '⚙️'
+  },
+  {
+    path: '/portfolio',
+    label: 'Portfolio',
+    icon: '🎨'
+  },
+  {
+    path: '/about',
+    label: 'About Us',
+    icon: '👋'
+  }
 ]
+
 </script>
 
 <style scoped>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
 .not-found {
+  position: relative;
+
   min-height: 100vh;
+
   display: flex;
-  flex-direction: column;
+
   align-items: center;
   justify-content: center;
-  background: var(--navy-950);
-  position: relative;
+
+  padding:
+    6.5rem
+    1.5rem
+    6rem;
+
   overflow: hidden;
-  padding: 6rem 1.5rem 4rem;
+
+  background:
+    var(--bg-primary);
+
+  color:
+    var(--text-primary);
+
   text-align: center;
 }
 
-/* Orbs */
+/* =========================================================
+   BACKGROUND ORBS
+========================================================= */
+
 .nf__orb {
   position: absolute;
+
   border-radius: 50%;
+
   pointer-events: none;
-}
-.nf__orb--1 {
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(34,211,238,0.07) 0%, transparent 65%);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-.nf__orb--2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(251,191,36,0.05) 0%, transparent 70%);
-  top: -80px; right: -80px;
-}
-.nf__orb--3 {
-  width: 350px; height: 350px;
-  background: radial-gradient(circle, rgba(26, 33, 104, 0.5) 0%, transparent 70%);
-  bottom: -60px; left: -60px;
+
+  filter: blur(2px);
 }
 
-/* Animated grid */
+.nf__orb--1 {
+  width: 720px;
+  height: 720px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  background:
+    radial-gradient(
+      circle,
+      var(--cyan-soft),
+      transparent 68%
+    );
+}
+
+.nf__orb--2 {
+  width: 420px;
+  height: 420px;
+
+  top: -120px;
+  right: -100px;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--gold-soft),
+      transparent 70%
+    );
+}
+
+.nf__orb--3 {
+  width: 360px;
+  height: 360px;
+
+  left: -100px;
+  bottom: -100px;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--surface-bg-strong),
+      transparent 70%
+    );
+}
+
+/* =========================================================
+   BACKGROUND GRID
+========================================================= */
+
 .nf__grid {
   position: absolute;
+
   inset: 0;
+
   display: flex;
-  justify-content: space-around;
+
+  justify-content:
+    space-around;
+
   pointer-events: none;
+
+  opacity: 0.5;
 }
+
 .nf__grid-line {
   width: 1px;
   height: 100%;
-  background: linear-gradient(to bottom, transparent 0%, rgba(34,211,238,0.06) 40%, rgba(34,211,238,0.06) 60%, transparent 100%);
-  animation: fadeIn 1.2s var(--ease-out) both;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      var(--cyan-soft) 40%,
+      var(--cyan-soft) 60%,
+      transparent
+    );
+
+  animation:
+    fadeIn
+    1.2s
+    var(--ease-out)
+    both;
 }
 
-/* Inner */
+/* =========================================================
+   CONTENT
+========================================================= */
+
 .nf__inner {
   position: relative;
-  z-index: 1;
+
+  z-index: 2;
+
+  width: 100%;
+
+  max-width: 760px;
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
-  gap: 0;
-  max-width: 700px;
 }
 
-/* 404 glitch code */
+/* =========================================================
+   404 NUMBER
+========================================================= */
+
 .nf__code-wrap {
   position: relative;
-  margin-bottom: 2rem;
-  line-height: 1;
+
+  margin-bottom: 0.5rem;
+
+  line-height: 0.85;
 }
+
 .nf__code {
-  font-family: var(--font-display);
-  font-size: clamp(7rem, 22vw, 14rem);
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  color: transparent;
-  -webkit-text-stroke: 2px rgba(34, 211, 238, 0.25);
   position: relative;
+
   display: block;
+
+  font-family:
+    var(--font-display);
+
+  font-size:
+    clamp(
+      7rem,
+      20vw,
+      12.5rem
+    );
+
+  font-weight: 900;
+
+  letter-spacing: -0.075em;
+
+  line-height: 0.85;
+
+  color: transparent;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cyan-text),
+      var(--cyan-400) 45%,
+      var(--gold-text)
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
   user-select: none;
+
+  filter:
+    drop-shadow(
+      0 12px 35px
+      var(--cyan-soft)
+    );
 }
-/* Glitch layers */
-.nf__code::before,
-.nf__code::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  font-family: var(--font-display);
-  font-size: inherit;
-  font-weight: 800;
-  letter-spacing: inherit;
-}
+
+/* subtle offset duplicate */
+
 .nf__code::before {
+  content:
+    attr(data-text);
+
+  position: absolute;
+
+  inset: 0;
+
   color: transparent;
-  -webkit-text-stroke: 2px rgba(34, 211, 238, 0.5);
-  animation: glitch-1 4s infinite;
-  clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
-}
-.nf__code::after {
-  color: transparent;
-  -webkit-text-stroke: 2px rgba(251, 191, 36, 0.35);
-  animation: glitch-2 4s infinite;
-  clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
+
+  -webkit-text-stroke:
+    1px var(--cyan-soft);
+
+  transform:
+    translate(5px, 4px);
+
+  opacity: 0.5;
+
+  z-index: -1;
 }
 
-@keyframes glitch-1 {
-  0%, 90%, 100% { transform: translate(0); opacity: 1; }
-  91%  { transform: translate(-4px, 1px); opacity: 0.9; }
-  92%  { transform: translate(4px, -1px); opacity: 0.8; }
-  93%  { transform: translate(-2px, 2px); opacity: 1; }
-  94%  { transform: translate(0); opacity: 0.7; }
-  95%  { transform: translate(3px, -2px); opacity: 1; }
-}
-@keyframes glitch-2 {
-  0%, 88%, 100% { transform: translate(0); opacity: 1; }
-  89%  { transform: translate(5px, 2px); opacity: 0.8; }
-  90%  { transform: translate(-3px, -1px); opacity: 0.9; }
-  91%  { transform: translate(2px, 1px); opacity: 1; }
-  92%  { transform: translate(0); opacity: 0.6; }
-  93%  { transform: translate(-4px, 2px); opacity: 1; }
-}
+/* =========================================================
+   ICON
+========================================================= */
 
-/* Icon ring */
 .nf__icon-ring {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: rgba(34, 211, 238, 0.08);
-  border: 1.5px solid rgba(34, 211, 238, 0.25);
+  width: 88px;
+  height: 88px;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
-  color: var(--cyan-400);
-  box-shadow: 0 0 40px rgba(34, 211, 238, 0.1);
-  animation: pulse-cyan 3s infinite;
+
+  margin-bottom: 1.75rem;
+
+  border-radius: 50%;
+
+  background:
+    var(--cyan-soft);
+
+  border:
+    1px solid
+    var(--cyan-glow-strong);
+
+  color:
+    var(--cyan-text);
+
+  box-shadow:
+    0 0 0 8px
+    var(--cyan-soft),
+    0 0 45px
+    var(--cyan-soft);
+
+  animation:
+    pulse-cyan
+    3s
+    infinite;
 }
+
 .nf__icon-inner {
   display: flex;
+
   align-items: center;
   justify-content: center;
 }
 
-/* Text */
-.nf__title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin-bottom: 1.1rem;
-}
-.nf__subtitle {
-  font-size: clamp(0.9rem, 2vw, 1.05rem);
-  color: var(--white-70);
-  line-height: 1.8;
-  max-width: 460px;
-  margin-bottom: 2.5rem;
+/* =========================================================
+   COPY
+========================================================= */
+
+.nf__copy {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
 }
 
-/* Actions */
+.nf__eyebrow {
+  margin-bottom: 0.65rem;
+
+  color:
+    var(--cyan-text);
+
+  font-family:
+    var(--font-display);
+
+  font-size: 0.68rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+.nf__title {
+  margin:
+    0 0 1rem;
+
+  color:
+    var(--text-primary);
+
+  font-family:
+    var(--font-display);
+
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      3.1rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.035em;
+}
+
+.nf__subtitle {
+  max-width: 500px;
+
+  margin:
+    0 0 2.25rem;
+
+  color:
+    var(--text-secondary);
+
+  font-size:
+    clamp(
+      0.88rem,
+      2vw,
+      1rem
+    );
+
+  line-height: 1.8;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
 .nf__actions {
   display: flex;
+
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 3rem;
+
+  flex-wrap: wrap;
+
+  gap: 0.8rem;
+
+  margin-bottom: 2.75rem;
 }
 
-/* Quick nav */
+.nf__primary-action,
+.nf__secondary-action {
+  min-height: 44px;
+}
+
+.nf__secondary-action {
+  border-color:
+    var(--border-color);
+
+  color:
+    var(--text-primary);
+}
+
+.nf__secondary-action:hover {
+  border-color:
+    var(--cyan-text);
+
+  background:
+    var(--cyan-soft);
+
+  color:
+    var(--cyan-text);
+}
+
+/* =========================================================
+   QUICK NAV
+========================================================= */
+
 .nf__nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding-top: 2.5rem;
-  border-top: 1px solid var(--white-08);
   width: 100%;
+
+  padding-top: 2rem;
+
+  border-top:
+    1px solid
+    var(--border-soft);
 }
+
 .nf__nav-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  display: block;
+
+  margin-bottom: 0.9rem;
+
+  color:
+    var(--text-subtle);
+
+  font-family:
+    var(--font-display);
+
+  font-size: 0.68rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
+
   text-transform: uppercase;
-  color: var(--white-40);
-  font-family: var(--font-display);
 }
+
 .nf__nav-links {
   display: flex;
+
   align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
   justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: 0.65rem;
 }
+
 .nf__nav-link {
   display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  background: var(--white-05);
-  border: 1px solid var(--white-08);
-  color: var(--white-70);
-  padding: 0.5rem 1.1rem;
-  border-radius: 100px;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s var(--ease-out);
-}
-.nf__nav-link:hover {
-  background: rgba(34, 211, 238, 0.08);
-  border-color: rgba(34, 211, 238, 0.3);
-  color: var(--cyan-400);
-  transform: translateY(-2px);
-}
-.nf__nav-link-icon { font-size: 0.9rem; }
 
-/* Brand stamp */
+  align-items: center;
+
+  gap: 0.45rem;
+
+  min-height: 38px;
+
+  padding:
+    0.45rem 0.8rem;
+
+  border:
+    1px solid
+    var(--border-soft);
+
+  border-radius:
+    var(--radius-pill);
+
+  background:
+    var(--surface-bg-soft);
+
+  color:
+    var(--text-secondary);
+
+  font-family:
+    var(--font-display);
+
+  font-size: 0.74rem;
+
+  font-weight: 650;
+
+  text-decoration: none;
+
+  transition:
+    transform var(--transition-base),
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base);
+}
+
+.nf__nav-link:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    var(--cyan-soft);
+
+  border-color:
+    var(--cyan-text);
+
+  color:
+    var(--cyan-text);
+}
+
+.nf__nav-link-icon {
+  font-size: 0.9rem;
+}
+
+.nf__nav-link-arrow {
+  opacity: 0.5;
+
+  transition:
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.nf__nav-link:hover
+.nf__nav-link-arrow {
+  opacity: 1;
+
+  transform:
+    translateX(2px);
+}
+
+/* =========================================================
+   BRAND
+========================================================= */
+
 .nf__stamp {
   position: absolute;
-  bottom: 2rem;
+
+  z-index: 3;
+
   left: 50%;
-  transform: translateX(-50%);
+  bottom: 1.75rem;
+
+  transform:
+    translateX(-50%);
+
   display: flex;
+
   align-items: center;
+
   gap: 0.5rem;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--white-40);
+
   white-space: nowrap;
 }
+
 .nf__stamp-logo {
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
+
   object-fit: contain;
-  opacity: 0.5;
+
+  opacity: 0.55;
 }
+
+.nf__stamp-name {
+  color:
+    var(--text-subtle);
+
+  font-family:
+    var(--font-display);
+
+  font-size: 0.8rem;
+
+  font-weight: 750;
+}
+
+.nf__stamp-name span {
+  color:
+    var(--cyan-text);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .not-found {
+    min-height: 100svh;
+
+    padding:
+      5.5rem
+      1rem
+      5rem;
+  }
+
+  .nf__code-wrap {
+    margin-bottom: 0.25rem;
+  }
+
+  .nf__icon-ring {
+    width: 76px;
+    height: 76px;
+
+    margin-bottom: 1.5rem;
+  }
+
+  .nf__subtitle {
+    margin-bottom: 2rem;
+  }
+
+  .nf__subtitle br {
+    display: none;
+  }
+
+  .nf__actions {
+    width: 100%;
+
+    flex-direction: column;
+
+    margin-bottom: 2.25rem;
+  }
+
+  .nf__primary-action,
+  .nf__secondary-action {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+  .nf__nav {
+    padding-top: 1.75rem;
+  }
+
+  .nf__nav-links {
+    gap: 0.5rem;
+  }
+
+  .nf__nav-link {
+    flex: 1 1 auto;
+
+    justify-content: center;
+  }
+
+  .nf__stamp {
+    bottom: 1.1rem;
+  }
+
+}
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .nf__code {
+    font-size: 6.5rem;
+  }
+
+  .nf__nav-links {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+  .nf__nav-link {
+    width: 100%;
+  }
+
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .nf__grid-line,
+  .nf__icon-ring,
+  .nf__code {
+    animation: none;
+  }
+
+}
+
 </style>

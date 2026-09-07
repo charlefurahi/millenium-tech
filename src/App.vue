@@ -39,7 +39,7 @@ import Chatbot from '@/components/Chatbot/Chatbot.vue'
   display: flex;
   flex-direction: column;
 
-  background: var(--navy-950);
+  background: var(--bg-primary);
 
   /*
    * Prevent small horizontal shifts caused by

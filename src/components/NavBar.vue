@@ -196,11 +196,12 @@
             aria-label="Mobile navigation"
           >
             <router-link
-              v-for="link in navLinks"
+              v-for="(link, index) in navLinks"
               :key="link.path"
               :to="link.path"
               class="navbar__mobile-link"
               :class="{ active: isActive(link.path) }"
+              :style="{ '--i': index }"
               :aria-current="
                 isActive(link.path)
                   ? 'page'
@@ -215,22 +216,6 @@
               <span class="mobile-link-label">
                 {{ link.label }}
               </span>
-
-              <svg
-                class="mobile-link-arrow"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14" />
-                <path d="m13 6 6 6-6 6" />
-              </svg>
             </router-link>
           </nav>
 
@@ -316,21 +301,6 @@
             @click="closeMenu"
           >
             <span>Start a conversation</span>
-
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 12h14" />
-              <path d="m13 6 6 6-6 6" />
-            </svg>
           </router-link>
 
           <!-- Contact information -->
@@ -1134,12 +1104,12 @@ onUnmounted(() => {
 .navbar__mobile {
   position: absolute;
 
-  top: 100%;
-  left: 0;
-  right: 0;
+  top: calc(100% + 0.5rem);
+  left: 0.5rem;
+  right: 0.5rem;
 
   max-height:
-    calc(100vh - 70px);
+    calc(100vh - 90px);
 
   overflow-y: auto;
 
@@ -1148,17 +1118,16 @@ onUnmounted(() => {
 
   color: var(--text-primary);
 
-  border-top:
-    1px solid var(--border-color);
+  border: 1px solid var(--border-color);
 
-  border-bottom:
-    1px solid var(--border-color);
+  border-radius: 22px;
 
-  border-radius: 0 0 20px 20px;
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
 
   box-shadow:
-    0 1px 0 rgba(2, 6, 23, 0.04),
-    0 25px 60px -12px rgba(2, 6, 23, 0.32);
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 70px -12px rgba(2, 6, 23, 0.4);
 
   overscroll-behavior: contain;
 }
@@ -1166,7 +1135,7 @@ onUnmounted(() => {
 .navbar__mobile-inner {
   padding:
     1.25rem
-    1.25rem
+    1.1rem
     1.5rem;
 }
 
@@ -1181,13 +1150,14 @@ onUnmounted(() => {
   gap: 0.75rem;
 
   margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
 
-  color: var(--text-muted);
+  color: var(--text-subtle);
 
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: 0.62rem;
+  font-weight: 700;
 
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -1196,55 +1166,98 @@ onUnmounted(() => {
 
   height: 1px;
 
-  background:
-    var(--border-color);
+  background: linear-gradient(
+    90deg,
+    var(--border-color),
+    transparent
+  );
 }
 
 /* ==================================================
    MOBILE LINKS
+
+   Rounded self-contained tiles, no dividers, no arrow —
+   matches the redesigned mobile sidebar drawer.
 ================================================== */
 
 .navbar__mobile-links {
   display: flex;
   flex-direction: column;
+
+  gap: 0.3rem;
 }
 
 .navbar__mobile-link {
-  display: grid;
+  position: relative;
 
-  grid-template-columns:
-    32px
-    1fr
-    auto;
-
+  display: flex;
   align-items: center;
 
-  gap: 0.5rem;
+  gap: 0.85rem;
 
   min-height: 62px;
 
-  border-bottom:
-    1px solid var(--border-soft);
+  padding: 0.7rem 0.9rem;
 
-  border-radius: 8px;
+  border-radius: 16px;
 
   color: var(--text-secondary);
 
   text-decoration: none;
 
-  transition:
-    color 0.25s ease,
-    background-color 0.15s ease,
-    padding-left 0.25s var(--ease-out);
-}
+  opacity: 0;
+  transform: translateX(10px);
 
-.navbar__mobile-link:hover,
-.navbar__mobile-link.active {
-  color: var(--text-primary);
+  animation:
+    mobile-link-in 0.4s var(--ease-out) forwards;
+
+  animation-delay:
+    calc(60ms * var(--i));
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .navbar__mobile-link:hover {
-  padding-left: 0.35rem;
+  color: var(--text-primary);
+  background: var(--surface-bg-soft);
+
+  transform: translateX(2px);
+}
+
+.navbar__mobile-link.active {
+  color: var(--text-primary);
+
+  background: linear-gradient(
+    120deg,
+    var(--cyan-soft) 0%,
+    transparent 100%
+  );
+}
+
+.navbar__mobile-link.active::after {
+  content: '';
+
+  position: absolute;
+
+  right: 0.9rem;
+  top: 50%;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--cyan-400);
+  box-shadow: 0 0 0 4px var(--cyan-soft);
+
+  transform: translateY(-50%);
+}
+
+.navbar__mobile-link.active:hover {
+  transform: none;
 }
 
 .navbar__mobile-link:active {
@@ -1252,37 +1265,49 @@ onUnmounted(() => {
 }
 
 .mobile-link-num {
-  color: var(--cyan-400);
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 9px;
+
+  background: var(--surface-bg-soft);
+
+  color: var(--text-muted);
 
   font-family: var(--font-body);
 
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: 0.62rem;
+  font-weight: 700;
 
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.navbar__mobile-link.active .mobile-link-num {
+  background: var(--cyan-400);
+  color: var(--navy-950);
 }
 
 .mobile-link-label {
   font-family: var(--font-display);
 
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
-.mobile-link-arrow {
-  opacity: 0.35;
-
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s var(--ease-out);
-}
-
-.navbar__mobile-link:hover
-.mobile-link-arrow,
-.navbar__mobile-link.active
-.mobile-link-arrow {
-  opacity: 1;
-  transform: translateX(3px);
+@keyframes mobile-link-in {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* ==================================================
@@ -1412,22 +1437,28 @@ onUnmounted(() => {
 .navbar__mobile-cta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 
   margin-top: 1.25rem;
 
-  min-height: 52px;
+  min-height: 54px;
 
   padding: 0 1rem;
 
-  border-radius: 8px;
+  border-radius: 14px;
 
-  background: var(--cyan-400);
+  background: linear-gradient(
+    135deg,
+    var(--cyan-400) 0%,
+    var(--cyan-300) 100%
+  );
 
   color: var(--navy-950);
 
   font-size: 0.85rem;
-  font-weight: 750;
+  font-weight: 800;
+
+  letter-spacing: 0.01em;
 
   text-decoration: none;
 
@@ -1655,6 +1686,12 @@ onUnmounted(() => {
 
     animation-duration:
       0.01ms !important;
+  }
+
+  .navbar__mobile-link {
+    opacity: 1;
+    transform: none;
+    animation: none;
   }
 }
 </style>

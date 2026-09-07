@@ -43,15 +43,16 @@
               animationDelay: `${i * 0.08}s`
             }"
           >
-            <!-- HEADER -->
+            <!-- MEDIA -->
 
-            <div class="svc-item__header">
-              <div
-                class="svc-item__icon"
-                :class="svc.accentClass"
-              >
-                <span v-html="svc.icon"></span>
-              </div>
+            <div class="svc-item__media">
+              <img
+                :src="svc.image"
+                :alt="svc.title"
+                loading="lazy"
+              />
+
+              <div class="svc-item__media-overlay"></div>
 
               <span
                 v-if="svc.featured"
@@ -59,68 +60,80 @@
               >
                 Popular
               </span>
+
+              <div
+                class="svc-item__icon"
+                :class="svc.accentClass"
+              >
+                <span v-html="svc.icon"></span>
+              </div>
             </div>
 
-            <!-- TITLE -->
+            <!-- BODY -->
 
-            <h2 class="svc-item__title">
-              {{ svc.title }}
-            </h2>
+            <div class="svc-item__body">
 
-            <!-- DESCRIPTION -->
+              <!-- TITLE -->
 
-            <p class="svc-item__desc">
-              {{ svc.desc }}
-            </p>
+              <h2 class="svc-item__title">
+                {{ svc.title }}
+              </h2>
 
-            <!-- FEATURES -->
+              <!-- DESCRIPTION -->
 
-            <ul class="svc-item__features">
-              <li
-                v-for="feature in svc.features"
-                :key="feature"
+              <p class="svc-item__desc">
+                {{ svc.desc }}
+              </p>
+
+              <!-- FEATURES -->
+
+              <ul class="svc-item__features">
+                <li
+                  v-for="feature in svc.features"
+                  :key="feature"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    aria-hidden="true"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+
+                  <span>{{ feature }}</span>
+                </li>
+              </ul>
+
+              <!-- BUTTON -->
+
+              <router-link
+                to="/contact"
+                class="btn svc-item__btn"
+                :class="
+                  svc.featured
+                    ? 'btn-primary'
+                    : 'btn-outline'
+                "
               >
+                <span>Get a Quote</span>
+
                 <svg
-                  width="12"
-                  height="12"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="3"
+                  stroke-width="2.5"
                   aria-hidden="true"
                 >
-                  <polyline points="20 6 9 17 4 12" />
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-
-                <span>{{ feature }}</span>
-              </li>
-            </ul>
-
-            <!-- BUTTON -->
-
-            <router-link
-              to="/contact"
-              class="btn svc-item__btn"
-              :class="
-                svc.featured
-                  ? 'btn-primary'
-                  : 'btn-outline'
-              "
-            >
-              <span>Get a Quote</span>
-
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </router-link>
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -226,11 +239,30 @@
 </template>
 
 <script setup lang="ts">
+/* --------------------------------------------------
+   Service card images
+
+   Add one photo per service under src/assets/services/
+   using these exact filenames (any .jpg/.png/.webp works,
+   just keep the import extension in sync). Vite bundles
+   these at build time, so once the files exist here the
+   cards pick them up automatically — no other code needs
+   to change.
+-------------------------------------------------- */
+
+import graphicsImg from '@/assets/services/graphics-design.jpg'
+import websiteImg from '@/assets/services/website-development.jpg'
+import repairImg from '@/assets/services/computer-repair.jpg'
+import photoImg from '@/assets/services/photo-editing.jpg'
+import onlineImg from '@/assets/services/online-services.jpg'
+import laptopImg from '@/assets/services/laptop-sales.jpg'
+
 const services = [
   {
     title: 'Graphics Designing',
     desc: 'We create visual identities that stop people in their tracks. From social media posts to full brand systems.',
-    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    image: graphicsImg,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
       <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
       <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
@@ -250,7 +282,8 @@ const services = [
   {
     title: 'Website Development',
     desc: 'Modern, fast websites built with the latest technologies. Responsive, SEO-ready, and easy to manage.',
-    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    image: websiteImg,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <rect x="3" y="3" width="18" height="18" rx="2"/>
       <path d="M3 9h18M9 21V9"/>
     </svg>`,
@@ -267,7 +300,8 @@ const services = [
   {
     title: 'Computer Repair',
     desc: 'Experienced technicians who diagnose and fix any computer problem quickly — hardware or software.',
-    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    image: repairImg,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <rect x="2" y="3" width="20" height="14" rx="2"/>
       <path d="M8 21h8M12 17v4"/>
     </svg>`,
@@ -284,7 +318,8 @@ const services = [
   {
     title: 'Photo Editing',
     desc: 'Professional-grade photo retouching, color grading and background removal for stunning visuals.',
-    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    image: photoImg,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
       <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
     </svg>`,
@@ -301,7 +336,8 @@ const services = [
   {
     title: 'Online Services',
     desc: 'We handle Tanzania government online processes on your behalf — fast, accurate, and stress-free.',
-    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    image: onlineImg,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="12" cy="12" r="10"/>
       <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
     </svg>`,
@@ -318,7 +354,8 @@ const services = [
   {
     title: 'Laptop Sales',
     desc: 'Quality laptops at honest prices. We source reliable new and refurbished units tested by our team.',
-    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    image: laptopImg,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <rect x="3" y="4" width="18" height="12" rx="2"/>
       <path d="M1 20h22"/>
     </svg>`,
@@ -477,15 +514,22 @@ const steps = [
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
 
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 /* =========================================================
    SERVICE CARD
+
+   Card is now a media + body composition: the photo
+   bleeds flush to the card's own rounded edges (no inner
+   padding above it) and the icon badge floats half on/
+   half off the image so the card reads as one cohesive
+   object instead of "icon block + text block".
 ========================================================= */
 
 .svc-item {
-  padding: 2.25rem;
+  padding: 0;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
@@ -498,6 +542,11 @@ const steps = [
     fadeUp 0.65s var(--ease-out) both;
 
   color: var(--text-primary);
+
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
 }
 
 .svc-item:hover {
@@ -544,66 +593,57 @@ const steps = [
 }
 
 /* =========================================================
-   CARD HEADER
+   CARD MEDIA
 ========================================================= */
 
-.svc-item__header {
-  display: flex;
+.svc-item__media {
+  position: relative;
 
-  align-items: flex-start;
-  justify-content: space-between;
+  width: 100%;
+  aspect-ratio: 16 / 10;
 
-  margin-bottom: 1.5rem;
+  overflow: hidden;
+
+  background: var(--surface-bg-soft);
 }
 
-/* =========================================================
-   CARD ICON
-========================================================= */
+.svc-item__media img {
+  width: 100%;
+  height: 100%;
 
-.svc-item__icon {
-  width: 56px;
-  height: 56px;
+  object-fit: cover;
 
-  border-radius: var(--radius-lg);
+  display: block;
 
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid transparent;
-
-  flex-shrink: 0;
-
-  transition:
-    background-color var(--transition-base),
-    border-color var(--transition-base),
-    color var(--transition-base);
+  transition: transform 0.5s var(--ease-out);
 }
 
-.icon--cyan {
-  background: var(--cyan-soft);
-
-  border-color:
-    rgba(34, 211, 238, 0.2);
-
-  color: var(--cyan-text);
+.svc-item:hover .svc-item__media img {
+  transform: scale(1.06);
 }
 
-.icon--gold {
-  background: var(--gold-soft);
+.svc-item__media-overlay {
+  position: absolute;
+  inset: 0;
 
-  border-color:
-    rgba(251, 191, 36, 0.2);
-
-  color: var(--gold-text);
+  background: linear-gradient(
+    180deg,
+    rgba(2, 6, 23, 0) 45%,
+    rgba(2, 6, 23, 0.65) 100%
+  );
 }
 
 /* =========================================================
    POPULAR BADGE
+   (now sits on top of the photo)
 ========================================================= */
 
 .svc-item__badge {
+  position: absolute;
+
+  top: 0.9rem;
+  right: 0.9rem;
+
   background:
     linear-gradient(
       135deg,
@@ -624,12 +664,74 @@ const steps = [
   text-transform: uppercase;
 
   padding:
-    0.25rem 0.65rem;
+    0.3rem 0.7rem;
 
   border-radius:
     var(--radius-pill);
 
   white-space: nowrap;
+
+  box-shadow: 0 6px 16px rgba(2, 6, 23, 0.25);
+}
+
+/* =========================================================
+   CARD ICON
+   Floats half-over the bottom edge of the photo.
+========================================================= */
+
+.svc-item__icon {
+  position: absolute;
+
+  left: 1.5rem;
+  bottom: -24px;
+
+  width: 56px;
+  height: 56px;
+
+  border-radius: var(--radius-lg);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 3px solid var(--surface-bg);
+
+  flex-shrink: 0;
+
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.25);
+
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base);
+}
+
+.icon--cyan {
+  background: var(--cyan-soft);
+
+  color: var(--cyan-text);
+}
+
+.icon--gold {
+  background: var(--gold-soft);
+
+  color: var(--gold-text);
+}
+
+/* =========================================================
+   CARD BODY
+========================================================= */
+
+.svc-item__body {
+  padding: 2.25rem 1.75rem 1.75rem;
+
+  padding-top: 2.5rem;
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
 }
 
 /* =========================================================
@@ -935,8 +1037,8 @@ const steps = [
     flex: 0 0 100%;
   }
 
-  .svc-item {
-    padding: 1.5rem;
+  .svc-item__body {
+    padding: 2.25rem 1.25rem 1.5rem;
   }
 
   .svc-item__btn {

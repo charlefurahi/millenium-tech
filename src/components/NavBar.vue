@@ -60,6 +60,26 @@
         </router-link>
       </nav>
 
+      <!-- Mobile inline navigation: first 3 links only.
+           Hidden on desktop by default; only shown at the
+           same breakpoint where `.navbar__links` (the full
+           desktop nav) hides itself. -->
+      <nav
+        class="navbar__links-mobile"
+        aria-label="Primary navigation (mobile)"
+      >
+        <router-link
+          v-for="link in mobileTopLinks"
+          :key="link.path"
+          :to="link.path"
+          class="navbar__link-mobile"
+          :class="{ active: isActive(link.path) }"
+          :aria-current="isActive(link.path) ? 'page' : undefined"
+        >
+          {{ link.label }}
+        </router-link>
+      </nav>
+
       <!-- Actions -->
       <div class="navbar__actions">
 
@@ -196,7 +216,7 @@
             aria-label="Mobile navigation"
           >
             <router-link
-              v-for="link in navLinks"
+              v-for="link in mobileSidebarLinks"
               :key="link.path"
               :to="link.path"
               class="navbar__mobile-link"
@@ -427,6 +447,19 @@ const navLinks = [
 ]
 
 /* --------------------------------------------------
+   Mobile link split
+   - First 3 links show inline in the mobile navbar
+     itself (Home / Services / About).
+   - The remaining links stay only in the mobile
+     sidebar/drawer (Portfolio / Contact).
+   - Desktop is untouched: it keeps using the full
+     `navLinks` list via `.navbar__links` as before.
+-------------------------------------------------- */
+
+const mobileTopLinks = navLinks.slice(0, 3)
+const mobileSidebarLinks = navLinks.slice(3)
+
+/* --------------------------------------------------
    Navigation state
 -------------------------------------------------- */
 
@@ -595,6 +628,13 @@ onUnmounted(() => {
   color: var(--text-primary);
 }
 
+/* Remove the default mobile tap-flash so our own
+   :active feedback states (below) read cleanly. */
+.navbar a,
+.navbar button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ==================================================
    SCROLLED NAVBAR
 ================================================== */
@@ -606,11 +646,15 @@ onUnmounted(() => {
 
   border-bottom: 1px solid var(--border-color);
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
 
+  /* Layered, semi-transparent elevation instead of a
+     single opaque shadow — softer and theme-agnostic,
+     so it reads correctly in both light and dark mode. */
   box-shadow:
-    0 10px 35px rgba(0, 0, 0, 0.12);
+    0 1px 0 rgba(2, 6, 23, 0.04),
+    0 12px 30px -10px rgba(2, 6, 23, 0.28);
 }
 
 /* ==================================================
@@ -667,41 +711,76 @@ onUnmounted(() => {
   text-decoration: none;
 
   flex-shrink: 0;
+
+  border-radius: 10px;
 }
 
+/* The logo artwork itself is white/light, so the chip
+   behind it can't track the page's surface color the way
+   it used to — on the light theme "surface-bg-soft" is
+   nearly white too, and the mark disappeared into it.
+   Instead the chip now uses a fixed dark, slightly
+   gradient background in BOTH themes, so there's always
+   guaranteed contrast behind the white artwork. Bumped up
+   a little (44px -> 50px) per request as well. */
 .navbar__logo-mark {
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
 
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  background: var(--surface-bg-soft);
-  border: 1px solid var(--border-color);
+  border-radius: 12px;
+
+  background: linear-gradient(
+    155deg,
+    var(--navy-900, #0f172a) 0%,
+    var(--navy-950, #020617) 100%
+  );
+
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 8px rgba(2, 6, 23, 0.35);
 
   transition:
     transform 0.35s var(--ease-out),
     opacity 0.3s ease,
-    background-color var(--transition-base),
+    box-shadow 0.3s ease,
     border-color var(--transition-base);
 }
 
 .navbar__logo:hover
 .navbar__logo-mark {
-  transform: translateY(-1px);
+  transform: translateY(-1px) scale(1.05);
+  border-color: rgba(34, 211, 238, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 16px rgba(2, 6, 23, 0.4);
 }
+
 /* Base styles scoped strictly to the logo class */
 .navbar__logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+
+  /* If logo.png has transparent padding baked into the
+     canvas, 100%/contain will faithfully render that empty
+     space too — no amount of width/height here can make the
+     drawn mark itself bigger than what's actually in the
+     file. This scale zooms past that padding; the chip has
+     overflow:hidden so the excess is cropped rather than
+     spilling out. Tune 1.35 up/down to taste, or better:
+     re-export logo.png cropped tight to the mark and drop
+     this back to scale(1). */
+  transform: scale(1.35);
+  transform-origin: center;
   /* Prevent browser-level rendering bleed */
   isolation: isolate;
   transition: filter 0.2s ease-in-out;
 }
-
-
 
 .navbar__logo-text {
   display: flex;
@@ -713,10 +792,13 @@ onUnmounted(() => {
 .navbar__logo-name {
   font-family: var(--font-display);
 
-  font-size: 1.08rem;
-  font-weight: ;
+  /* Fixed size — this had been set to grow with viewport
+     width, which reads as the logo visibly stretching/
+     enlarging rather than a stable wordmark. */
+  font-size: 1.05rem;
+  font-weight: 700;
 
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 
   color: var(--text-primary);
 }
@@ -762,28 +844,48 @@ onUnmounted(() => {
   color: var(--text-secondary);
 
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 600;
 
-  letter-spacing: 0.015em;
+  letter-spacing: 0.01em;
 
   text-decoration: none;
 
   transition:
     color 0.25s ease,
-    background-color 0.25s ease;
+    background-color 0.25s ease,
+    transform 0.25s var(--ease-out);
 }
 
+/* Hover now lifts slightly and previews the underline
+   indicator (see .navbar__link-dot below) instead of just
+   swapping to a flat background — makes hover feel like a
+   step toward "active" rather than a completely separate
+   visual language. */
 .navbar__link:hover {
   color: var(--text-primary);
   background: var(--surface-bg-soft);
+  transform: translateY(-1px);
 }
 
+.navbar__link:active {
+  transform: translateY(0);
+}
+
+/* Active state is color + underline only, no filled
+   pill — the pill made hover and active look like the
+   same treatment, which reads as templated. A thin
+   underline is a clearer, more deliberate "you are
+   here" signal. */
 .navbar__link.active {
   color: var(--text-primary);
 }
 
-/* Active indicator */
+/* Active indicator: a short underline bar instead of a
+   dot, positioned like a tab indicator. On hover it now
+   fades in at half-strength/width as a preview, then
+   snaps to full width + full opacity + brighter color
+   once the link is actually active. */
 
 .navbar__link-dot {
   position: absolute;
@@ -791,31 +893,100 @@ onUnmounted(() => {
   left: 50%;
   bottom: 3px;
 
-  width: 4px;
-  height: 4px;
+  width: 20px;
+  height: 2px;
 
-  border-radius: 50%;
+  border-radius: 2px;
 
   background: var(--cyan-400);
 
   transform:
     translateX(-50%)
-    scale(0);
+    scaleX(0);
 
   opacity: 0;
 
   transition:
     transform 0.25s var(--ease-out),
-    opacity 0.25s ease;
+    opacity 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.navbar__link:hover
+.navbar__link-dot {
+  transform:
+    translateX(-50%)
+    scaleX(0.55);
+
+  opacity: 0.45;
 }
 
 .navbar__link.active
 .navbar__link-dot {
   transform:
     translateX(-50%)
-    scale(1);
+    scaleX(1);
 
   opacity: 1;
+}
+
+.navbar__link.active:hover
+.navbar__link-dot {
+  opacity: 1;
+  transform:
+    translateX(-50%)
+    scaleX(1.08);
+}
+
+/* ==================================================
+   MOBILE INLINE NAVIGATION (Home / Services / About)
+
+   Hidden by default so desktop is completely unaffected —
+   only becomes visible inside the same max-width: 900px
+   breakpoint where `.navbar__links` (the full desktop nav)
+   is hidden, further down in this file.
+================================================== */
+
+.navbar__links-mobile {
+  display: none;
+  align-items: center;
+
+  gap: 0.1rem;
+}
+
+.navbar__link-mobile {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 36px;
+
+  padding: 0 0.55rem;
+
+  border-radius: 6px;
+
+  color: var(--text-secondary);
+
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+
+  letter-spacing: 0.01em;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.navbar__link-mobile:hover,
+.navbar__link-mobile.active {
+  color: var(--text-primary);
+}
+
+.navbar__link-mobile:active {
+  background: var(--surface-bg-soft);
 }
 
 /* ==================================================
@@ -881,9 +1052,8 @@ onUnmounted(() => {
   transform: translateY(-1px);
 }
 
-.navbar__theme-toggle:focus-visible {
-  outline: 2px solid var(--cyan-400);
-  outline-offset: 3px;
+.navbar__theme-toggle:active {
+  transform: translateY(0) scale(0.96);
 }
 
 .navbar__theme-icon {
@@ -905,15 +1075,19 @@ onUnmounted(() => {
 
   padding: 0.65rem 1.05rem;
 
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--navy-950);
   border-radius: 8px;
 
-  background: var(--surface-bg-soft);
+  /* Solid by default rather than the same neutral grey
+     as the theme toggle — this is the one control on the
+     bar meant to grab attention, so it shouldn't blend
+     in until hovered. */
+  background: var(--navy-950);
 
-  color: var(--text-primary);
+  color: #fff;
 
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
 
   text-decoration: none;
@@ -922,6 +1096,7 @@ onUnmounted(() => {
     background-color 0.25s ease,
     border-color 0.25s ease,
     color 0.25s ease,
+    box-shadow 0.25s ease,
     transform 0.25s var(--ease-out);
 }
 
@@ -931,7 +1106,14 @@ onUnmounted(() => {
 
   color: var(--navy-950);
 
+  box-shadow: 0 10px 24px -8px rgba(34, 211, 238, 0.55);
+
   transform: translateY(-1px);
+}
+
+.navbar__cta:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
 }
 
 .navbar__cta-icon {
@@ -951,8 +1133,8 @@ onUnmounted(() => {
 .navbar__burger {
   display: none;
 
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
 
   padding: 0;
 
@@ -973,13 +1155,18 @@ onUnmounted(() => {
 
   transition:
     background-color 0.25s ease,
-    border-color 0.25s ease;
+    border-color 0.25s ease,
+    transform 0.15s ease;
 }
 
 .navbar__burger:hover,
 .navbar__burger--open {
   background: var(--surface-bg-soft);
   border-color: var(--cyan-400);
+}
+
+.navbar__burger:active {
+  transform: scale(0.94);
 }
 
 .burger-line {
@@ -1046,13 +1233,11 @@ onUnmounted(() => {
   border-bottom:
     1px solid var(--border-color);
 
+  border-radius: 0 0 20px 20px;
+
   box-shadow:
-    0 25px 60px rgba(
-      0,
-      0,
-      0,
-      0.20
-    );
+    0 1px 0 rgba(2, 6, 23, 0.04),
+    0 25px 60px -12px rgba(2, 6, 23, 0.32);
 
   overscroll-behavior: contain;
 }
@@ -1120,12 +1305,15 @@ onUnmounted(() => {
   border-bottom:
     1px solid var(--border-soft);
 
+  border-radius: 8px;
+
   color: var(--text-secondary);
 
   text-decoration: none;
 
   transition:
     color 0.25s ease,
+    background-color 0.15s ease,
     padding-left 0.25s var(--ease-out);
 }
 
@@ -1136,6 +1324,10 @@ onUnmounted(() => {
 
 .navbar__mobile-link:hover {
   padding-left: 0.35rem;
+}
+
+.navbar__mobile-link:active {
+  background: var(--surface-bg-soft);
 }
 
 .mobile-link-num {
@@ -1203,13 +1395,18 @@ onUnmounted(() => {
   transition:
     background-color 0.25s ease,
     border-color 0.25s ease,
-    color 0.25s ease;
+    color 0.25s ease,
+    transform 0.15s ease;
 }
 
 .navbar__mobile-theme:hover {
   border-color: var(--cyan-400);
 
   color: var(--cyan-400);
+}
+
+.navbar__mobile-theme:active {
+  transform: scale(0.98);
 }
 
 .navbar__mobile-theme-left {
@@ -1271,6 +1468,8 @@ onUnmounted(() => {
 
   background: var(--text-primary);
 
+  box-shadow: 0 1px 3px rgba(2, 6, 23, 0.35);
+
   transform: translateX(0);
 
   transition:
@@ -1313,12 +1512,19 @@ onUnmounted(() => {
 
   transition:
     transform 0.25s var(--ease-out),
+    box-shadow 0.25s ease,
     filter 0.25s ease;
 }
 
 .navbar__mobile-cta:hover {
   transform: translateY(-2px);
   filter: brightness(1.05);
+  box-shadow: 0 12px 24px -8px rgba(34, 211, 238, 0.5);
+}
+
+.navbar__mobile-cta:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
 }
 
 /* ==================================================
@@ -1378,13 +1584,17 @@ onUnmounted(() => {
   position: fixed;
   inset: 0;
 
-  z-index: -1;
+  /* Was -1, which (with no positioned ancestor) sat the
+     backdrop BEHIND ordinary page content instead of
+     dimming it. 998 keeps it under the navbar/menu
+     (z-index 1000) but above everything else. */
+  z-index: 998;
 
   background:
-    rgba(2, 4, 20, 0.55);
+    rgba(2, 4, 20, 0.6);
 
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* ==================================================
@@ -1418,6 +1628,27 @@ onUnmounted(() => {
 }
 
 /* ==================================================
+   ACCESSIBILITY: KEYBOARD FOCUS
+
+   Every interactive element gets a consistent, visible
+   focus ring (not just the theme toggle, as before) —
+   this matters for anyone navigating with a keyboard.
+================================================== */
+
+.navbar__logo:focus-visible,
+.navbar__link:focus-visible,
+.navbar__link-mobile:focus-visible,
+.navbar__theme-toggle:focus-visible,
+.navbar__cta:focus-visible,
+.navbar__burger:focus-visible,
+.navbar__mobile-link:focus-visible,
+.navbar__mobile-theme:focus-visible,
+.navbar__mobile-cta:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 3px;
+}
+
+/* ==================================================
    RESPONSIVE
 ================================================== */
 
@@ -1435,21 +1666,16 @@ onUnmounted(() => {
     display: none;
   }
 
+  .navbar__links-mobile {
+    display: flex;
+  }
+
   .navbar__cta {
     display: none;
   }
 
   .navbar__burger {
     display: flex;
-  }
-
-  .navbar__logo-mark {
-    width: 44px;
-    height: 44px;
-  }
-
-  .navbar__logo-name {
-    font-size: 1rem;
   }
 
   .navbar__logo-sub {
@@ -1471,8 +1697,8 @@ onUnmounted(() => {
   }
 
   .navbar__logo-mark {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
   }
 
   .navbar__inner {
@@ -1487,9 +1713,18 @@ onUnmounted(() => {
     display: none;
   }
 
+  .navbar__links-mobile {
+    gap: 0;
+  }
+
+  .navbar__link-mobile {
+    padding: 0 0.4rem;
+    font-size: 0.78rem;
+  }
+
   .navbar__theme-toggle {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
 
     padding: 0;
   }

@@ -73,7 +73,16 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
+        "http://localhost:5173,http://127.0.0.1:5173,https://millenium-tech-ucqa.vercel.app",
+    ).split(",")
+    if origin.strip()
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGIN_REGEXES",
+        r"^https://millenium-tech-ucqa-[a-z0-9]+-charlefurahis-projects\.vercel\.app$",
     ).split(",")
     if origin.strip()
 ]

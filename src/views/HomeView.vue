@@ -392,7 +392,11 @@
             class="why-us__card glass-card"
           >
             <div class="why-us__feat-icon">
-              {{ feature.emoji }}
+              <img
+                :src="feature.icon"
+                :alt="feature.title"
+                loading="lazy"
+              />
             </div>
 
             <div>
@@ -471,6 +475,11 @@
 </template>
 
 <script setup lang="ts">
+import fastDeliveryIcon from '@/assets/fast-delivery.svg'
+import premiumQualityIcon from '@/assets/premium-quality.svg'
+import trustedSupportIcon from '@/assets/trusted-support.svg'
+import creativeSolutionsIcon from '@/assets/creative-solution.svg'
+
 const stats = [
   {
     num: '50+',
@@ -533,22 +542,22 @@ const whyPoints = [
 
 const features = [
   {
-    emoji: '🚀',
+    icon: fastDeliveryIcon,
     title: 'Fast Delivery',
     desc: 'We respect your deadlines every time.'
   },
   {
-    emoji: '💎',
+    icon: premiumQualityIcon,
     title: 'Premium Quality',
     desc: 'Every pixel and line of code is crafted carefully.'
   },
   {
-    emoji: '🤝',
+    icon: trustedSupportIcon,
     title: 'Trusted Support',
     desc: 'We are always a call away after launch.'
   },
   {
-    emoji: '💡',
+    icon: creativeSolutionsIcon,
     title: 'Creative Solutions',
     desc: 'Fresh ideas tailored to your exact needs.'
   }
@@ -1204,8 +1213,19 @@ const features = [
 }
 
 .why-us__feat-icon {
-  font-size: 1.6rem;
-  line-height: 1;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.why-us__feat-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .why-us__feat-title {

@@ -120,18 +120,6 @@
                 "
               >
                 <span>Get a Quote</span>
-
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
               </router-link>
             </div>
           </div>
@@ -144,8 +132,6 @@
     ====================================================== -->
 
     <section class="section process">
-      <div class="process__bg dot-pattern"></div>
-
       <div class="container">
         <div class="section-label">
           How We Work
@@ -158,16 +144,17 @@
 
         <div class="process__steps">
           <div
-            v-for="(step, i) in steps"
+            v-for="step in steps"
             :key="step.title"
             class="process__step"
           >
-            <div class="process__step-num">
-              {{ String(i + 1).padStart(2, '0') }}
-            </div>
 
-            <div class="process__step-icon">
-              {{ step.emoji }}
+            <div class="process__step-image">
+              <img
+                :src="step.image"
+                :alt="step.title"
+                loading="lazy"
+              />
             </div>
 
             <h3 class="process__step-title">
@@ -176,25 +163,7 @@
 
             <p class="process__step-desc">
               {{ step.desc }}
-            </p>
-
-            <div
-              v-if="i < steps.length - 1"
-              class="process__step-arrow"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </div>
-          </div>
+            </p></div>
         </div>
       </div>
     </section>
@@ -220,18 +189,6 @@
           class="btn btn-primary services-cta__button"
         >
           <span>Free Consultation</span>
-
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
         </router-link>
       </div>
     </section>
@@ -256,6 +213,11 @@ import repairImg from '@/assets/services/computer-repair.jpg'
 import photoImg from '@/assets/services/photo-editing.jpg'
 import onlineImg from '@/assets/services/online-services.jpg'
 import laptopImg from '@/assets/services/laptop-sales.jpg'
+
+import consultationImg from '@/assets/process/consultation.jpg'
+import planningImg from '@/assets/process/planning.jpg'
+import executionImg from '@/assets/process/execution.jpg'
+import deliveryImg from '@/assets/process/delivery.jpg'
 
 const services = [
   {
@@ -372,22 +334,22 @@ const services = [
 
 const steps = [
   {
-    emoji: '💬',
+    image: consultationImg,
     title: 'Consultation',
     desc: 'We discuss your needs and goals in detail.'
   },
   {
-    emoji: '📐',
+    image: planningImg,
     title: 'Planning',
     desc: 'We create a clear plan and timeline for your project.'
   },
   {
-    emoji: '⚙️',
+    image: executionImg,
     title: 'Execution',
     desc: 'Our team gets to work with full transparency.'
   },
   {
-    emoji: '🚀',
+    image: deliveryImg,
     title: 'Delivery',
     desc: 'You receive a polished result and ongoing support.'
   }
@@ -825,9 +787,7 @@ const steps = [
 
 .process {
   background: var(--bg-secondary);
-
   color: var(--text-primary);
-
   overflow: hidden;
 
   transition:
@@ -835,98 +795,58 @@ const steps = [
     color var(--transition-slow);
 }
 
-.process__bg {
-  position: absolute;
-
-  inset: 0;
-
-  opacity: 0.25;
-
-  z-index: -1;
-}
-
 .process__title {
-  margin-bottom: 3.5rem;
+  margin-bottom: 2.5rem;
 }
-
-/* =========================================================
-   PROCESS STEPS
-========================================================= */
 
 .process__steps {
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 0;
-
-  position: relative;
-
-  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .process__step {
-  flex: 1;
-
   text-align: center;
-
-  padding:
-    2.5rem 2rem;
-
-  position: relative;
+  padding: 1.25rem 1rem;
+  min-width: 0;
 }
 
-.process__step-num {
-  font-family: var(--font-display);
-
-  font-size: 0.7rem;
-
-  font-weight: 700;
-
-  letter-spacing: 0.15em;
-
-  color: var(--cyan-text);
-
-  margin-bottom: 1rem;
+.process__step-image {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.process__step-icon {
-  font-size: 2.4rem;
+.process__step-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform var(--transition-base);
+}
 
-  margin-bottom: 1rem;
+.process__step:hover .process__step-image img {
+  transform: translateY(-4px);
 }
 
 .process__step-title {
   font-family: var(--font-display);
-
   font-size: 1.1rem;
-
   font-weight: 700;
-
   color: var(--text-primary);
-
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .process__step-desc {
+  max-width: 220px;
+  margin: 0 auto;
   font-size: 0.875rem;
-
   color: var(--text-secondary);
-
-  line-height: 1.65;
-}
-
-.process__step-arrow {
-  position: absolute;
-
-  top:
-    calc(2.5rem + 3.4rem);
-
-  right: -12px;
-
-  color: var(--text-subtle);
-
-  z-index: 2;
+  line-height: 1.6;
 }
 
 /* =========================================================
@@ -1008,15 +928,7 @@ const steps = [
   }
 
   .process__steps {
-    flex-wrap: wrap;
-  }
-
-  .process__step {
-    flex: 0 0 50%;
-  }
-
-  .process__step-arrow {
-    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1033,8 +945,13 @@ const steps = [
     grid-template-columns: 1fr;
   }
 
-  .process__step {
-    flex: 0 0 100%;
+  .process__steps {
+    grid-template-columns: 1fr;
+  }
+
+  .process__step-image {
+    width: 120px;
+    height: 120px;
   }
 
   .svc-item__body {

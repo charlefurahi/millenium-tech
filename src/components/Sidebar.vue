@@ -1,6 +1,8 @@
 <template>
   <Teleport to="body">
-    <!-- Backdrop -->
+    <!-- =========================================================
+         BACKDROP
+         ========================================================= -->
     <Transition name="sidebar-backdrop">
       <div
         v-if="open"
@@ -10,41 +12,45 @@
       ></div>
     </Transition>
 
-    <!-- Sidebar -->
+    <!-- =========================================================
+         RIGHT SIDEBAR
+         ========================================================= -->
     <Transition name="sidebar">
       <aside
         v-if="open"
+        id="mobile-sidebar"
         class="sidebar"
         aria-label="Mobile navigation"
         @click.stop
       >
-        <!-- Header -->
-        <div class="sidebar__header">
+        <!-- =======================================================
+             HEADER
+             ======================================================= -->
+        <header class="sidebar__header">
           <router-link
             to="/"
             class="sidebar__brand"
-            aria-label="Millenium Tech - Home"
+            aria-label="Millenium Tech home"
             @click="close"
           >
-            <div class="sidebar__brand-mark">
+            <span class="sidebar__brand-mark">
               <img
                 src="@/assets/logo.png"
                 alt="Millenium Tech"
               />
-            </div>
+            </span>
 
-            <div class="sidebar__brand-text">
+            <span class="sidebar__brand-text">
               <span class="sidebar__brand-name">
-                Millenium<span>Tech</span>
+                Millenium <b>Tech</b>
               </span>
 
               <span class="sidebar__brand-sub">
                 IT Solutions Point
               </span>
-            </div>
+            </span>
           </router-link>
 
-          <!-- Close -->
           <button
             type="button"
             class="sidebar__close"
@@ -54,23 +60,24 @@
             <span></span>
             <span></span>
           </button>
-        </div>
+        </header>
 
-        <!-- Small label -->
-        <div class="sidebar__label">
-          <span>Navigation</span>
-          <i></i>
-        </div>
 
-        <!-- Navigation -->
-        <nav class="sidebar__nav">
+        <!-- =======================================================
+             NAVIGATION
+             ======================================================= -->
+        <nav
+          class="sidebar__nav"
+          aria-label="Primary navigation"
+        >
           <router-link
-            v-for="(link, index) in navLinks"
+            v-for="link in navLinks"
             :key="link.path"
             :to="link.path"
             class="sidebar__link"
-            :class="{ 'sidebar__link--active': isActive(link.path) }"
-            :style="{ '--i': index }"
+            :class="{
+              'sidebar__link--active': isActive(link.path)
+            }"
             :aria-current="
               isActive(link.path)
                 ? 'page'
@@ -78,46 +85,51 @@
             "
             @click="close"
           >
-            <span class="sidebar__number">
-              {{ link.num }}
+            <span class="sidebar__link-text">
+              {{ link.label }}
             </span>
 
-            <span class="sidebar__link-content">
-              <span class="sidebar__link-title">
-                {{ link.label }}
-              </span>
-
-              <span class="sidebar__link-description">
-                {{ link.description }}
-              </span>
-            </span>
+            <span
+              class="sidebar__link-indicator"
+              aria-hidden="true"
+            ></span>
           </router-link>
         </nav>
 
-        <!-- Bottom section -->
+
+        <!-- =======================================================
+             BOTTOM
+             ======================================================= -->
         <div class="sidebar__bottom">
+
           <!-- Theme -->
+
           <button
             type="button"
             class="sidebar__theme"
+            :aria-label="
+              theme === 'dark'
+                ? 'Switch to light mode'
+                : 'Switch to dark mode'
+            "
             @click="toggleTheme"
           >
-            <span class="sidebar__theme-left">
+            <span class="sidebar__theme-content">
               <span class="sidebar__theme-icon">
+
                 <!-- Sun -->
+
                 <svg
                   v-if="theme === 'dark'"
-                  width="18"
-                  height="18"
                   viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
                   aria-hidden="true"
                 >
-                  <circle cx="12" cy="12" r="4" />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="4"
+                  />
+
                   <path d="M12 2v2" />
                   <path d="M12 20v2" />
                   <path d="m4.93 4.93 1.42 1.42" />
@@ -129,16 +141,10 @@
                 </svg>
 
                 <!-- Moon -->
+
                 <svg
                   v-else
-                  width="18"
-                  height="18"
                   viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
                   aria-hidden="true"
                 >
                   <path
@@ -146,12 +152,14 @@
                     7 7 0 0 0 21 12.79Z"
                   />
                 </svg>
+
               </span>
 
-              <span>
-                {{ theme === 'dark'
-                  ? 'Light mode'
-                  : 'Dark mode'
+              <span class="sidebar__theme-label">
+                {{
+                  theme === 'dark'
+                    ? 'Light mode'
+                    : 'Dark mode'
                 }}
               </span>
             </span>
@@ -162,24 +170,38 @@
                 'sidebar__switch--light':
                   theme === 'light'
               }"
+              aria-hidden="true"
             >
               <span class="sidebar__switch-thumb"></span>
             </span>
           </button>
 
+
           <!-- CTA -->
+
           <router-link
             to="/contact"
             class="sidebar__cta"
             @click="close"
           >
-            <span>Let's talk</span>
+            <span>
+              Get a free consultation
+            </span>
+
+            <span
+              class="sidebar__cta-arrow"
+              aria-hidden="true"
+            >
+              →
+            </span>
           </router-link>
 
+
           <!-- Contact -->
+
           <div class="sidebar__contact">
             <span class="sidebar__contact-label">
-              Talk to us
+              Contact
             </span>
 
             <a href="tel:+255755794664">
@@ -191,25 +213,36 @@
             </a>
           </div>
 
+
+          <!-- Copyright -->
+
           <div class="sidebar__copyright">
-            © {{ new Date().getFullYear() }} Millenium Tech
+            © {{ currentYear }} Millenium Tech
           </div>
+
         </div>
       </aside>
     </Transition>
   </Teleport>
 </template>
 
+
 <script setup lang="ts">
 import {
   computed,
   onBeforeUnmount,
+  onMounted,
+  ref,
   watch
 } from 'vue'
 
 import { useRoute } from 'vue-router'
-
 import { useTheme } from '@/composables/useTheme'
+
+
+/* ===============================================================
+   PROPS / EVENTS
+   =============================================================== */
 
 const props = defineProps<{
   open: boolean
@@ -219,45 +252,59 @@ const emit = defineEmits<{
   close: []
 }>()
 
+
+/* ===============================================================
+   ROUTER
+   =============================================================== */
+
 const route = useRoute()
+
+
+/* ===============================================================
+   THEME
+   =============================================================== */
 
 const {
   theme,
   toggleTheme
 } = useTheme()
 
+
+/* ===============================================================
+   NAVIGATION
+   =============================================================== */
+
 const navLinks = [
   {
     path: '/',
-    label: 'Home',
-    num: '01',
-    description: 'Back to the homepage'
-  },
-  {
-    path: '/services',
-    label: 'Services',
-    num: '02',
-    description: 'What we do for businesses'
+    label: 'Home'
   },
   {
     path: '/about',
-    label: 'About',
-    num: '03',
-    description: 'Learn about our company'
+    label: 'About'
+  },
+  {
+    path: '/services',
+    label: 'Services'
+  },
+  {
+    path: '/solutions',
+    label: 'Solutions'
   },
   {
     path: '/portfolio',
-    label: 'Portfolio',
-    num: '04',
-    description: 'Explore our work'
+    label: 'Portfolio'
+  },
+  {
+    path: '/pricing',
+    label: 'Packages'
   },
   {
     path: '/contact',
-    label: 'Contact',
-    num: '05',
-    description: 'Start a conversation'
+    label: 'Contact'
   }
 ]
+
 
 const isActive = (path: string) => {
   if (path === '/') {
@@ -270,13 +317,31 @@ const isActive = (path: string) => {
   )
 }
 
+
+/* ===============================================================
+   CLOSE
+   =============================================================== */
+
 const close = () => {
   emit('close')
 }
 
-/*
- * Prevent the page behind the sidebar from scrolling.
- */
+
+/* ===============================================================
+   CURRENT YEAR
+   =============================================================== */
+
+const currentYear = computed(() => {
+  return new Date().getFullYear()
+})
+
+
+/* ===============================================================
+   BODY SCROLL LOCK
+   =============================================================== */
+
+const previousBodyOverflow = ref('')
+
 watch(
   () => props.open,
   (isOpen) => {
@@ -284,15 +349,26 @@ watch(
       return
     }
 
-    document.body.style.overflow =
-      isOpen ? 'hidden' : ''
+    if (isOpen) {
+      previousBodyOverflow.value =
+        document.body.style.overflow
+
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow =
+        previousBodyOverflow.value
+    }
   },
-  { immediate: true }
+  {
+    immediate: true
+  }
 )
 
-/*
- * Escape closes the sidebar.
- */
+
+/* ===============================================================
+   ESCAPE KEY
+   =============================================================== */
+
 const handleKeydown = (event: KeyboardEvent) => {
   if (
     event.key === 'Escape' &&
@@ -302,31 +378,38 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 }
 
-if (typeof window !== 'undefined') {
+
+/* ===============================================================
+   LIFECYCLE
+   =============================================================== */
+
+onMounted(() => {
   window.addEventListener(
     'keydown',
     handleKeydown
   )
-}
+})
+
 
 onBeforeUnmount(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener(
-      'keydown',
-      handleKeydown
-    )
-  }
+  window.removeEventListener(
+    'keydown',
+    handleKeydown
+  )
 
   if (typeof document !== 'undefined') {
-    document.body.style.overflow = ''
+    document.body.style.overflow =
+      previousBodyOverflow.value
   }
 })
 </script>
 
+
 <style scoped>
-/* =========================================================
+
+/* ================================================================
    BACKDROP
-========================================================= */
+   ================================================================ */
 
 .sidebar-backdrop {
   position: fixed;
@@ -335,99 +418,53 @@ onBeforeUnmount(() => {
   z-index: 1190;
 
   background:
-    rgba(2, 4, 20, 0.5);
+    rgba(2, 8, 18, 0.48);
 
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 
-/* =========================================================
+/* ================================================================
    SIDEBAR
-========================================================= */
+   ================================================================ */
 
 .sidebar {
   position: fixed;
 
-  top: 0.75rem;
-  right: 0.75rem;
-  bottom: 0.75rem;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
 
   z-index: 1200;
 
-  width: min(88vw, 400px);
+  width: 380px;
+  max-width: calc(100vw - 24px);
 
   display: flex;
   flex-direction: column;
 
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
 
   background: var(--surface-bg);
-
   color: var(--text-primary);
 
   border: 1px solid var(--border-color);
-  border-radius: 26px;
-
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-radius: 20px;
 
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    -24px 30px 90px rgba(0, 0, 0, 0.4);
+    -18px 20px 70px rgba(0, 0, 0, 0.24);
 
   isolation: isolate;
 }
 
 
-/* =========================================================
-   SUBTLE BACKGROUND
-========================================================= */
-
-.sidebar::before {
-  content: '';
-
-  position: absolute;
-  inset: 0;
-
-  z-index: -1;
-
-  pointer-events: none;
-
-  background:
-    radial-gradient(
-      620px circle at 100% 0%,
-      var(--cyan-soft),
-      transparent 48%
-    );
-}
-
-.sidebar::after {
-  content: '';
-
-  position: absolute;
-  inset: 0;
-
-  z-index: -1;
-
-  pointer-events: none;
-  border-radius: inherit;
-
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    transparent 18%
-  );
-}
-
-
-/* =========================================================
+/* ================================================================
    HEADER
-========================================================= */
+   ================================================================ */
 
 .sidebar__header {
-  min-height: 78px;
+  min-height: 76px;
 
   display: flex;
   align-items: center;
@@ -435,25 +472,37 @@ onBeforeUnmount(() => {
 
   gap: 1rem;
 
-  padding: 1.15rem 1.15rem 1rem;
+  padding: 0.9rem 1rem;
+
+  border-bottom:
+    1px solid var(--border-soft);
+
+  flex: 0 0 auto;
 }
 
 
-/* =========================================================
+/* ================================================================
    BRAND
-========================================================= */
+   ================================================================ */
 
 .sidebar__brand {
   display: flex;
   align-items: center;
 
-  gap: 0.65rem;
+  gap: 0.7rem;
 
   min-width: 0;
 
   color: var(--text-primary);
 
   text-decoration: none;
+
+  transition:
+    opacity 0.2s ease;
+}
+
+.sidebar__brand:hover {
+  opacity: 0.86;
 }
 
 .sidebar__brand-mark {
@@ -464,25 +513,22 @@ onBeforeUnmount(() => {
 
   display: grid;
   place-items: center;
-  border-radius: 11px;
-
-  background:
-    linear-gradient(
-      155deg,
-      var(--navy-900, #0f172a) 0%,
-      var(--navy-950, #020617) 100%
-    );
 
   overflow: hidden;
+
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+
+  background: #081322;
 }
 
 .sidebar__brand-mark img {
+  display: block;
+
   width: 100%;
   height: 100%;
 
   object-fit: contain;
-
-  transform: scale(1.3);
 }
 
 .sidebar__brand-text {
@@ -505,59 +551,71 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.sidebar__brand-name span {
+.sidebar__brand-name b {
   color: var(--cyan-text);
+
+  font-weight: 800;
 }
 
 .sidebar__brand-sub {
-  margin-top: 0.3rem;
+  margin-top: 5px;
 
   color: var(--text-muted);
 
-  font-size: 0.5rem;
-  font-weight: 600;
+  font-size: 0.53rem;
+  font-weight: 700;
 
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
 
   text-transform: uppercase;
 }
 
 
-/* =========================================================
+/* ================================================================
    CLOSE BUTTON
-========================================================= */
+   ================================================================ */
 
 .sidebar__close {
   position: relative;
 
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
 
-  flex: 0 0 38px;
+  flex: 0 0 40px;
 
   display: grid;
   place-items: center;
 
-  border: none;
-  border-radius: 50%;
+  padding: 0;
+
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
 
   background: var(--surface-bg-soft);
-
   color: var(--text-primary);
 
   cursor: pointer;
 
   transition:
-    background-color var(--transition-base),
-    color var(--transition-base),
-    transform var(--transition-base);
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .sidebar__close:hover {
-  background: var(--cyan-400);
-  color: var(--navy-950);
+  background: var(--cyan-soft);
 
-  transform: rotate(90deg);
+  border-color:
+    var(--cyan-text);
+
+  color: var(--cyan-text);
+
+  transform: translateY(-1px);
+}
+
+.sidebar__close:active {
+  transform: scale(0.95);
 }
 
 .sidebar__close span {
@@ -566,7 +624,7 @@ onBeforeUnmount(() => {
   width: 15px;
   height: 1.5px;
 
-  border-radius: 2px;
+  border-radius: 999px;
 
   background: currentColor;
 }
@@ -579,64 +637,39 @@ onBeforeUnmount(() => {
   transform: rotate(-45deg);
 }
 
-
-/* =========================================================
-   LABEL
-========================================================= */
-
-.sidebar__label {
-  display: flex;
-  align-items: center;
-
-  gap: 0.65rem;
-
-  padding: 0.6rem 1.25rem 0.9rem;
-
-  color: var(--text-subtle);
-
-  font-size: 0.62rem;
-  font-weight: 700;
-
-  letter-spacing: 0.16em;
-
-  text-transform: uppercase;
-}
-
-.sidebar__label i {
-  width: 20px;
-  height: 1px;
-
-  background: linear-gradient(
-    90deg,
-    var(--border-color),
-    transparent
-  );
+.sidebar__close:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 3px;
 }
 
 
-/* =========================================================
+/* ================================================================
    NAVIGATION
-========================================================= */
+   ================================================================ */
 
 .sidebar__nav {
+  flex: 1 1 auto;
+
+  min-height: 0;
+
   display: flex;
   flex-direction: column;
 
-  gap: 0.3rem;
+  overflow-y: auto;
 
-  padding: 0 0.85rem;
+  padding: 0.8rem;
+
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    var(--border-color)
+    transparent;
 }
 
 
-/* =========================================================
-   NAV LINK
-
-   Rounded, self-contained "tiles" instead of a bordered
-   list — each link floats on its own with generous
-   padding, no dividers, no arrow. Active state reads as
-   a soft filled pill with a small glowing dot rather than
-   a border accent.
-========================================================= */
+/* ================================================================
+   NAVIGATION LINK
+   ================================================================ */
 
 .sidebar__link {
   position: relative;
@@ -644,38 +677,29 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
 
-  gap: 0.85rem;
+  min-height: 52px;
 
-  min-height: 64px;
-
-  padding: 0.7rem 0.9rem;
+  padding: 0 0.9rem;
 
   color: var(--text-secondary);
 
   text-decoration: none;
 
-  border-radius: 16px;
-
-  opacity: 0;
-  transform: translateX(10px);
-
-  animation:
-    sidebar-link-in 0.4s var(--ease-out) forwards;
-
-  animation-delay:
-    calc(60ms * var(--i));
+  border-radius: 10px;
 
   transition:
     color 0.2s ease,
     background-color 0.2s ease,
-    transform 0.2s ease;
+    padding-left 0.2s ease;
 }
 
 .sidebar__link:hover {
   color: var(--text-primary);
-  background: var(--surface-bg-soft);
 
-  transform: translateX(2px);
+  background:
+    var(--surface-bg-soft);
+
+  padding-left: 1.05rem;
 }
 
 .sidebar__link--active {
@@ -683,137 +707,92 @@ onBeforeUnmount(() => {
 
   background:
     linear-gradient(
-      120deg,
-      var(--cyan-soft) 0%,
-      transparent 100%
+      90deg,
+      var(--cyan-soft),
+      transparent
     );
-
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
 }
 
-.sidebar__link--active::after {
+.sidebar__link--active::before {
   content: '';
 
   position: absolute;
 
-  right: 0.9rem;
-  top: 50%;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
 
-  width: 6px;
-  height: 6px;
+  width: 2px;
 
-  border-radius: 50%;
+  border-radius: 999px;
 
-  background: var(--cyan-400);
-  box-shadow: 0 0 0 4px var(--cyan-soft);
-
-  transform: translateY(-50%);
+  background:
+    var(--cyan-400);
 }
 
-.sidebar__link--active:hover {
-  transform: none;
-}
-
-
-/* =========================================================
-   NUMBER
-========================================================= */
-
-.sidebar__number {
-  flex: 0 0 auto;
-
-  display: grid;
-  place-items: center;
-
-  width: 30px;
-  height: 30px;
-
-  border-radius: 9px;
-
-  background: var(--surface-bg-soft);
-
-  color: var(--text-muted);
-
-  font-size: 0.62rem;
-  font-weight: 700;
-
-  letter-spacing: 0.04em;
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.sidebar__link--active .sidebar__number {
-  background: var(--cyan-400);
-  color: var(--navy-950);
-}
-
-
-/* =========================================================
-   LINK CONTENT
-========================================================= */
-
-.sidebar__link-content {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-}
-
-.sidebar__link-title {
+.sidebar__link-text {
   font-family: var(--font-display);
 
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: 0.94rem;
+  font-weight: 650;
 
-  line-height: 1.2;
-}
-
-.sidebar__link-description {
-  margin-top: 0.2rem;
-
-  color: var(--text-muted);
-
-  font-size: 0.72rem;
-
-  line-height: 1.4;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1;
 }
 
 
-/* =========================================================
-   LINK ENTRANCE ANIMATION
-========================================================= */
+/* ================================================================
+   LINK INDICATOR
+   ================================================================ */
 
-@keyframes sidebar-link-in {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.sidebar__link-indicator {
+  position: absolute;
+
+  right: 1rem;
+
+  width: 0;
+  height: 1px;
+
+  background:
+    var(--cyan-text);
+
+  opacity: 0;
+
+  transition:
+    width 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.sidebar__link:hover
+.sidebar__link-indicator,
+.sidebar__link--active
+.sidebar__link-indicator {
+  width: 14px;
+  opacity: 0.7;
 }
 
 
-/* =========================================================
+/* ================================================================
    BOTTOM
-========================================================= */
+   ================================================================ */
 
 .sidebar__bottom {
-  margin-top: auto;
+  flex: 0 0 auto;
 
-  padding: 1.25rem;
+  padding: 0.9rem 1rem 1rem;
+
+  border-top:
+    1px solid var(--border-soft);
 }
 
 
-/* =========================================================
-   THEME
-========================================================= */
+/* ================================================================
+   THEME BUTTON
+   ================================================================ */
 
 .sidebar__theme {
   width: 100%;
+
+  min-height: 48px;
 
   display: flex;
   align-items: center;
@@ -821,32 +800,36 @@ onBeforeUnmount(() => {
 
   gap: 1rem;
 
-  min-height: 52px;
+  padding: 0 0.8rem;
 
-  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
 
-  border: none;
-  border-radius: 14px;
-
-  background: var(--surface-bg-soft);
+  background: transparent;
 
   color: var(--text-primary);
 
-  font-family: var(--font-display);
-
-  font-size: 0.78rem;
-  font-weight: 700;
-
   cursor: pointer;
 
-  transition: background-color var(--transition-base);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .sidebar__theme:hover {
-  background: var(--cyan-soft);
+  background:
+    var(--surface-bg-soft);
+
+  border-color:
+    var(--cyan-text);
 }
 
-.sidebar__theme-left {
+.sidebar__theme:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 3px;
+}
+
+.sidebar__theme-content {
   display: flex;
   align-items: center;
 
@@ -854,42 +837,71 @@ onBeforeUnmount(() => {
 }
 
 .sidebar__theme-icon {
+  width: 28px;
+  height: 28px;
+
   display: grid;
   place-items: center;
 
-  width: 30px;
-  height: 30px;
+  border-radius: 8px;
 
-  border-radius: 50%;
+  background:
+    var(--surface-bg-soft);
 
-  background: rgba(34, 211, 238, 0.1);
-  color: var(--cyan-text);
+  color:
+    var(--cyan-text);
+}
+
+.sidebar__theme-icon svg {
+  width: 16px;
+  height: 16px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.8;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar__theme-label {
+  color: var(--text-secondary);
+
+  font-family: var(--font-display);
+
+  font-size: 0.78rem;
+  font-weight: 650;
 }
 
 
-/* =========================================================
-   SWITCH
-========================================================= */
+/* ================================================================
+   THEME SWITCH
+   ================================================================ */
 
 .sidebar__switch {
   position: relative;
 
-  width: 40px;
+  width: 38px;
   height: 22px;
 
-  flex: 0 0 40px;
+  flex: 0 0 38px;
 
   padding: 2px;
 
   border-radius: 999px;
 
-  background: var(--navy-700);
+  background:
+    var(--border-color);
 
-  transition: background-color var(--transition-base);
+  transition:
+    background-color 0.2s ease;
 }
 
 .sidebar__switch--light {
-  background: var(--cyan-600);
+  background:
+    var(--cyan-600);
 }
 
 .sidebar__switch-thumb {
@@ -900,100 +912,113 @@ onBeforeUnmount(() => {
 
   border-radius: 50%;
 
-  background: #ffffff;
+  background: #fff;
 
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.22);
 
   transform: translateX(0);
 
-  transition: transform var(--transition-base);
+  transition:
+    transform 0.2s ease;
 }
 
 .sidebar__switch--light
 .sidebar__switch-thumb {
-  transform: translateX(18px);
+  transform:
+    translateX(16px);
 }
 
 
-/* =========================================================
+/* ================================================================
    CTA
-========================================================= */
+   ================================================================ */
 
 .sidebar__cta {
   width: 100%;
 
+  min-height: 52px;
+
   display: flex;
   align-items: center;
-  justify-content: center;
-
-  min-height: 54px;
+  justify-content: space-between;
 
   margin-top: 0.6rem;
 
-  padding: 0.8rem 1.1rem;
+  padding: 0 1rem;
 
-  border: none;
-  border-radius: 14px;
+  border-radius: 10px;
 
-  background: linear-gradient(
-    135deg,
-    var(--cyan-400) 0%,
-    var(--cyan-300) 100%
-  );
+  background:
+    var(--cyan-400);
 
-  color: var(--navy-950);
+  color:
+    var(--navy-950);
 
   font-family: var(--font-display);
 
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 800;
-
-  letter-spacing: 0.01em;
 
   text-decoration: none;
 
   transition:
-    transform var(--transition-base),
-    box-shadow var(--transition-base),
-    filter var(--transition-base);
+    transform 0.2s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .sidebar__cta:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 
-  box-shadow: var(--shadow-cyan);
+  filter: brightness(1.04);
 
-  filter: brightness(1.03);
+  box-shadow:
+    0 8px 24px rgba(56, 221, 220, 0.2);
 }
 
 .sidebar__cta:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0);
+}
+
+.sidebar__cta-arrow {
+  font-size: 1.05rem;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.sidebar__cta:hover
+.sidebar__cta-arrow {
+  transform: translateX(3px);
 }
 
 
-/* =========================================================
+/* ================================================================
    CONTACT
-========================================================= */
+   ================================================================ */
 
 .sidebar__contact {
   display: flex;
   flex-direction: column;
 
-  gap: 0.3rem;
+  gap: 0.25rem;
 
-  margin-top: 1.2rem;
+  margin-top: 1rem;
 
-  padding-top: 1rem;
+  padding-top: 0.9rem;
 
-  border-top: 1px solid var(--border-soft);
+  border-top:
+    1px solid var(--border-soft);
 }
 
 .sidebar__contact-label {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
 
-  color: var(--text-subtle);
+  color:
+    var(--text-muted);
 
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
 
   letter-spacing: 0.13em;
@@ -1004,57 +1029,65 @@ onBeforeUnmount(() => {
 .sidebar__contact a {
   width: fit-content;
 
-  color: var(--text-secondary);
+  color:
+    var(--text-secondary);
 
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 
-  transition: color var(--transition-base);
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease;
 }
 
 .sidebar__contact a:hover {
-  color: var(--cyan-text);
+  color:
+    var(--cyan-text);
 }
 
 
-/* =========================================================
+/* ================================================================
    COPYRIGHT
-========================================================= */
+   ================================================================ */
 
 .sidebar__copyright {
-  margin-top: 1rem;
+  margin-top: 0.8rem;
 
-  color: var(--text-subtle);
+  color:
+    var(--text-muted);
 
-  font-size: 0.62rem;
+  font-size: 0.6rem;
 }
 
 
-/* =========================================================
-   SIDEBAR TRANSITION
-========================================================= */
+/* ================================================================
+   SIDEBAR ANIMATION
+   ================================================================ */
 
 .sidebar-enter-active,
 .sidebar-leave-active {
   transition:
-    transform 0.38s var(--ease-out),
-    opacity 0.28s ease;
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
 }
 
 .sidebar-enter-from,
 .sidebar-leave-to {
   opacity: 0;
 
-  transform: translateX(24px) scale(0.98);
+  transform:
+    translateX(calc(100% + 20px));
 }
 
 
-/* =========================================================
-   BACKDROP TRANSITION
-========================================================= */
+/* ================================================================
+   BACKDROP ANIMATION
+   ================================================================ */
 
 .sidebar-backdrop-enter-active,
 .sidebar-backdrop-leave-active {
-  transition: opacity 0.28s ease;
+  transition:
+    opacity 0.25s ease;
 }
 
 .sidebar-backdrop-enter-from,
@@ -1063,26 +1096,42 @@ onBeforeUnmount(() => {
 }
 
 
-/* =========================================================
-   MOBILE
-========================================================= */
+/* ================================================================
+   TABLET
+   ================================================================ */
 
-@media (max-width: 480px) {
+@media (max-width: 1099px) {
   .sidebar {
-    top: 0;
-    right: 0;
-    bottom: 0;
+    width: min(
+      390px,
+      calc(100vw - 24px)
+    );
+  }
+}
 
-    width: 100vw;
 
-    border-radius: 0;
-    border: none;
+/* ================================================================
+   MOBILE
+   ================================================================ */
+
+@media (max-width: 600px) {
+  .sidebar {
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    width: min(
+      350px,
+      calc(100vw - 16px)
+    );
+
+    border-radius: 18px;
   }
 
   .sidebar__header {
-    min-height: 74px;
+    min-height: 70px;
 
-    padding-inline: 1rem;
+    padding-inline: 0.9rem;
   }
 
   .sidebar__brand-mark {
@@ -1096,15 +1145,108 @@ onBeforeUnmount(() => {
     font-size: 0.95rem;
   }
 
+  .sidebar__nav {
+    padding: 0.7rem;
+  }
+
   .sidebar__link {
-    min-height: 62px;
+    min-height: 52px;
+  }
+
+  .sidebar__bottom {
+    padding:
+      0.8rem
+      0.9rem
+      0.9rem;
   }
 }
 
 
-/* =========================================================
+/* ================================================================
+   SMALL PHONES
+
+   Still a RIGHT SIDEBAR.
+   Never becomes full-screen.
+   ================================================================ */
+
+@media (max-width: 380px) {
+  .sidebar {
+    top: 6px;
+    right: 6px;
+    bottom: 6px;
+
+    width: calc(100vw - 12px);
+
+    max-width: 350px;
+
+    border-radius: 16px;
+  }
+
+  .sidebar__brand-sub {
+    display: none;
+  }
+
+  .sidebar__link {
+    min-height: 50px;
+  }
+
+  .sidebar__contact {
+    display: none;
+  }
+
+  .sidebar__copyright {
+    margin-top: 0.65rem;
+  }
+}
+
+
+/* ================================================================
+   LANDSCAPE / SHORT SCREENS
+
+   Keeps the sidebar usable without affecting the page.
+   ================================================================ */
+
+@media (max-height: 620px) {
+  .sidebar__header {
+    min-height: 64px;
+
+    padding-block: 0.65rem;
+  }
+
+  .sidebar__nav {
+    padding-block: 0.45rem;
+  }
+
+  .sidebar__link {
+    min-height: 46px;
+  }
+
+  .sidebar__bottom {
+    padding-block: 0.65rem;
+  }
+
+  .sidebar__theme {
+    min-height: 44px;
+  }
+
+  .sidebar__cta {
+    min-height: 46px;
+  }
+
+  .sidebar__contact {
+    margin-top: 0.7rem;
+    padding-top: 0.65rem;
+  }
+
+  .sidebar__copyright {
+    margin-top: 0.55rem;
+  }
+}
+
+
+/* ================================================================
    REDUCED MOTION
-========================================================= */
+   ================================================================ */
 
 @media (prefers-reduced-motion: reduce) {
   .sidebar,
@@ -1113,11 +1255,6 @@ onBeforeUnmount(() => {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
-
-  .sidebar__link {
-    opacity: 1;
-    transform: none;
-    animation: none;
-  }
 }
+
 </style>

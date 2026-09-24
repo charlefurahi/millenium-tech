@@ -1,102 +1,53 @@
-<template>
-  <div class="app-wrapper">
-    <!-- Navigation -->
-    <NavBar />
-
-    <!-- Main application content -->
-    <main class="app-main">
-      <router-view v-slot="{ Component, route }">
-        <transition name="page" mode="out-in">
-          <component
-            :is="Component"
-            :key="route.fullPath"
-          />
-        </transition>
-      </router-view>
-    </main>
-
-    <!-- Footer -->
-    <FooterSection />
-
-    <!-- Global floating assistant -->
-    <Chatbot />
-  </div>
-</template>
-
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import FooterSection from '@/components/FooterSection.vue'
-import Chatbot from '@/components/Chatbot/Chatbot.vue'
+import FloatingActions from '@/components/FloatingActions.vue'
+
+const route = useRoute()
+
+// Login, register, password and account pages use their own standalone
+// layout (AuthShell): no navbar, hero, footer columns or floating chat —
+// only a copyright line. Everything else gets the full site chrome.
+const isAuthLayout = computed(() => route.meta.layout === 'auth')
 </script>
 
-<style scoped>
-/* --------------------------------------------------
-   Application shell
--------------------------------------------------- */
+<template>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <NavBar v-if="!isAuthLayout" />
+  <main id="main-content" class="app-main" :class="{ 'app-main--auth': isAuthLayout }" tabindex="-1">
+    <router-view v-slot="{ Component, route: r }">
+      <transition name="page" mode="out-in">
+        <component :is="Component" :key="r.path" />
+      </transition>
+    </router-view>
+  </main>
+  <FooterSection v-if="!isAuthLayout" />
+  <FloatingActions v-if="!isAuthLayout" />
+</template>
 
-.app-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-
-  background: var(--bg-primary);
-
-  /*
-   * Prevent small horizontal shifts caused by
-   * overflowing elements on individual pages.
-   */
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* --------------------------------------------------
-   Main content
--------------------------------------------------- */
-
+<style>
 .app-main {
-  flex: 1;
-  position: relative;
-  width: 100%;
-  min-width: 0;
+  min-height: 60vh;
+  outline: none;
   overflow-x: clip;
 }
-
-/* --------------------------------------------------
-   Page transition
-   Subtle rather than exaggerated.
--------------------------------------------------- */
-
-.page-enter-active,
-.page-leave-active {
-  transition:
-    opacity 220ms ease,
-    transform 220ms ease;
+.app-main--auth {
+  min-height: 100dvh;
 }
-
-.page-enter-from {
-  opacity: 0;
-  transform: translateY(6px);
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-s);
+  background: #fff;
+  color: var(--navy-900);
+  font-weight: 700;
 }
-
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-/* --------------------------------------------------
-   Accessibility
--------------------------------------------------- */
-
-@media (prefers-reduced-motion: reduce) {
-  .page-enter-active,
-  .page-leave-active {
-    transition: opacity 120ms ease;
-  }
-
-  .page-enter-from,
-  .page-leave-to {
-    transform: none;
-  }
+.skip-link:focus {
+  top: 0.75rem;
 }
 </style>

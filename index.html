@@ -2,16 +2,52 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/src/assets/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Millenium Tech – IT Solutions Point. Web development, graphics design, computer repair & more in Tanzania." />
-    <title>Millenium Tech | IT Solutions Point</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#071b3a" />
+
+    <title>Millenium Tech | Websites, Design & IT Solutions in Tanzania</title>
+    <meta
+      name="description"
+      content="Millenium Tech builds websites, digital brands and practical technology solutions for businesses in Tanzania — plus computer repair, laptop sales, photo editing and online services."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Millenium Tech" />
+    <meta property="og:title" content="Millenium Tech | Websites, Design & IT Solutions in Tanzania" />
+    <meta
+      property="og:description"
+      content="Millenium Tech builds websites, digital brands and practical technology solutions for businesses in Tanzania."
+    />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Millenium Tech | Websites, Design & IT Solutions in Tanzania" />
+    <meta
+      name="twitter:description"
+      content="Millenium Tech builds websites, digital brands and practical technology solutions for businesses in Tanzania."
+    />
+    <meta name="twitter:image" content="/og-image.jpg" />
+
+    <!-- Apply the saved/system theme before first paint, so there's no flash
+         of the wrong colours. Mirrors the logic in src/utils/theme.ts. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('mt-theme');
+          var theme = saved === 'light' || saved === 'dark' ? saved : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
-  <body>
+  <body class="hex-bg">
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Modern polish layer — loaded last, so it refines the base design system
+   without rewriting it. Safe to tweak or delete section by section.
+   Selectors are prefixed with `body` where they must beat scoped component CSS.
+   ========================================================================== */
+
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ring: 0 0 0 4px rgba(17, 118, 212, 0.2);
+}
+
+/* ---- Page feel ---- */
+html {
+  scrollbar-gutter: stable;
+}
+::selection {
+  background: rgba(17, 118, 212, 0.25);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p,
+li {
+  text-wrap: pretty;
+}
+
+/* ---- Focus: one clear, consistent ring everywhere ---- */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  box-shadow: var(--ring);
+}
+
+/* ---- Buttons: tactile, with press feedback ---- */
+body .btn {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.14) inset, 0 6px 16px -10px rgba(7, 27, 58, 0.55);
+  transition:
+    background-color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+body .btn:hover {
+  transform: translateY(-2px);
+}
+body .btn:active {
+  transform: translateY(0) scale(0.985);
+}
+body .btn--secondary,
+body .btn--outline {
+  box-shadow: none;
+}
+body .btn[disabled],
+body .btn[aria-disabled='true'] {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---- Cards: soft depth, clearer hover ---- */
+body .card {
+  border-radius: var(--radius-l);
+}
+body .card--hover:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--blue-500) 45%, var(--line));
+  box-shadow: 0 22px 44px -22px rgba(7, 27, 58, 0.35);
+}
+
+/* ---- Header: frosted glass once you scroll ---- */
+body .site-header.is-scrolled {
+  background: rgba(8, 19, 34, 0.8);
+  -webkit-backdrop-filter: saturate(170%) blur(16px);
+  backdrop-filter: saturate(170%) blur(16px);
+}
+
+/* ---- Hero headline accent: brand gradient ---- */
+.hero h1 .hero__accent {
+  background: linear-gradient(92deg, var(--aqua-300), var(--blue-500) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ---- Media: consistent rounded, no layout jump ---- */
+main img {
+  border-radius: inherit;
+}
+
+/* ---- Section rhythm on small screens ---- */
+@media (max-width: 599px) {
+  :root {
+    --section-y: clamp(2.75rem, 11vw, 3.75rem);
+  }
+  body .btn--lg {
+    width: 100%;
+  }
+}
+
+/* ---- Badges / eyebrow: slightly more refined ---- */
+body .badge {
+  letter-spacing: 0.02em;
+}
+
+/* ---- Better link underlines inside long-form text ---- */
+main p a:not(.btn) {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* ---- Respect users who prefer less motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  body .btn:hover,
+  body .card--hover:hover {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+
+/* ==========================================================================
+   COLOUR SYSTEM v2 — bright, useful gradients instead of very dark navy
+   Inspired by modern healthcare/enterprise sites: light airy heroes on inner
+   pages, one vivid brand gradient for feature bands, white cards.
+   ========================================================================== */
+:root {
+  /* Vivid brand gradient (white text on it stays >= 4.5:1 on the left/centre) */
+  --grad-brand: radial-gradient(38rem 20rem at 92% -8%, rgba(95, 216, 238, 0.42), transparent 62%),
+    radial-gradient(28rem 18rem at -4% 110%, rgba(255, 255, 255, 0.12), transparent 60%),
+    linear-gradient(128deg, #0b62b6 0%, #1176d4 52%, #0e8fc6 100%);
+
+  /* Light hero: sky tint at the top fading to white, with a soft aqua glow */
+  --grad-hero-soft: radial-gradient(48rem 22rem at 92% -20%, rgba(22, 191, 224, 0.3), transparent 62%),
+    radial-gradient(38rem 20rem at 0% 0%, rgba(17, 118, 212, 0.14), transparent 60%),
+    linear-gradient(180deg, #e9f4fd 0%, #f7fbff 70%, #ffffff 100%);
+
+  /* Alternating section wash so long pages don't feel flat */
+  --grad-section: linear-gradient(180deg, #f3f9ff 0%, #e9f3fc 100%);
+
+  /* Highlight strip used on card hover */
+  --grad-accent: linear-gradient(90deg, var(--blue-600), var(--aqua-400));
+}
+[data-theme='dark'] {
+  --grad-brand: radial-gradient(38rem 20rem at 92% -8%, rgba(95, 216, 238, 0.28), transparent 62%),
+    linear-gradient(128deg, #0a4f96 0%, #0d63b3 55%, #0b7aa8 100%);
+  --grad-hero-soft: radial-gradient(48rem 22rem at 92% -20%, rgba(22, 191, 224, 0.22), transparent 62%),
+    linear-gradient(180deg, #0f2d52 0%, #0a1c33 100%);
+  --grad-section: linear-gradient(180deg, #0a1c33 0%, #0c2340 100%);
+}
+
+/* Every "brand surface" (home hero, CTA band, featured pricing, chat header,
+   contact card…) now uses the bright gradient instead of flat dark navy. */
+body .brand-surface {
+  background-color: var(--blue-700);
+  background-image: var(--grad-brand);
+}
+/* Feature sections that used a translucent navy wash */
+body .section--dark:not(.brand-surface) {
+  background-color: var(--blue-700);
+  background-image: var(--grad-brand);
+  color: #fff;
+}
+body .section--alt {
+  background-color: transparent;
+  background-image: var(--grad-section);
+}
+
+/* White button on the vivid gradient reads far better than aqua-on-blue */
+body .brand-surface .btn--accent,
+body .section--dark .btn--accent {
+  background: #fff;
+  color: var(--blue-700);
+}
+body .brand-surface .btn--accent:hover,
+body .section--dark .btn--accent:hover {
+  background: var(--aqua-100);
+}
+
+/* Cards: white, airy, with a gradient accent line that appears on hover */
+body .card--hover,
+body .card {
+  overflow: hidden;
+}
+body .card--hover::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--grad-accent);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out);
+}
+body .card--hover:hover::after {
+  opacity: 1;
+}
+
+/* ---- Follow-up fixes for the bright colour system ---- */
+/* Drop the old dark-mode grid overlay on the vivid hero — it read as stripes */
+body .hero.brand-surface::before {
+  background-image: radial-gradient(60% 80% at 100% 0%, rgba(255, 255, 255, 0.14), transparent 60%);
+}
+/* Text accents that were tuned for navy now need white-based tones */
+body .brand-surface .eyebrow,
+body .section--dark .eyebrow {
+  color: rgba(255, 255, 255, 0.92);
+}
+body .brand-surface .eyebrow::before,
+body .section--dark .eyebrow::before {
+  background: rgba(255, 255, 255, 0.7);
+}
+body .hero h1 .hero__accent {
+  background: linear-gradient(92deg, #ffffff 0%, #c8f2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+body .hero .hero__trust svg,
+body .section--dark .steps__no {
+  color: #fff;
+}
+
+/* Header + footer: rich brand blue instead of near-black navy */
+body .site-header {
+  background: linear-gradient(90deg, #0a4f96 0%, #0d63b3 60%, #0b7bb0 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+body .site-header.is-scrolled {
+  background: linear-gradient(90deg, rgba(10, 79, 150, 0.88), rgba(13, 99, 179, 0.88) 60%, rgba(11, 123, 176, 0.88));
+  box-shadow: 0 10px 30px -18px rgba(7, 40, 90, 0.7);
+}
+body .site-footer {
+  background: linear-gradient(180deg, #0c5aa8 0%, #0a4885 100%);
+}
+
+/* The legacy .hex-bg class sets a 48px background-size that tiled the new
+   gradients into blocks — force gradients to stretch over the whole surface. */
+body .brand-surface,
+body .section--dark:not(.brand-surface),
+body .section--alt {
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+/* beat the scoped header rule (attribute selector) */
+body header.site-header {
+  background: linear-gradient(90deg, #0a4f96 0%, #0d63b3 60%, #0b7bb0 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+body header.site-header.is-scrolled {
+  background: linear-gradient(90deg, rgba(10, 79, 150, 0.88), rgba(13, 99, 179, 0.88) 60%, rgba(11, 123, 176, 0.88));
+}
+body footer.site-footer {
+  background: linear-gradient(180deg, #0c5aa8 0%, #0a4885 100%);
+}
+
+/* Specificity note: type selectors (body, header) never outrank a scoped
+   `.class[data-v-…]` rule, so the header/footer overrides repeat the class. */
+.site-header.site-header {
+  background: linear-gradient(90deg, #0a4f96 0%, #0d63b3 60%, #0b7bb0 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+.site-header.site-header.is-scrolled {
+  background: linear-gradient(90deg, rgba(10, 79, 150, 0.9), rgba(13, 99, 179, 0.9) 60%, rgba(11, 123, 176, 0.9));
+  -webkit-backdrop-filter: saturate(170%) blur(16px);
+  backdrop-filter: saturate(170%) blur(16px);
+  box-shadow: 0 10px 30px -18px rgba(7, 40, 90, 0.7);
+}
+.site-footer.site-footer {
+  background: linear-gradient(180deg, #0c5aa8 0%, #0a4885 100%);
+}
+.fab-stack .fab--chat.brand-surface {
+  background: var(--grad-brand);
+}

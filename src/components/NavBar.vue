@@ -1,609 +1,322 @@
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import Icon from '@/components/ui/Icon.vue'
+import { useRoute, useRouter } from 'vue-router'
+import ThemeToggle from '@/components/ui/ThemeToggle.vue'
+import monogram from '@/assets/img/monogram-white.png'
+import { site, waLink, telLink } from '@/config/site'
+import { useAuth } from '@/composables/useAuth'
+
+const route = useRoute()
+const router = useRouter()
+const { state: auth, logout } = useAuth()
+
+async function handleLogout() {
+  await logout()
+  router.push('/')
+}
+
+const open = ref(false)
+const scrolled = ref(false)
+
+const links = [
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
+  { to: '/services', label: 'Services' },
+  { to: '/solutions', label: 'Solutions' },
+  { to: '/portfolio', label: 'Portfolio' },
+  { to: '/pricing', label: 'Packages' },
+  { to: '/contact', label: 'Contact' }
+]
+
+const isActive = (to: string) =>
+  to === '/'
+    ? route.path === '/'
+    : route.path === to || route.path.startsWith(to + '/')
+
+const close = () => {
+  open.value = false
+}
+
+const onKey = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    close()
+  }
+}
+
+const onScroll = () => {
+  scrolled.value = window.scrollY > 8
+}
+
+watch(open, (v) => {
+  document.body.classList.toggle('menu-open', v)
+})
+
+watch(
+  () => route.fullPath,
+  close
+)
+
+onMounted(() => {
+  window.addEventListener('keydown', onKey)
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  onScroll()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKey)
+  window.removeEventListener('scroll', onScroll)
+
+  document.body.classList.remove('menu-open')
+})
+</script>
+
 <template>
   <header
-    class="navbar"
-    :class="{
-      'navbar--scrolled': scrolled,
-      'navbar--open': menuOpen
-    }"
+    class="site-header"
+    :class="{ 'is-scrolled': scrolled }"
   >
-    <!-- Accessibility -->
-    <a href="#main-content" class="navbar__skip-link">
-      Skip to content
-    </a>
+    <div class="container header__inner">
 
-    <div class="container navbar__inner">
-
-      <!-- Logo -->
+      <!-- Brand -->
       <router-link
         to="/"
-        class="navbar__logo"
-        aria-label="Millenium Tech - Home"
-        @click="closeMenu"
+        class="brand"
+        aria-label="Millenium Tech — home"
       >
-        <span class="navbar__logo-mark">
+        <span class="brand__logo-wrap">
           <img
-            src="@/assets/logo.png"
-            alt="Millenium Tech"
-            class="navbar__logo-img"
+            :src="monogram"
+            alt=""
+            width="44"
+            height="30"
           />
         </span>
 
-        <span class="navbar__logo-text">
-          <span class="navbar__logo-name">
-            Millenium<span class="text-cyan">Tech</span>
+        <span class="brand__text">
+          <span class="brand__name">
+            Millenium <b>Tech</b>
           </span>
 
-          <span class="navbar__logo-sub">
-            IT Solutions Point
+          <span class="brand__tag">
+            {{ site.tagline }}
           </span>
         </span>
       </router-link>
 
-      <!-- Desktop Navigation -->
+
+      <!-- Navigation -->
       <nav
-        class="navbar__links"
-        aria-label="Primary navigation"
+        id="primary-nav"
+        class="nav"
+        :class="{ 'is-open': open }"
+        aria-label="Primary"
       >
-        <router-link
-          v-for="link in navLinks"
-          :key="link.path"
-          :to="link.path"
-          class="navbar__link"
-          :class="{ active: isActive(link.path) }"
-          :aria-current="isActive(link.path) ? 'page' : undefined"
-        >
-          <span>{{ link.label }}</span>
-          <span
-            class="navbar__link-dot"
-            aria-hidden="true"
-          ></span>
-        </router-link>
-      </nav>
 
-      <!-- Actions -->
-      <div class="navbar__actions">
-
-        <!-- Theme Toggle -->
-        <button
-          type="button"
-          class="navbar__theme-toggle"
-          :aria-label="
-            theme === 'dark'
-              ? 'Switch to light mode'
-              : 'Switch to dark mode'
-          "
-          :title="
-            theme === 'dark'
-              ? 'Switch to light mode'
-              : 'Switch to dark mode'
-          "
-          @click="toggleTheme"
-        >
-          <!-- Sun -->
-          <svg
-            v-if="theme === 'dark'"
-            class="navbar__theme-icon"
-            width="17"
-            height="17"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2" />
-            <path d="M12 20v2" />
-            <path d="m4.93 4.93 1.42 1.42" />
-            <path d="m17.66 17.66 1.41 1.41" />
-            <path d="M2 12h2" />
-            <path d="M20 12h2" />
-            <path d="m6.34 17.66-1.41 1.41" />
-            <path d="m19.07 4.93-1.41 1.41" />
-          </svg>
-
-          <!-- Moon -->
-          <svg
-            v-else
-            class="navbar__theme-icon"
-            width="17"
-            height="17"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path
-              d="M21 12.79A9 9 0 1 1 11.21 3
-              7 7 0 0 0 21 12.79Z"
-            />
-          </svg>
-
-          <span class="navbar__theme-label">
-            {{ theme === 'dark' ? 'Light' : 'Dark' }}
-          </span>
-        </button>
-
-        <!-- Desktop CTA -->
-        <router-link
-          to="/contact"
-          class="navbar__cta"
-          @click="closeMenu"
-        >
-          <span>Let's talk</span>
-
-          <svg
-            class="navbar__cta-icon"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </router-link>
-
-        <!-- Mobile menu button -->
-        <button
-          type="button"
-          class="navbar__burger"
-          :class="{ 'navbar__burger--open': menuOpen }"
-          :aria-expanded="menuOpen"
-          aria-controls="mobile-navigation"
-          :aria-label="
-            menuOpen
-              ? 'Close navigation menu'
-              : 'Open navigation menu'
-          "
-          @click="toggleMenu"
-        >
-          <span class="burger-line"></span>
-          <span class="burger-line"></span>
-          <span class="burger-line"></span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Navigation -->
-    <Transition name="mobile-menu">
-      <div
-        v-if="menuOpen"
-        id="mobile-navigation"
-        class="navbar__mobile"
-      >
-        <div class="navbar__mobile-inner">
-
-          <!-- Mobile heading -->
-          <div class="navbar__mobile-heading">
-            <span>Navigation</span>
-            <span class="navbar__mobile-line"></span>
-          </div>
-
-          <!-- Mobile links -->
-          <nav
-            class="navbar__mobile-links"
-            aria-label="Mobile navigation"
+        <ul class="nav__list">
+          <li
+            v-for="l in links"
+            :key="l.to"
+            class="nav__item"
           >
             <router-link
-              v-for="(link, index) in navLinks"
-              :key="link.path"
-              :to="link.path"
-              class="navbar__mobile-link"
-              :class="{ active: isActive(link.path) }"
-              :style="{ '--i': index }"
+              :to="l.to"
+              class="nav__link"
+              :class="{ 'is-active': isActive(l.to) }"
               :aria-current="
-                isActive(link.path)
+                isActive(l.to)
                   ? 'page'
                   : undefined
               "
-              @click="closeMenu"
             >
-              <span class="mobile-link-num">
-                {{ link.num }}
-              </span>
-
-              <span class="mobile-link-label">
-                {{ link.label }}
+              <span class="nav__link-text">
+                {{ l.label }}
               </span>
             </router-link>
-          </nav>
+          </li>
+        </ul>
 
-          <!-- Mobile Theme Toggle -->
-          <button
-            type="button"
-            class="navbar__mobile-theme"
-            @click="toggleTheme"
-          >
-            <span class="navbar__mobile-theme-left">
 
-              <span class="navbar__mobile-theme-icon">
+        <!-- Desktop CTA -->
+        <div class="nav__cta">
 
-                <!-- Sun -->
-                <svg
-                  v-if="theme === 'dark'"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2" />
-                  <path d="M12 20v2" />
-                  <path d="m4.93 4.93 1.42 1.42" />
-                  <path d="m17.66 17.66 1.41 1.41" />
-                  <path d="M2 12h2" />
-                  <path d="M20 12h2" />
-                  <path d="m6.34 17.66-1.41 1.41" />
-                  <path d="m19.07 4.93-1.41 1.41" />
-                </svg>
+          <ThemeToggle
+            class="nav__theme nav__theme--desktop"
+          />
 
-                <!-- Moon -->
-                <svg
-                  v-else
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M21 12.79A9 9 0 1 1 11.21 3
-                    7 7 0 0 0 21 12.79Z"
-                  />
-                </svg>
-
-              </span>
-
-              <span>
-                {{ theme === 'dark'
-                  ? 'Light mode'
-                  : 'Dark mode'
-                }}
-              </span>
-            </span>
-
-            <span
-              class="navbar__theme-switch"
-              :class="{
-                'navbar__theme-switch--light':
-                  theme === 'light'
-              }"
-              aria-hidden="true"
-            >
-              <span class="navbar__theme-switch-thumb"></span>
-            </span>
-          </button>
-
-          <!-- Mobile CTA -->
           <router-link
-            to="/contact"
-            class="navbar__mobile-cta"
-            @click="closeMenu"
+            v-if="auth.user"
+            class="btn btn--outline btn--sm nav__auth"
+            to="/account"
           >
-            <span>Start a conversation</span>
+            {{ auth.user.name }}
+          </router-link>
+          <router-link
+            v-else
+            class="btn btn--outline btn--sm nav__auth"
+            to="/login"
+          >
+            Log in
           </router-link>
 
-          <!-- Contact information -->
-          <div class="navbar__mobile-footer">
-            <span class="navbar__mobile-footer-label">
-              Talk to us
+          <router-link
+            class="btn btn--accent btn--sm nav__consultation"
+            to="/contact"
+            data-track="cta_click"
+            data-track-label="nav_consultation"
+          >
+            <span>Get a free consultation</span>
+
+            <span class="nav__cta-arrow" aria-hidden="true">
+              →
             </span>
-
-            <div class="navbar__mobile-contacts">
-              <a href="tel:+255755794664">
-                +255 755 794 664
-              </a>
-
-              <a href="tel:+255616533644">
-                +255 616 533 644
-              </a>
-            </div>
-          </div>
+          </router-link>
 
         </div>
+
+
+        <!-- Mobile actions -->
+        <div class="nav__quick">
+
+          <template v-if="auth.user">
+            <router-link class="btn btn--outline nav__action" to="/account">
+              <span>{{ auth.user.name }}</span>
+            </router-link>
+            <button class="btn btn--outline nav__action" type="button" @click="handleLogout">
+              <span>Log out</span>
+            </button>
+          </template>
+          <router-link v-else class="btn btn--outline nav__action" to="/login">
+            <span>Log in</span>
+          </router-link>
+
+          <a
+            class="btn btn--wa nav__action"
+            :href="waLink()"
+            target="_blank"
+            rel="noopener"
+            data-track="whatsapp_click"
+            data-track-label="nav_drawer"
+          >
+            <Icon
+              name="whatsapp"
+              :size="18"
+            />
+
+            <span>WhatsApp</span>
+          </a>
+
+
+          <a
+            class="btn btn--outline nav__action"
+            :href="telLink(site.phones[0].tel)"
+            data-track="call_click"
+            data-track-label="nav_drawer"
+          >
+            <Icon
+              name="phone"
+              :size="18"
+            />
+
+            <span>Call us</span>
+          </a>
+
+        </div>
+
+      </nav>
+
+
+      <!-- Header actions: theme toggle stays visible next to the
+           hamburger at all times, instead of being hidden inside
+           the drawer until it's opened. -->
+      <div class="header__actions">
+
+        <ThemeToggle class="nav__theme nav__theme--header" />
+
+        <!-- Mobile menu -->
+        <button
+          class="menu-btn"
+          type="button"
+          :aria-expanded="open"
+          aria-controls="primary-nav"
+          :aria-label="
+            open
+              ? 'Close menu'
+              : 'Open menu'
+          "
+          @click="open = !open"
+        >
+          <span class="menu-btn__icon">
+            <Icon
+              :name="open ? 'x' : 'menu'"
+              :size="24"
+            />
+          </span>
+        </button>
+
       </div>
-    </Transition>
+
+    </div>
   </header>
-
-  <!-- Mobile backdrop -->
-
-  <Transition name="backdrop">
-    <div
-      v-if="menuOpen"
-      class="navbar__backdrop"
-      aria-hidden="true"
-      @click="closeMenu"
-    ></div>
-  </Transition>
 </template>
 
-<script setup lang="ts">
-import {
-  onMounted,
-  onUnmounted,
-  watch
-} from 'vue'
-
-import { useRoute } from 'vue-router'
-import { ref } from 'vue'
-import { useTheme } from '@/composables/useTheme'
-
-const route = useRoute()
-
-const scrolled = ref(false)
-const menuOpen = ref(false)
-
-/* --------------------------------------------------
-   Theme
-
-   Uses the shared composable (single source of truth,
-   see src/composables/useTheme.ts) instead of keeping
-   its own local copy — this is what actually makes the
-   toggle affect the whole app, not just this component.
--------------------------------------------------- */
-
-const { theme, toggleTheme, initTheme } = useTheme()
-
-/* --------------------------------------------------
-   Navigation
-
-   Standard pattern: desktop shows the full list inline,
-   mobile shows the full list inside the hamburger
-   drawer. No partial/inline split on mobile — one
-   source of truth for both breakpoints.
--------------------------------------------------- */
-
-const navLinks = [
-  {
-    path: '/',
-    label: 'Home',
-    num: '01'
-  },
-  {
-    path: '/services',
-    label: 'Services',
-    num: '02'
-  },
-  {
-    path: '/about',
-    label: 'About',
-    num: '03'
-  },
-  {
-    path: '/portfolio',
-    label: 'Portfolio',
-    num: '04'
-  },
-  {
-    path: '/contact',
-    label: 'Contact',
-    num: '05'
-  }
-]
-
-/* --------------------------------------------------
-   Navigation state
--------------------------------------------------- */
-
-const isActive = (path: string) => {
-  if (path === '/') {
-    return route.path === '/'
-  }
-
-  return (
-    route.path === path ||
-    route.path.startsWith(`${path}/`)
-  )
-}
-
-/* --------------------------------------------------
-   Mobile menu
--------------------------------------------------- */
-
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value
-}
-
-const closeMenu = () => {
-  menuOpen.value = false
-}
-
-/* --------------------------------------------------
-   Scroll state
--------------------------------------------------- */
-
-const handleScroll = () => {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  scrolled.value =
-    window.scrollY > 24
-}
-
-/* --------------------------------------------------
-   Keyboard controls
--------------------------------------------------- */
-
-const handleKeydown = (
-  event: KeyboardEvent
-) => {
-  if (
-    event.key === 'Escape' &&
-    menuOpen.value
-  ) {
-    closeMenu()
-  }
-}
-
-/* --------------------------------------------------
-   Responsive behaviour
--------------------------------------------------- */
-
-const handleResize = () => {
-  if (
-    typeof window === 'undefined'
-  ) {
-    return
-  }
-
-  if (
-    window.innerWidth > 900 &&
-    menuOpen.value
-  ) {
-    closeMenu()
-  }
-}
-
-/* --------------------------------------------------
-   Prevent background scrolling
--------------------------------------------------- */
-
-watch(
-  menuOpen,
-  (isOpen) => {
-    if (
-      typeof document === 'undefined'
-    ) {
-      return
-    }
-
-    document.body.style.overflow =
-      isOpen
-        ? 'hidden'
-        : ''
-  }
-)
-
-/* --------------------------------------------------
-   Lifecycle
--------------------------------------------------- */
-
-onMounted(() => {
-  initTheme()
-  handleScroll()
-
-  window.addEventListener(
-    'scroll',
-    handleScroll,
-    { passive: true }
-  )
-
-  window.addEventListener(
-    'resize',
-    handleResize,
-    { passive: true }
-  )
-
-  window.addEventListener(
-    'keydown',
-    handleKeydown
-  )
-})
-
-onUnmounted(() => {
-  if (
-    typeof window !== 'undefined'
-  ) {
-    window.removeEventListener(
-      'scroll',
-      handleScroll
-    )
-
-    window.removeEventListener(
-      'resize',
-      handleResize
-    )
-
-    window.removeEventListener(
-      'keydown',
-      handleKeydown
-    )
-  }
-
-  if (
-    typeof document !== 'undefined'
-  ) {
-    document.body.style.overflow = ''
-  }
-})
-</script>
 
 <style scoped>
-/* ==================================================
-   NAVBAR
-================================================== */
 
-.navbar {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 1000;
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
 
-  padding: 1.2rem 0;
+  height: var(--header-h);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 19, 34, 0.98),
+      rgba(8, 19, 34, 0.96)
+    );
+
+  color: #fff;
+
+  border-bottom: 1px solid transparent;
 
   transition:
-    padding 0.35s var(--ease-out),
-    background-color 0.35s ease,
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
-
-  color: var(--text-primary);
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease,
+    backdrop-filter 0.3s ease;
 }
 
-/* Remove the default mobile tap-flash so our own
-   :active feedback states (below) read cleanly. */
-.navbar a,
-.navbar button {
-  -webkit-tap-highlight-color: transparent;
-}
 
-/* ==================================================
-   SCROLLED NAVBAR
-================================================== */
+/* ================================================================
+   Scrolled Header
+   ================================================================ */
 
-.navbar--scrolled {
-  padding: 0.75rem 0;
+.site-header.is-scrolled {
+  border-color: rgba(255, 255, 255, 0.08);
 
-  background: var(--header-bg);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 19, 34, 0.98),
+      rgba(8, 19, 34, 0.94)
+    );
 
-  border-bottom: 1px solid var(--border-color);
-
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-
-  /* Layered, semi-transparent elevation instead of a
-     single opaque shadow — softer and theme-agnostic,
-     so it reads correctly in both light and dark mode. */
   box-shadow:
-    0 1px 0 rgba(2, 6, 23, 0.04),
-    0 12px 30px -10px rgba(2, 6, 23, 0.28);
+    0 12px 35px -20px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-/* ==================================================
-   INNER
-================================================== */
 
-.navbar__inner {
+/* ================================================================
+   Header Inner
+   ================================================================ */
+
+.header__inner {
+  height: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -611,1087 +324,920 @@ onUnmounted(() => {
   gap: 1.5rem;
 }
 
-/* ==================================================
-   SKIP LINK
-================================================== */
 
-.navbar__skip-link {
-  position: absolute;
-  left: 1rem;
-  top: -100px;
+/* ================================================================
+   Brand
+   ================================================================ */
 
-  z-index: 2000;
-
-  padding: 0.7rem 1rem;
-
-  border-radius: 8px;
-
-  background: var(--cyan-400);
-  color: var(--navy-950);
-
-  font-size: 0.85rem;
-  font-weight: 700;
-
-  transition: top 0.2s ease;
-}
-
-.navbar__skip-link:focus {
-  top: 1rem;
-}
-
-/* ==================================================
-   LOGO
-================================================== */
-
-.navbar__logo {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 0.65rem;
-
-  color: var(--text-primary);
-  text-decoration: none;
-
-  flex-shrink: 0;
-
-  border-radius: 10px;
-}
-
-/* The logo artwork itself is white/light, so the chip
-   behind it can't track the page's surface color the way
-   it used to — on the light theme "surface-bg-soft" is
-   nearly white too, and the mark disappeared into it.
-   Instead the chip now uses a fixed dark, slightly
-   gradient background in BOTH themes, so there's always
-   guaranteed contrast behind the white artwork. Bumped up
-   a little (44px -> 50px) per request as well. */
-.navbar__logo-mark {
-  width: 58px;
-  height: 58px;
-
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-
-  background: linear-gradient(
-    155deg,
-    var(--navy-900, #0f172a) 0%,
-    var(--navy-950, #020617) 100%
-  );
-
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 2px 8px rgba(2, 6, 23, 0.35);
-
-  transition:
-    transform 0.35s var(--ease-out),
-    opacity 0.3s ease,
-    box-shadow 0.3s ease,
-    border-color var(--transition-base);
-}
-
-.navbar__logo:hover
-.navbar__logo-mark {
-  transform: translateY(-1px) scale(1.05);
-  border-color: rgba(34, 211, 238, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 6px 16px rgba(2, 6, 23, 0.4);
-}
-
-/* Base styles scoped strictly to the logo class */
-.navbar__logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-
-  /* If logo.png has transparent padding baked into the
-     canvas, 100%/contain will faithfully render that empty
-     space too — no amount of width/height here can make the
-     drawn mark itself bigger than what's actually in the
-     file. This scale zooms past that padding; the chip has
-     overflow:hidden so the excess is cropped rather than
-     spilling out. Tune 1.35 up/down to taste, or better:
-     re-export logo.png cropped tight to the mark and drop
-     this back to scale(1). */
-  transform: scale(1.35);
-  transform-origin: center;
-  /* Prevent browser-level rendering bleed */
-  isolation: isolate;
-  transition: filter 0.2s ease-in-out;
-}
-
-.navbar__logo-text {
-  display: flex;
-  flex-direction: column;
-
-  line-height: 1;
-}
-
-.navbar__logo-name {
-  font-family: var(--font-display);
-
-  /* Fixed size — this had been set to grow with viewport
-     width, which reads as the logo visibly stretching/
-     enlarging rather than a stable wordmark. */
-  font-size: 1.05rem;
-  font-weight: 700;
-
-  letter-spacing: -0.03em;
-
-  color: var(--text-primary);
-}
-
-.navbar__logo-sub {
-  margin-top: 0.32rem;
-
-  font-size: 0.55rem;
-  font-weight: 500;
-
-  color: var(--text-muted);
-
-  letter-spacing: 0.095em;
-  text-transform: uppercase;
-}
-
-/* ==================================================
-   DESKTOP NAVIGATION
-================================================== */
-
-.navbar__links {
-  display: flex;
-  align-items: center;
-
-  gap: 0.15rem;
-
-  margin-left: auto;
-  margin-right: 1.5rem;
-}
-
-.navbar__link {
+.brand {
   position: relative;
 
-  display: inline-flex;
-  align-items: center;
-
-  min-height: 40px;
-
-  padding: 0 0.85rem;
-
-  border-radius: 7px;
-
-  color: var(--text-secondary);
-
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  font-weight: 600;
-
-  letter-spacing: 0.01em;
-
-  text-decoration: none;
-
-  transition:
-    color 0.25s ease,
-    background-color 0.25s ease,
-    transform 0.25s var(--ease-out);
-}
-
-/* Hover now lifts slightly and previews the underline
-   indicator (see .navbar__link-dot below) instead of just
-   swapping to a flat background — makes hover feel like a
-   step toward "active" rather than a completely separate
-   visual language. */
-.navbar__link:hover {
-  color: var(--text-primary);
-  background: var(--surface-bg-soft);
-  transform: translateY(-1px);
-}
-
-.navbar__link:active {
-  transform: translateY(0);
-}
-
-/* Active state is color + underline only, no filled
-   pill — the pill made hover and active look like the
-   same treatment, which reads as templated. A thin
-   underline is a clearer, more deliberate "you are
-   here" signal. */
-.navbar__link.active {
-  color: var(--text-primary);
-}
-
-/* Active indicator: a short underline bar instead of a
-   dot, positioned like a tab indicator. On hover it now
-   fades in at half-strength/width as a preview, then
-   snaps to full width + full opacity + brighter color
-   once the link is actually active. */
-
-.navbar__link-dot {
-  position: absolute;
-
-  left: 50%;
-  bottom: 3px;
-
-  width: 20px;
-  height: 2px;
-
-  border-radius: 2px;
-
-  background: var(--cyan-400);
-
-  transform:
-    translateX(-50%)
-    scaleX(0);
-
-  opacity: 0;
-
-  transition:
-    transform 0.25s var(--ease-out),
-    opacity 0.25s ease,
-    background-color 0.25s ease;
-}
-
-.navbar__link:hover
-.navbar__link-dot {
-  transform:
-    translateX(-50%)
-    scaleX(0.55);
-
-  opacity: 0.45;
-}
-
-.navbar__link.active
-.navbar__link-dot {
-  transform:
-    translateX(-50%)
-    scaleX(1);
-
-  opacity: 1;
-}
-
-.navbar__link.active:hover
-.navbar__link-dot {
-  opacity: 1;
-  transform:
-    translateX(-50%)
-    scaleX(1.08);
-}
-
-/* ==================================================
-   ACTIONS
-================================================== */
-
-.navbar__actions {
-  display: flex;
-  align-items: center;
-
-  gap: 0.65rem;
-}
-
-/* ==================================================
-   THEME TOGGLE
-================================================== */
-
-.navbar__theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 0.45rem;
-
-  min-height: 40px;
-
-  padding: 0 0.75rem;
-
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-
-  background: var(--surface-bg-soft);
-  color: var(--text-primary);
-
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  white-space: nowrap;
-
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.navbar__theme-toggle:hover {
-  color: var(--cyan-400);
-
-  border-color: var(--cyan-400);
-
-  background: rgba(
-    34,
-    211,
-    238,
-    0.08
-  );
-
-  transform: translateY(-1px);
-}
-
-.navbar__theme-toggle:active {
-  transform: translateY(0) scale(0.96);
-}
-
-.navbar__theme-icon {
-  flex-shrink: 0;
-}
-
-/* ==================================================
-   DESKTOP CTA
-================================================== */
-
-.navbar__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 0.55rem;
-
-  min-height: 42px;
-
-  padding: 0.65rem 1.05rem;
-
-  border: 1px solid var(--navy-950);
-  border-radius: 8px;
-
-  /* Solid by default rather than the same neutral grey
-     as the theme toggle — this is the one control on the
-     bar meant to grab attention, so it shouldn't blend
-     in until hovered. */
-  background: var(--navy-950);
-
-  color: #fff;
-
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 700;
-
-  text-decoration: none;
-
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s var(--ease-out);
-}
-
-.navbar__cta:hover {
-  background: var(--cyan-400);
-  border-color: var(--cyan-400);
-
-  color: var(--navy-950);
-
-  box-shadow: 0 10px 24px -8px rgba(34, 211, 238, 0.55);
-
-  transform: translateY(-1px);
-}
-
-.navbar__cta:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow: none;
-}
-
-.navbar__cta-icon {
-  transition:
-    transform 0.25s var(--ease-out);
-}
-
-.navbar__cta:hover
-.navbar__cta-icon {
-  transform: translateX(3px);
-}
-
-/* ==================================================
-   MOBILE BURGER
-================================================== */
-
-.navbar__burger {
-  display: none;
-
-  width: 44px;
-  height: 44px;
-
-  padding: 0;
-
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  gap: 5px;
-
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-
-  background: var(--surface-bg-soft);
-
-  color: var(--text-primary);
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease,
-    transform 0.15s ease;
-}
-
-.navbar__burger:hover,
-.navbar__burger--open {
-  background: var(--surface-bg-soft);
-  border-color: var(--cyan-400);
-}
-
-.navbar__burger:active {
-  transform: scale(0.94);
-}
-
-.burger-line {
-  display: block;
-
-  width: 17px;
-  height: 1.5px;
-
-  border-radius: 2px;
-
-  background: currentColor;
-
-  transform-origin: center;
-
-  transition:
-    transform 0.3s var(--ease-out),
-    opacity 0.2s ease;
-}
-
-.navbar__burger--open
-.burger-line:nth-child(1) {
-  transform:
-    translateY(6.5px)
-    rotate(45deg);
-}
-
-.navbar__burger--open
-.burger-line:nth-child(2) {
-  opacity: 0;
-  transform: scaleX(0);
-}
-
-.navbar__burger--open
-.burger-line:nth-child(3) {
-  transform:
-    translateY(-6.5px)
-    rotate(-45deg);
-}
-
-/* ==================================================
-   MOBILE MENU
-================================================== */
-
-.navbar__mobile {
-  position: absolute;
-
-  top: calc(100% + 0.5rem);
-  left: 0.5rem;
-  right: 0.5rem;
-
-  max-height:
-    calc(100vh - 90px);
-
-  overflow-y: auto;
-
-  background:
-    var(--surface-bg);
-
-  color: var(--text-primary);
-
-  border: 1px solid var(--border-color);
-
-  border-radius: 22px;
-
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 30px 70px -12px rgba(2, 6, 23, 0.4);
-
-  overscroll-behavior: contain;
-}
-
-.navbar__mobile-inner {
-  padding:
-    1.25rem
-    1.1rem
-    1.5rem;
-}
-
-/* ==================================================
-   MOBILE HEADING
-================================================== */
-
-.navbar__mobile-heading {
   display: flex;
   align-items: center;
 
   gap: 0.75rem;
 
-  margin-bottom: 0.5rem;
-  padding-left: 0.25rem;
+  flex: none;
 
-  color: var(--text-subtle);
+  color: inherit;
+  text-decoration: none;
+
+  border-radius: 14px;
+
+  padding: 0.35rem 0.5rem;
+
+  margin-left: -0.5rem;
+
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.brand:hover {
+  background: rgba(255, 255, 255, 0.035);
+
+  transform: translateY(-1px);
+}
+
+
+/* Logo wrapper */
+
+.brand__logo-wrap {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 44px;
+  height: 38px;
+
+  border-radius: 11px;
+
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.brand__logo-wrap::after {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  border: 1px solid transparent;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.brand:hover .brand__logo-wrap {
+  background: rgba(56, 221, 220, 0.08);
+
+  transform: translateY(-1px);
+}
+
+.brand:hover .brand__logo-wrap::after {
+  border-color: rgba(56, 221, 220, 0.18);
+
+  box-shadow:
+    0 0 18px rgba(56, 221, 220, 0.08);
+}
+
+.brand img {
+  display: block;
+
+  width: 44px;
+  height: auto;
+
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.brand:hover img {
+  transform: scale(1.035);
+
+  filter:
+    drop-shadow(
+      0 0 8px
+      rgba(56, 221, 220, 0.16)
+    );
+}
+
+
+/* Brand text */
+
+.brand__text {
+  display: grid;
+
+  line-height: 1.05;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+
+  font-weight: 800;
+
+  font-size: 1.2rem;
+
+  letter-spacing: -0.03em;
+
+  transition: color 0.25s ease;
+}
+
+.brand:hover .brand__name {
+  color: #fff;
+}
+
+.brand__name b {
+  color: var(--aqua-400);
+
+  font-weight: 800;
+
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+.brand:hover .brand__name b {
+  color: #5ce7e5;
+
+  text-shadow:
+    0 0 18px rgba(56, 221, 220, 0.18);
+}
+
+.brand__tag {
+  margin-top: 4px;
 
   font-size: 0.62rem;
   font-weight: 700;
 
   letter-spacing: 0.16em;
   text-transform: uppercase;
-}
 
-.navbar__mobile-line {
-  flex: 1;
-
-  height: 1px;
-
-  background: linear-gradient(
-    90deg,
-    var(--border-color),
-    transparent
-  );
-}
-
-/* ==================================================
-   MOBILE LINKS
-
-   Rounded self-contained tiles, no dividers, no arrow —
-   matches the redesigned mobile sidebar drawer.
-================================================== */
-
-.navbar__mobile-links {
-  display: flex;
-  flex-direction: column;
-
-  gap: 0.3rem;
-}
-
-.navbar__mobile-link {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-
-  gap: 0.85rem;
-
-  min-height: 62px;
-
-  padding: 0.7rem 0.9rem;
-
-  border-radius: 16px;
-
-  color: var(--text-secondary);
-
-  text-decoration: none;
-
-  opacity: 0;
-  transform: translateX(10px);
-
-  animation:
-    mobile-link-in 0.4s var(--ease-out) forwards;
-
-  animation-delay:
-    calc(60ms * var(--i));
-
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.navbar__mobile-link:hover {
-  color: var(--text-primary);
-  background: var(--surface-bg-soft);
-
-  transform: translateX(2px);
-}
-
-.navbar__mobile-link.active {
-  color: var(--text-primary);
-
-  background: linear-gradient(
-    120deg,
-    var(--cyan-soft) 0%,
-    transparent 100%
-  );
-}
-
-.navbar__mobile-link.active::after {
-  content: '';
-
-  position: absolute;
-
-  right: 0.9rem;
-  top: 50%;
-
-  width: 6px;
-  height: 6px;
-
-  border-radius: 50%;
-
-  background: var(--cyan-400);
-  box-shadow: 0 0 0 4px var(--cyan-soft);
-
-  transform: translateY(-50%);
-}
-
-.navbar__mobile-link.active:hover {
-  transform: none;
-}
-
-.navbar__mobile-link:active {
-  background: var(--surface-bg-soft);
-}
-
-.mobile-link-num {
-  flex: 0 0 auto;
-
-  display: grid;
-  place-items: center;
-
-  width: 30px;
-  height: 30px;
-
-  border-radius: 9px;
-
-  background: var(--surface-bg-soft);
-
-  color: var(--text-muted);
-
-  font-family: var(--font-body);
-
-  font-size: 0.62rem;
-  font-weight: 700;
-
-  letter-spacing: 0.04em;
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.navbar__mobile-link.active .mobile-link-num {
-  background: var(--cyan-400);
-  color: var(--navy-950);
-}
-
-.mobile-link-label {
-  font-family: var(--font-display);
-
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-@keyframes mobile-link-in {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ==================================================
-   MOBILE THEME
-================================================== */
-
-.navbar__mobile-theme {
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  min-height: 52px;
-
-  margin-top: 1rem;
-  padding: 0 0.9rem;
-
-  border: 1px solid var(--border-color);
-  border-radius: 9px;
-
-  background: var(--surface-bg-soft);
-  color: var(--text-primary);
-
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease,
-    transform 0.15s ease;
-}
-
-.navbar__mobile-theme:hover {
-  border-color: var(--cyan-400);
-
-  color: var(--cyan-400);
-}
-
-.navbar__mobile-theme:active {
-  transform: scale(0.98);
-}
-
-.navbar__mobile-theme-left {
-  display: flex;
-  align-items: center;
-
-  gap: 0.7rem;
-}
-
-.navbar__mobile-theme-icon {
-  display: grid;
-  place-items: center;
-
-  width: 32px;
-  height: 32px;
-
-  border-radius: 50%;
-
-  background:
-    rgba(
-      34,
-      211,
-      238,
-      0.08
-    );
-
-  color: var(--cyan-400);
-}
-
-/* Theme switch */
-
-.navbar__theme-switch {
-  position: relative;
-
-  width: 42px;
-  height: 24px;
-
-  padding: 3px;
-
-  border-radius: 999px;
-
-  background: var(--border-color);
-
-  transition:
-    background-color 0.25s ease;
-}
-
-.navbar__theme-switch--light {
-  background: var(--cyan-400);
-}
-
-.navbar__theme-switch-thumb {
-  display: block;
-
-  width: 18px;
-  height: 18px;
-
-  border-radius: 50%;
-
-  background: var(--text-primary);
-
-  box-shadow: 0 1px 3px rgba(2, 6, 23, 0.35);
-
-  transform: translateX(0);
-
-  transition:
-    transform 0.25s var(--ease-out),
-    background-color 0.25s ease;
-}
-
-.navbar__theme-switch--light
-.navbar__theme-switch-thumb {
-  transform: translateX(18px);
-
-  background: var(--navy-950);
-}
-
-/* ==================================================
-   MOBILE CTA
-================================================== */
-
-.navbar__mobile-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-top: 1.25rem;
-
-  min-height: 54px;
-
-  padding: 0 1rem;
-
-  border-radius: 14px;
-
-  background: linear-gradient(
-    135deg,
-    var(--cyan-400) 0%,
-    var(--cyan-300) 100%
-  );
-
-  color: var(--navy-950);
-
-  font-size: 0.85rem;
-  font-weight: 800;
-
-  letter-spacing: 0.01em;
-
-  text-decoration: none;
-
-  transition:
-    transform 0.25s var(--ease-out),
-    box-shadow 0.25s ease,
-    filter 0.25s ease;
-}
-
-.navbar__mobile-cta:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-  box-shadow: 0 12px 24px -8px rgba(34, 211, 238, 0.5);
-}
-
-.navbar__mobile-cta:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow: none;
-}
-
-/* ==================================================
-   MOBILE CONTACT FOOTER
-================================================== */
-
-.navbar__mobile-footer {
-  display: flex;
-  flex-direction: column;
-
-  gap: 0.55rem;
-
-  margin-top: 1.5rem;
-  padding-top: 1.15rem;
-
-  border-top:
-    1px solid var(--border-color);
-}
-
-.navbar__mobile-footer-label {
-  color: var(--text-subtle);
-
-  font-size: 0.62rem;
-  font-weight: 600;
-
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.navbar__mobile-contacts {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 0.4rem 1.25rem;
-}
-
-.navbar__mobile-contacts a {
-  color: var(--text-secondary);
-
-  font-size: 0.78rem;
-
-  text-decoration: none;
+  color: var(--on-dark-3);
 
   transition:
     color 0.25s ease;
 }
 
-.navbar__mobile-contacts a:hover {
-  color: var(--cyan-400);
+.brand:hover .brand__tag {
+  color: var(--on-dark-2);
 }
 
-/* ==================================================
-   BACKDROP
-================================================== */
 
-.navbar__backdrop {
-  position: fixed;
-  inset: 0;
+/* ================================================================
+   Desktop Navigation
+   ================================================================ */
 
-  /* Was -1, which (with no positioned ancestor) sat the
-     backdrop BEHIND ordinary page content instead of
-     dimming it. 998 keeps it under the navbar/menu
-     (z-index 1000) but above everything else. */
-  z-index: 998;
+.nav {
+  display: flex;
+  align-items: center;
+
+  gap: 1.5rem;
+}
+
+.nav__list {
+  display: flex;
+  align-items: center;
+
+  gap: 0.15rem;
+
+  list-style: none;
+}
+
+
+/* Individual nav item */
+
+.nav__item {
+  position: relative;
+}
+
+
+/* Main link */
+
+.nav__link {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+
+  padding: 0 0.82rem;
+
+  border-radius: 10px;
+
+  font-family: var(--font-display);
+
+  font-size: 0.93rem;
+  font-weight: 600;
+
+  color: var(--on-dark-2);
+
+  text-decoration: none;
+
+  isolation: isolate;
+
+  transition:
+    color 0.22s ease,
+    background-color 0.22s ease,
+    transform 0.22s ease;
+}
+
+
+/*
+ * Soft hover background.
+ * This stays behind the text.
+ */
+
+.nav__link::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 4px 0;
+
+  z-index: -1;
+
+  border-radius: 10px;
 
   background:
-    rgba(2, 4, 20, 0.6);
+    linear-gradient(
+      135deg,
+      rgba(56, 221, 220, 0.09),
+      rgba(56, 221, 220, 0.025)
+    );
 
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+
+  transform: scale(0.92);
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
 }
 
-/* ==================================================
-   TRANSITIONS
-================================================== */
 
-.mobile-menu-enter-active,
-.mobile-menu-leave-active {
+/*
+ * Animated aqua line.
+ */
+
+.nav__link::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  right: auto;
+
+  bottom: 4px;
+
+  width: calc(100% - 1.64rem);
+
+  height: 2px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--aqua-400),
+      transparent
+    );
+
+  opacity: 0;
+
+  transform:
+    translateX(-50%)
+    scaleX(0.25);
+
+  transform-origin: center;
+
+  box-shadow:
+    0 0 10px rgba(56, 221, 220, 0.2);
+
   transition:
     opacity 0.25s ease,
-    transform 0.3s var(--ease-out);
-
-  transform-origin: top;
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.mobile-menu-enter-from,
-.mobile-menu-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
 
-.backdrop-enter-active,
-.backdrop-leave-active {
+/* Text layer */
+
+.nav__link-text {
+  position: relative;
+
   transition:
-    opacity 0.25s ease;
+    transform 0.22s ease,
+    color 0.22s ease;
 }
 
-.backdrop-enter-from,
-.backdrop-leave-to {
+
+/* Hover */
+
+.nav__link:hover {
+  color: #fff;
+
+  transform: translateY(-1px);
+}
+
+.nav__link:hover::before {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+.nav__link:hover::after {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    scaleX(1);
+}
+
+.nav__link:hover .nav__link-text {
+  transform: translateY(-0.5px);
+}
+
+
+/* Active */
+
+.nav__link.is-active {
+  color: #fff;
+}
+
+.nav__link.is-active::before {
+  opacity: 1;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(56, 221, 220, 0.11),
+      rgba(56, 221, 220, 0.035)
+    );
+
+  transform: scale(1);
+}
+
+.nav__link.is-active::after {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    scaleX(1);
+}
+
+
+/* Active + hover */
+
+.nav__link.is-active:hover::before {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(56, 221, 220, 0.14),
+      rgba(56, 221, 220, 0.045)
+    );
+}
+
+
+/* ================================================================
+   Navigation CTA
+   ================================================================ */
+
+.nav__cta {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+
+/* Consultation button */
+
+.nav__consultation {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.55rem;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.nav__consultation::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+  left: -80%;
+
+  width: 55%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.18),
+      transparent
+    );
+
+  transform: skewX(-18deg);
+
+  transition: left 0.55s ease;
+}
+
+.nav__consultation:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 25px -14px rgba(56, 221, 220, 0.55);
+}
+
+.nav__consultation:hover::before {
+  left: 130%;
+}
+
+.nav__cta-arrow {
+  display: inline-block;
+
+  font-size: 1.05em;
+
+  transition:
+    transform 0.25s ease;
+}
+
+.nav__consultation:hover .nav__cta-arrow {
+  transform: translateX(3px);
+}
+
+
+/* ================================================================
+   Mobile Quick Actions
+   ================================================================ */
+
+.nav__quick {
+  display: none;
+}
+
+/* ================================================================
+   Header Actions (theme toggle + hamburger, grouped)
+   ================================================================ */
+
+.header__actions {
+  display: flex;
+  align-items: center;
+
+  gap: 0.6rem;
+}
+
+.nav__theme--header {
+  display: none;
+}
+
+
+/* ================================================================
+   Mobile Menu Button
+   ================================================================ */
+
+.menu-btn {
+  position: relative;
+
+  display: none;
+
+  place-items: center;
+
+  width: 46px;
+  height: 46px;
+
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color: #fff;
+
+  cursor: pointer;
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.menu-btn::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(56, 221, 220, 0.12),
+      transparent 65%
+    );
+
   opacity: 0;
+
+  transition: opacity 0.25s ease;
 }
 
-/* ==================================================
-   ACCESSIBILITY: KEYBOARD FOCUS
+.menu-btn:hover {
+  border-color: rgba(56, 221, 220, 0.35);
 
-   Every interactive element gets a consistent, visible
-   focus ring (not just the theme toggle, as before) —
-   this matters for anyone navigating with a keyboard.
-================================================== */
+  background:
+    rgba(56, 221, 220, 0.06);
 
-.navbar__logo:focus-visible,
-.navbar__link:focus-visible,
-.navbar__theme-toggle:focus-visible,
-.navbar__cta:focus-visible,
-.navbar__burger:focus-visible,
-.navbar__mobile-link:focus-visible,
-.navbar__mobile-theme:focus-visible,
-.navbar__mobile-cta:focus-visible {
-  outline: 2px solid var(--cyan-400);
-  outline-offset: 3px;
+  box-shadow:
+    0 0 22px rgba(56, 221, 220, 0.08);
+
+  transform: translateY(-1px);
 }
 
-/* ==================================================
-   RESPONSIVE
-================================================== */
+.menu-btn:hover::before {
+  opacity: 1;
+}
 
-@media (max-width: 900px) {
+.menu-btn:active {
+  transform: translateY(0) scale(0.96);
+}
 
-  .navbar {
-    padding: 0.8rem 0;
+.menu-btn__icon {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  place-items: center;
+
+  transition:
+    transform 0.25s ease;
+}
+
+.menu-btn:hover .menu-btn__icon {
+  transform: scale(1.05);
+}
+
+
+/* ================================================================
+   Tablet + Mobile Drawer
+   ================================================================ */
+
+@media (max-width: 1099px) {
+
+  .menu-btn {
+    display: grid;
   }
 
-  .navbar--scrolled {
-    padding: 0.65rem 0;
+  .nav__theme--header {
+    display: grid;
   }
 
-  .navbar__links {
+
+  .nav {
+    position: fixed;
+
+    inset:
+      var(--header-h)
+      0
+      0
+      0;
+
+    z-index: 49;
+
     display: none;
-  }
 
-  .navbar__cta {
-    display: none;
-  }
+    flex-direction: column;
+    align-items: stretch;
 
-  .navbar__burger {
-    display: flex;
-  }
-
-  .navbar__logo-sub {
-    font-size: 0.5rem;
-  }
-
-  .navbar__theme-toggle {
-    min-height: 38px;
+    gap: 1.25rem;
 
     padding:
-      0 0.65rem;
+      1.25rem
+      var(--gutter)
+      2rem;
+
+    overflow-y: auto;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(8, 19, 34, 0.99),
+        rgba(6, 15, 27, 1)
+      );
+
+    border-top:
+      1px solid
+      rgba(255, 255, 255, 0.06);
+
+    box-shadow:
+      0 25px 60px -30px rgba(0, 0, 0, 0.8);
+  }
+
+
+  .nav.is-open {
+    display: flex;
+
+    animation:
+      navDrawerIn
+      0.25s
+      ease
+      both;
+  }
+
+
+  @keyframes navDrawerIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+
+  .nav__list {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 0;
+
+    width: 100%;
+  }
+
+
+  .nav__item {
+    width: 100%;
+  }
+
+
+  .nav__link {
+    justify-content: flex-start;
+
+    width: 100%;
+
+    min-height: 56px;
+
+    padding:
+      0
+      0.9rem;
+
+    border-bottom:
+      1px solid
+      rgba(255, 255, 255, 0.07);
+
+    border-radius: 9px;
+
+    font-size: 1.08rem;
+
+    transition:
+      color 0.22s ease,
+      background-color 0.22s ease,
+      padding-left 0.22s ease;
+  }
+
+
+  .nav__link::before {
+    inset:
+      4px
+      0;
+
+    border-radius: 9px;
+  }
+
+
+  .nav__link::after {
+    left: auto;
+    right: 0.8rem;
+
+    bottom: auto;
+    top: 50%;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--aqua-400);
+
+    box-shadow:
+      0 0 12px rgba(56, 221, 220, 0.35);
+
+    transform:
+      translateY(-50%)
+      scale(0);
+
+    transition:
+      opacity 0.22s ease,
+      transform 0.22s ease;
+  }
+
+
+  .nav__link:hover {
+    padding-left: 1.15rem;
+
+    transform: none;
+
+    color: #fff;
+  }
+
+
+  .nav__link:hover::after,
+  .nav__link.is-active::after {
+    opacity: 1;
+
+    transform:
+      translateY(-50%)
+      scale(1);
+  }
+
+
+  .nav__link.is-active {
+    padding-left: 1.15rem;
+  }
+
+
+  .nav__link.is-active::before {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(56, 221, 220, 0.1),
+        rgba(56, 221, 220, 0.025)
+      );
+  }
+
+
+  .nav__cta {
+    display: block;
+
+    width: 100%;
+  }
+
+
+  .nav__cta .btn {
+    width: 100%;
+
+    min-height: 52px;
+
+    font-size: 1rem;
+  }
+
+
+  .nav__quick {
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+
+    gap: 0.75rem;
+
+    width: 100%;
+
+    margin-top: auto;
+  }
+
+
+  .nav__action {
+    min-height: 50px;
+
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+
+
+  .nav__action:hover {
+    transform: translateY(-2px);
+  }
+
+
+  .nav__theme--desktop {
+    display: none;
   }
 }
 
-@media (max-width: 480px) {
 
-  .navbar__logo-text {
-    display: none;
+/* ================================================================
+   Small Screens
+   ================================================================ */
+
+@media (max-width: 599px) {
+
+  .header__inner {
+    gap: 0.75rem;
   }
 
-  .navbar__logo-mark {
-    width: 52px;
-    height: 52px;
-  }
 
-  .navbar__inner {
+  .brand {
     gap: 0.55rem;
   }
 
-  .navbar__actions {
-    gap: 0.45rem;
+
+  .brand__logo-wrap {
+    width: 40px;
+    height: 36px;
   }
 
-  .navbar__theme-label {
-    display: none;
+
+  .brand img {
+    width: 40px;
   }
 
-  .navbar__theme-toggle {
+
+  .brand__name {
+    font-size: 1.08rem;
+  }
+
+
+  .brand__tag {
+    font-size: 0.56rem;
+
+    letter-spacing: 0.12em;
+  }
+
+
+  .menu-btn {
     width: 44px;
     height: 44px;
-
-    padding: 0;
   }
 
-  .navbar__mobile-inner {
-    padding-left: 1rem;
-    padding-right: 1rem;
+
+  .nav {
+    padding:
+      1rem
+      var(--gutter)
+      1.5rem;
+  }
+
+
+  .nav__link {
+    min-height: 54px;
+
+    font-size: 1.04rem;
+  }
+
+
+  .nav__quick {
+    grid-template-columns:
+      1fr 1fr;
   }
 }
 
-/* ==================================================
-   REDUCED MOTION
-================================================== */
+
+/* ================================================================
+   Reduced Motion
+   ================================================================ */
 
 @media (prefers-reduced-motion: reduce) {
 
-  .navbar *,
-  .navbar__backdrop {
-    transition-duration:
-      0.01ms !important;
-
-    animation-duration:
-      0.01ms !important;
+  .site-header,
+  .brand,
+  .brand img,
+  .brand__logo-wrap,
+  .brand__name,
+  .brand__name b,
+  .brand__tag,
+  .nav__link,
+  .nav__link::before,
+  .nav__link::after,
+  .nav__link-text,
+  .nav__consultation,
+  .nav__consultation::before,
+  .nav__cta-arrow,
+  .menu-btn,
+  .menu-btn::before,
+  .menu-btn__icon {
+    transition: none !important;
   }
 
-  .navbar__mobile-link {
-    opacity: 1;
-    transform: none;
+  .nav.is-open {
     animation: none;
   }
 }
+
 </style>

@@ -1,5 +1,20 @@
-from openai import OpenAI
+import logging
+import os
+import re
+
 from django.conf import settings
+from openai import (
+    APIConnectionError,
+    APIStatusError,
+    APITimeoutError,
+    OpenAI,
+    RateLimitError,
+)
+
+logger = logging.getLogger(__name__)
+
+# Groq is OpenAI-compatible. Override the model with GROQ_MODEL in .env if needed.
+MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 SYSTEM_PROMPT = """You are MilleBot, the official AI assistant of Millenium Tech, a technology
 company based in Tanzania (founded 2022). You help visitors on millenium-tech's website
@@ -61,21 +76,45 @@ Work process for every project: 1) Consultation (discuss needs & goals) →
 - Recommend the most relevant service(s) for what the user describes, and suggest next
   steps (contact form, call, or WhatsApp) when it fits naturally.
 - Keep answers short, clear, and helpful — a few sentences, not essays, unless the user
-  asks for detail."""
+  asks for detail.
+- Reply in plain text. Do not use markdown tables or headings; short lists with "-" are fine."""
+
+
+class ChatUnavailable(Exception):
+    """The AI provider can't answer right now. `code` tells the caller why."""
+
+    def __init__(self, code: str, detail: str = ""):
+        super().__init__(detail or code)
+        self.code = code
+
 
 _client = None
 
-def get_client():
+
+def get_client() -> OpenAI:
     global _client
     if _client is None:
-        # Groq's API is OpenAI-compatible, so the same `openai` SDK works —
-        # just point it at Groq's base_url with a Groq API key.
-        # Free key (no card required) from https://console.groq.com/keys
+        api_key = (settings.GROQ_API_KEY or "").strip()
+        if not api_key:
+            raise ChatUnavailable(
+                "not_configured",
+                "GROQ_API_KEY is missing. Add it to backend/.env and restart the server.",
+            )
         _client = OpenAI(
-            api_key=settings.GROQ_API_KEY,
+            api_key=api_key,
             base_url="https://api.groq.com/openai/v1",
+            timeout=25.0,
+            max_retries=1,
         )
     return _client
+
+
+def _clean(text: str | None) -> str:
+    text = (text or "").strip()
+    # Some reasoning models leak <think>…</think>; never show that to visitors.
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    return text
+
 
 def generate_reply(user_message: str, history: list[dict] | None = None) -> str:
     client = get_client()
@@ -84,10 +123,32 @@ def generate_reply(user_message: str, history: list[dict] | None = None) -> str:
         messages.extend(history)
     messages.append({"role": "user", "content": user_message})
 
-    completion = client.chat.completions.create(
-        model="openai/gpt-oss-20b",  # confirmed available on this Groq account
-        messages=messages,
-        temperature=0.7,
-        max_tokens=500,
-    )
-    return completion.choices[0].message.content.strip()
+    kwargs = {}
+    if "gpt-oss" in MODEL:
+        # Reasoning tokens count against max_tokens; keep them small so the visible
+        # answer is never cut off to an empty string.
+        kwargs["extra_body"] = {"reasoning_effort": "low"}
+
+    try:
+        completion = client.chat.completions.create(
+            model=MODEL,
+            messages=messages,
+            temperature=0.6,
+            max_tokens=900,
+            **kwargs,
+        )
+    except RateLimitError as exc:
+        logger.warning("Groq rate limit: %s", exc)
+        raise ChatUnavailable("busy") from exc
+    except (APIConnectionError, APITimeoutError) as exc:
+        logger.warning("Groq connection problem: %s", exc)
+        raise ChatUnavailable("network") from exc
+    except APIStatusError as exc:
+        logger.error("Groq API error %s: %s", exc.status_code, exc)
+        code = "auth" if exc.status_code in (401, 403) else "provider"
+        raise ChatUnavailable(code, str(exc)) from exc
+
+    reply = _clean(completion.choices[0].message.content if completion.choices else "")
+    if not reply:
+        raise ChatUnavailable("empty")
+    return reply

@@ -2,6 +2,8 @@
 node_modules/
 dist/
 .vite/
+.env
+.env.local
 
 # --- Backend / Python ---
 backend/venv/
@@ -10,6 +12,7 @@ backend/**/__pycache__/
 backend/**/*.pyc
 backend/db.sqlite3
 backend/.env
+auth_info/
 
 # --- Editor / OS ---
 .vscode/

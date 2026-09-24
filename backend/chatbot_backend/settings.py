@@ -2,9 +2,11 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load backend/.env first, then a project-root .env (both optional).
+load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR.parent / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-change-me")
 DEBUG = os.getenv("DEBUG", "True") == "True"
@@ -18,9 +20,31 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
     "ai",
+    "accounts",
+    "projects",
 ]
+
+REST_FRAMEWORK = {
+    # Token auth for the SPA (Authorization: Token <key>) plus session
+    # auth so the Django admin and browsable API keep working.
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    # Public by default — every existing endpoint (chat, project-request
+    # creation) keeps working for guests with no login. Individual views
+    # opt into IsAuthenticated where a login is actually required.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    # Limits used by ai.views.ChatThrottle (per visitor IP).
+    "DEFAULT_THROTTLE_RATES": {
+        "chat": os.getenv("CHAT_RATE_LIMIT", "20/min"),
+    },
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -88,3 +112,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+# Shared secret the local WhatsApp bot (whatsapp-bot/) sends as the
+# X-Bot-Token header, so this endpoint cannot be called by anyone else.
+WHATSAPP_BOT_TOKEN = os.getenv("WHATSAPP_BOT_TOKEN") or os.getenv("BOT_TOKEN", "")

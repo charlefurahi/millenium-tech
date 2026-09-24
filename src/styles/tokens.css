@@ -1,0 +1,231 @@
+/* ==========================================================================
+   Millenium Tech — design tokens
+   One place for colour, type, spacing, radius and shadow.
+   ========================================================================== */
+
+:root {
+  /* Brand */
+  --navy-950: #040d20;
+  --navy-900: #071b3a;
+  --navy-800: #0b2a55;
+  --navy-700: #12407a;
+
+  --blue-700: #0b5cab;
+  --blue-600: #1176d4;
+  --blue-500: #2b8be6;
+  --blue-100: #dcecfb;
+  --blue-50: #eef6fd;
+
+  --aqua-400: #16bfe0;
+  --aqua-300: #5fd8ee;
+  --aqua-100: #d9f5fb;
+
+  /* Status */
+  --green-700: #0f7a40;
+  --green-600: #128c4a;
+  --green-50: #e9f7ef;
+
+  --red-700: #b4232f;
+  --red-50: #fdeeee;
+
+  --amber-500: #f2a900;
+
+  /* Neutrals */
+  --ink: #0b1b33;
+  --ink-2: #33455f;
+  --muted: #566780;
+  --line: #dbe4ee;
+  --line-strong: #c3d1e0;
+  --mist: #f4f8fc;
+  --paper: #ffffff;
+
+  /* On dark surfaces */
+  --on-dark: #ffffff;
+  --on-dark-2: rgba(255, 255, 255, 0.82);
+  --on-dark-3: rgba(255, 255, 255, 0.66);
+  --line-dark: rgba(255, 255, 255, 0.14);
+
+  /* Type */
+  --font-display:
+    'Manrope Variable',
+    'Manrope',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Arial,
+    sans-serif;
+
+  --font-body:
+    'DM Sans Variable',
+    'DM Sans',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Arial,
+    sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.15rem, 1.6vw, 1.3rem);
+
+  --h4: clamp(1.05rem, 1.4vw, 1.2rem);
+  --h3: clamp(1.2rem, 1.9vw, 1.45rem);
+  --h2: clamp(1.75rem, 3.2vw, 2.6rem);
+  --h1: clamp(2.15rem, 4.8vw, 3.75rem);
+
+  /* Spacing — 8px rhythm */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 1rem;
+  --s-4: 1.5rem;
+  --s-5: 2rem;
+  --s-6: 3rem;
+  --s-7: 4rem;
+  --s-8: 6rem;
+
+  --section-y: clamp(3.5rem, 8vw, 6.5rem);
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: clamp(1.25rem, 4vw, 2rem);
+  --header-h: 72px;
+
+  /* Shape */
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 20px;
+  --radius-xl: 28px;
+
+  /* Elevation */
+  --shadow-s:
+    0 1px 2px rgba(7, 27, 58, 0.06),
+    0 2px 6px rgba(7, 27, 58, 0.05);
+
+  --shadow-m:
+    0 12px 32px -14px rgba(7, 27, 58, 0.28);
+
+  --shadow-l:
+    0 28px 60px -24px rgba(7, 27, 58, 0.45);
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --focus: #1176d4;
+
+  /* Theme-able surfaces */
+  --card: #ffffff;
+
+  color-scheme: light;
+
+  /* ================================================================
+     Football-inspired background pattern
+     ================================================================ */
+
+  /*
+   * Kept small so the pattern stays decorative rather than competing
+   * with text, cards and images.
+   */
+  --hex-size: 96px;
+
+  /*
+   * Very low opacity.
+   */
+  --hexline: rgba(17, 118, 212, 0.035);
+  --hexline-2: rgba(22, 191, 224, 0.045);
+
+  /*
+   * Football-pattern accents.
+   */
+  --football-line: rgba(95, 216, 238, 0.035);
+  --football-node: rgba(95, 216, 238, 0.08);
+  --football-glow: rgba(22, 191, 224, 0.055);
+
+  /*
+   * Dark surface glow.
+   */
+  --glow-a: rgba(17, 118, 212, 0.12);
+  --glow-b: rgba(22, 191, 224, 0.08);
+
+  /*
+   * Overall page background.
+   */
+  --page-bg: #f4f8fc;
+
+  /*
+   * Football-inspired pattern opacity.
+   * Kept intentionally low.
+   */
+  --football-pattern-opacity: 0.42;
+}
+
+
+/* ==========================================================================
+   TABLET
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  :root {
+    --header-h: 64px;
+    --hex-size: 86px;
+  }
+}
+
+
+/* ==========================================================================
+   DARK MODE
+   ========================================================================== */
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --ink: #eef3fa;
+  --ink-2: rgba(238, 243, 250, 0.82);
+  --muted: rgba(238, 243, 250, 0.6);
+
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+
+  --mist: #07121f;
+  --paper: #02080d;
+  --card: #0d2040;
+
+  /*
+   * Subtle football pattern for dark mode.
+   */
+  --hexline: rgba(95, 216, 238, 0.045);
+  --hexline-2: rgba(95, 216, 238, 0.055);
+
+  --football-line: rgba(95, 216, 238, 0.045);
+  --football-node: rgba(95, 216, 238, 0.09);
+  --football-glow: rgba(22, 191, 224, 0.065);
+
+  --glow-a: rgba(17, 118, 212, 0.15);
+  --glow-b: rgba(22, 191, 224, 0.10);
+
+  --page-bg: #030b12;
+
+  --football-pattern-opacity: 0.48;
+
+  --shadow-s:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+
+  --shadow-m:
+    0 12px 32px -14px rgba(0, 0, 0, 0.55);
+
+  --shadow-l:
+    0 28px 60px -24px rgba(0, 0, 0, 0.7);
+}
+
+
+/* ==========================================================================
+   SYSTEM DARK MODE
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dark']) {
+    color-scheme: dark;
+  }
+}

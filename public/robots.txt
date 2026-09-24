@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://millenium-tech-ucqa.vercel.app/sitemap.xml

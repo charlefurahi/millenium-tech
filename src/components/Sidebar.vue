@@ -430,6 +430,29 @@ onBeforeUnmount(() => {
    ================================================================ */
 
 .sidebar {
+  /* -----------------------------------------------------------
+     Local aliases — the tokens this component was written
+     against (--surface-bg, --text-primary, --cyan-text, etc.)
+     don't exist in tokens.css, which left the sidebar with no
+     real background. Map them here to the tokens that do
+     exist, light theme first.
+     ----------------------------------------------------------- */
+  --surface-bg: linear-gradient(
+    165deg,
+    #ffffff 0%,
+    var(--blue-50) 52%,
+    var(--aqua-100) 100%
+  );
+  --surface-bg-soft: var(--blue-50);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-2);
+  --text-muted: var(--muted);
+  --border-color: var(--line-strong);
+  --border-soft: var(--line);
+  --cyan-text: var(--blue-600);
+  --cyan-400: var(--aqua-400);
+  --cyan-600: var(--blue-600);
+
   position: fixed;
 
   top: 12px;
@@ -453,9 +476,33 @@ onBeforeUnmount(() => {
   border-radius: 20px;
 
   box-shadow:
-    -18px 20px 70px rgba(0, 0, 0, 0.24);
+    -18px 20px 70px rgba(7, 27, 58, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
 
   isolation: isolate;
+}
+
+/* Dark theme — lighter navy blend rather than the near-black
+   --navy-950, so the panel still reads as an elevated surface
+   instead of a flat dark slab. */
+[data-theme='dark'] .sidebar {
+  --surface-bg: linear-gradient(
+    165deg,
+    #17375f 0%,
+    #102a4d 55%,
+    #0c2140 100%
+  );
+  --surface-bg-soft: rgba(95, 216, 238, 0.09);
+  --text-primary: var(--on-dark);
+  --text-secondary: var(--on-dark-2);
+  --text-muted: var(--on-dark-3);
+  --border-color: var(--line-dark);
+  --border-soft: var(--line-dark);
+  --cyan-text: var(--aqua-300);
+
+  box-shadow:
+    -18px 20px 70px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
 }
 
 
@@ -464,6 +511,8 @@ onBeforeUnmount(() => {
    ================================================================ */
 
 .sidebar__header {
+  position: relative;
+
   min-height: 76px;
 
   display: flex;
@@ -478,6 +527,29 @@ onBeforeUnmount(() => {
     1px solid var(--border-soft);
 
   flex: 0 0 auto;
+
+  overflow: hidden;
+}
+
+/* Soft accent glow behind the brand mark — echoes the football-glow
+   motif used across the rest of the site. */
+.sidebar__header::before {
+  content: '';
+
+  position: absolute;
+  top: -60px;
+  left: -40px;
+
+  width: 180px;
+  height: 180px;
+
+  background: radial-gradient(
+    circle,
+    var(--glow-b) 0%,
+    transparent 70%
+  );
+
+  pointer-events: none;
 }
 
 
@@ -519,7 +591,7 @@ onBeforeUnmount(() => {
   border: 1px solid var(--border-color);
   border-radius: 10px;
 
-  background: #081322;
+  background: var(--surface-bg-soft);
 }
 
 .sidebar__brand-mark img {

@@ -4,6 +4,7 @@ import Icon from '@/components/ui/Icon.vue'
 import PageHero from '@/components/ui/PageHero.vue'
 import ProjectCard from '@/components/ui/ProjectCard.vue'
 import CtaBand from '@/components/ui/CtaBand.vue'
+import AuthGate from '@/components/ui/AuthGate.vue'
 import { getProject, projects } from '@/data/projects'
 
 const props = defineProps<{ slug: string }>()
@@ -41,20 +42,26 @@ const more = computed(() => projects.filter((p) => p.slug !== props.slug).slice(
               <h2>The challenge</h2>
               <p>{{ project.challenge }}</p>
             </section>
-            <section v-reveal>
-              <h2>Our solution</h2>
-              <p>{{ project.solution }}</p>
-            </section>
-            <section v-reveal>
-              <h2>What we delivered</h2>
-              <ul class="checklist">
-                <li v-for="d in project.delivered" :key="d">{{ d }}</li>
-              </ul>
-            </section>
-            <section v-if="project.result" v-reveal>
-              <h2>Result</h2>
-              <p>{{ project.result }}</p>
-            </section>
+
+            <AuthGate
+              title="Log in to see the full case study"
+              text="Create a free account or log in to see how we approached this project, everything we delivered, and the results — the same detail we'd walk you through for your own project."
+            >
+              <section v-reveal>
+                <h2>Our solution</h2>
+                <p>{{ project.solution }}</p>
+              </section>
+              <section v-reveal>
+                <h2>What we delivered</h2>
+                <ul class="checklist">
+                  <li v-for="d in project.delivered" :key="d">{{ d }}</li>
+                </ul>
+              </section>
+              <section v-if="project.result" v-reveal>
+                <h2>Result</h2>
+                <p>{{ project.result }}</p>
+              </section>
+            </AuthGate>
           </div>
         </div>
       </div>

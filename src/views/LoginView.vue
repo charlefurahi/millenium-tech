@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AuthShell from '@/components/auth/AuthShell.vue'
 import PasswordField from '@/components/auth/PasswordField.vue'
@@ -21,6 +21,14 @@ const needsConfirm = ref(false)
 const resent = ref(false)
 
 const redirectTo = safeRedirect(route.query.redirect)
+
+// The /contact page requires login; explain why we've sent someone here
+// instead of leaving them to guess what the redirect was for.
+const subtitle = computed(() =>
+  route.query.redirect === '/contact'
+    ? 'Log in so we can track your enquiry for you.'
+    : 'Log in to track the project requests you’ve sent to Millenium Tech.'
+)
 
 onMounted(() => {
   // Email-link failures arrive in the URL hash, e.g. #error_description=Email+link+is+invalid+or+has+expired
@@ -71,7 +79,7 @@ async function resend() {
 </script>
 
 <template>
-  <AuthShell title="Welcome back" subtitle="Log in to track the project requests you’ve sent to Millenium Tech.">
+  <AuthShell title="Welcome back" :subtitle="subtitle">
     <form class="auth-form" novalidate @submit.prevent="submit">
       <div v-if="notice" class="auth-alert auth-alert--success" role="status">
         <Icon name="check-circle" :size="18" /><span>{{ notice }}</span>
@@ -129,7 +137,10 @@ async function resend() {
     </form>
 
     <template #below>
-      New here? <router-link to="/register">Create an account</router-link>
+      New here?
+      <router-link :to="route.query.redirect ? { path: '/register', query: { redirect: String(route.query.redirect) } } : '/register'">
+        Create an account
+      </router-link>
     </template>
   </AuthShell>
 </template>

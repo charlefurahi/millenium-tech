@@ -5,8 +5,19 @@ import Icon from '@/components/ui/Icon.vue'
 import { site, waLink, mailtoLink } from '@/config/site'
 import { serviceOptions } from '@/data/services'
 import { track } from '@/utils/track'
+import { submitProjectRequest } from '@/services/projectRequestService'
 
 const route = useRoute()
+
+// Best-effort mapping from the human-readable service label to the closest
+// project_type enum value (see database/supabase_schema.sql's CHECK
+// constraint) — anything without a clean match falls back to 'OTHER'.
+const SERVICE_TO_PROJECT_TYPE: Record<string, string> = {
+  'Website development': 'BUSINESS_WEBSITE',
+  'Graphic design & branding': 'BRANDING_DESIGN',
+  'Computer repair & IT support': 'IT_SUPPORT',
+  'Business systems / custom software': 'WEB_APPLICATION'
+}
 
 const budgets = [
   'Not sure yet',
@@ -120,7 +131,7 @@ async function submit() {
   if (form.budget) payload.set('budget', form.budget)
   if (typeof route.query.package === 'string') payload.set('package', String(route.query.package))
 
-  try {
+  async function postToFormspree() {
     const res = await fetch(`https://formspree.io/f/${site.formspreeId}`, {
       method: 'POST',
       headers: { Accept: 'application/json' },
@@ -131,6 +142,30 @@ async function submit() {
       const first = Array.isArray(data.errors) ? data.errors[0]?.message : ''
       throw new Error(first || 'request failed')
     }
+  }
+
+  const additionalInfoParts = [
+    `Service requested: ${form.service}`,
+    form.budget ? `Preferred budget: ${form.budget}` : '',
+    `Preferred contact method: ${form.contactMethod}`
+  ].filter(Boolean)
+
+  const [formspreeResult, supabaseResult] = await Promise.allSettled([
+    postToFormspree(),
+    submitProjectRequest({
+      name: form.name.trim(),
+      organization: form.business.trim(),
+      phone: form.phone.trim(),
+      email: form.email.trim(),
+      problem_description: form.message.trim(),
+      project_type: SERVICE_TO_PROJECT_TYPE[form.service] || 'OTHER',
+      additional_information: additionalInfoParts.join(' | ')
+    })
+  ])
+
+  // Treat it as success if either the Formspree notification or the
+  // Supabase record (read back on /account) went through.
+  if (formspreeResult.status === 'fulfilled' || supabaseResult.status === 'fulfilled') {
     track('form_submit', { service: form.service })
     Object.assign(form, blank())
     fields.forEach((f) => {
@@ -140,8 +175,9 @@ async function submit() {
     state.value = 'success'
     await nextTick()
     successEl.value?.focus()
-  } catch (e) {
-    serverMessage.value = e instanceof Error && e.message !== 'request failed' ? e.message : ''
+  } else {
+    const failure = formspreeResult.status === 'rejected' ? formspreeResult.reason : supabaseResult.reason
+    serverMessage.value = failure instanceof Error && failure.message !== 'request failed' ? failure.message : ''
     state.value = 'error'
     await nextTick()
     summaryEl.value?.focus()

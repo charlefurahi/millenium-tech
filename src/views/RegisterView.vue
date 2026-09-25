@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onBeforeUnmount, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AuthShell from '@/components/auth/AuthShell.vue'
 import PasswordField from '@/components/auth/PasswordField.vue'
 import Icon from '@/components/ui/Icon.vue'
@@ -9,6 +9,7 @@ import { AuthError } from '@/services/authService'
 import { isEmail } from '@/utils/redirect'
 
 const router = useRouter()
+const route = useRoute()
 const { register, resendConfirmation } = useAuth()
 
 const form = reactive({ name: '', email: '', password: '' })
@@ -20,6 +21,16 @@ const sentTo = ref('')
 const cooldown = ref(0)
 const resendMsg = ref('')
 let timer: ReturnType<typeof setInterval> | undefined
+
+// The /contact page requires login; explain why we've sent someone here
+// instead of leaving them to guess what the redirect was for.
+const subtitle = computed(() =>
+  sentTo.value
+    ? ''
+    : route.query.redirect === '/contact'
+      ? 'Create an account so we can track your enquiry for you.'
+      : 'Optional — an account just lets you track your requests. Guests are always welcome.'
+)
 
 function validate() {
   errors.name = form.name.trim().length < 2 ? 'Please enter your name.' : ''
@@ -80,7 +91,7 @@ async function resend() {
 <template>
   <AuthShell
     :title="sentTo ? 'Check your email' : 'Create your account'"
-    :subtitle="sentTo ? '' : 'Optional — an account just lets you track your requests. Guests are always welcome.'"
+    :subtitle="subtitle"
   >
     <div v-if="sentTo" class="auth-status">
       <span class="auth-status__icon"><Icon name="mail" :size="26" /></span>
@@ -164,7 +175,10 @@ async function resend() {
     </form>
 
     <template v-if="!sentTo" #below>
-      Already have an account? <router-link to="/login">Log in</router-link>
+      Already have an account?
+      <router-link :to="route.query.redirect ? { path: '/login', query: { redirect: String(route.query.redirect) } } : '/login'">
+        Log in
+      </router-link>
     </template>
   </AuthShell>
 </template>

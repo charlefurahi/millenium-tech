@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import Icon from '@/components/ui/Icon.vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import monogram from '@/assets/img/monogram-white.png'
-import { site, waLink, telLink } from '@/config/site'
+import { site } from '@/config/site'
 import { useAuth } from '@/composables/useAuth'
 
 const route = useRoute()
-const router = useRouter()
-const { state: auth, logout } = useAuth()
+const { state: auth } = useAuth()
 
-async function handleLogout() {
-  await logout()
-  router.push('/')
-}
-
-const open = ref(false)
+const props = withDefaults(defineProps<{ open?: boolean }>(), { open: false })
+const emit = defineEmits<{ 'toggle-menu': [] }>()
 const scrolled = ref(false)
 
 const links = [
@@ -34,41 +29,17 @@ const isActive = (to: string) =>
     ? route.path === '/'
     : route.path === to || route.path.startsWith(to + '/')
 
-const close = () => {
-  open.value = false
-}
-
-const onKey = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') {
-    close()
-  }
-}
-
 const onScroll = () => {
   scrolled.value = window.scrollY > 8
 }
 
-watch(open, (v) => {
-  document.body.classList.toggle('menu-open', v)
-})
-
-watch(
-  () => route.fullPath,
-  close
-)
-
 onMounted(() => {
-  window.addEventListener('keydown', onKey)
   window.addEventListener('scroll', onScroll, { passive: true })
-
   onScroll()
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', onKey)
   window.removeEventListener('scroll', onScroll)
-
-  document.body.classList.remove('menu-open')
 })
 </script>
 
@@ -110,7 +81,6 @@ onBeforeUnmount(() => {
       <nav
         id="primary-nav"
         class="nav"
-        :class="{ 'is-open': open }"
         aria-label="Primary"
       >
 
@@ -176,54 +146,6 @@ onBeforeUnmount(() => {
         </div>
 
 
-        <!-- Mobile actions -->
-        <div class="nav__quick">
-
-          <template v-if="auth.user">
-            <router-link class="btn btn--outline nav__action" to="/account">
-              <span>{{ auth.user.name }}</span>
-            </router-link>
-            <button class="btn btn--outline nav__action" type="button" @click="handleLogout">
-              <span>Log out</span>
-            </button>
-          </template>
-          <router-link v-else class="btn btn--outline nav__action" to="/login">
-            <span>Log in</span>
-          </router-link>
-
-          <a
-            class="btn btn--wa nav__action"
-            :href="waLink()"
-            target="_blank"
-            rel="noopener"
-            data-track="whatsapp_click"
-            data-track-label="nav_drawer"
-          >
-            <Icon
-              name="whatsapp"
-              :size="18"
-            />
-
-            <span>WhatsApp</span>
-          </a>
-
-
-          <a
-            class="btn btn--outline nav__action"
-            :href="telLink(site.phones[0].tel)"
-            data-track="call_click"
-            data-track-label="nav_drawer"
-          >
-            <Icon
-              name="phone"
-              :size="18"
-            />
-
-            <span>Call us</span>
-          </a>
-
-        </div>
-
       </nav>
 
 
@@ -238,18 +160,14 @@ onBeforeUnmount(() => {
         <button
           class="menu-btn"
           type="button"
-          :aria-expanded="open"
-          aria-controls="primary-nav"
-          :aria-label="
-            open
-              ? 'Close menu'
-              : 'Open menu'
-          "
-          @click="open = !open"
+          :aria-expanded="props.open"
+          aria-controls="mobile-sidebar"
+          :aria-label="props.open ? 'Close menu' : 'Open menu'"
+          @click="emit('toggle-menu')"
         >
           <span class="menu-btn__icon">
             <Icon
-              :name="open ? 'x' : 'menu'"
+              :name="props.open ? 'x' : 'menu'"
               :size="24"
             />
           </span>
@@ -787,14 +705,6 @@ onBeforeUnmount(() => {
 
 
 /* ================================================================
-   Mobile Quick Actions
-   ================================================================ */
-
-.nav__quick {
-  display: none;
-}
-
-/* ================================================================
    Header Actions (theme toggle + hamburger, grouped)
    ================================================================ */
 
@@ -915,228 +825,7 @@ onBeforeUnmount(() => {
     display: grid;
   }
 
-
   .nav {
-    position: fixed;
-
-    inset:
-      var(--header-h)
-      0
-      0
-      0;
-
-    z-index: 49;
-
-    display: none;
-
-    flex-direction: column;
-    align-items: stretch;
-
-    gap: 1.25rem;
-
-    padding:
-      1.25rem
-      var(--gutter)
-      2rem;
-
-    overflow-y: auto;
-
-    background:
-      linear-gradient(
-        180deg,
-        rgba(8, 19, 34, 0.99),
-        rgba(6, 15, 27, 1)
-      );
-
-    border-top:
-      1px solid
-      rgba(255, 255, 255, 0.06);
-
-    box-shadow:
-      0 25px 60px -30px rgba(0, 0, 0, 0.8);
-  }
-
-
-  .nav.is-open {
-    display: flex;
-
-    animation:
-      navDrawerIn
-      0.25s
-      ease
-      both;
-  }
-
-
-  @keyframes navDrawerIn {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-
-  .nav__list {
-    flex-direction: column;
-    align-items: stretch;
-
-    gap: 0;
-
-    width: 100%;
-  }
-
-
-  .nav__item {
-    width: 100%;
-  }
-
-
-  .nav__link {
-    justify-content: flex-start;
-
-    width: 100%;
-
-    min-height: 56px;
-
-    padding:
-      0
-      0.9rem;
-
-    border-bottom:
-      1px solid
-      rgba(255, 255, 255, 0.07);
-
-    border-radius: 9px;
-
-    font-size: 1.08rem;
-
-    transition:
-      color 0.22s ease,
-      background-color 0.22s ease,
-      padding-left 0.22s ease;
-  }
-
-
-  .nav__link::before {
-    inset:
-      4px
-      0;
-
-    border-radius: 9px;
-  }
-
-
-  .nav__link::after {
-    left: auto;
-    right: 0.8rem;
-
-    bottom: auto;
-    top: 50%;
-
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background: var(--aqua-400);
-
-    box-shadow:
-      0 0 12px rgba(56, 221, 220, 0.35);
-
-    transform:
-      translateY(-50%)
-      scale(0);
-
-    transition:
-      opacity 0.22s ease,
-      transform 0.22s ease;
-  }
-
-
-  .nav__link:hover {
-    padding-left: 1.15rem;
-
-    transform: none;
-
-    color: #fff;
-  }
-
-
-  .nav__link:hover::after,
-  .nav__link.is-active::after {
-    opacity: 1;
-
-    transform:
-      translateY(-50%)
-      scale(1);
-  }
-
-
-  .nav__link.is-active {
-    padding-left: 1.15rem;
-  }
-
-
-  .nav__link.is-active::before {
-    background:
-      linear-gradient(
-        90deg,
-        rgba(56, 221, 220, 0.1),
-        rgba(56, 221, 220, 0.025)
-      );
-  }
-
-
-  .nav__cta {
-    display: block;
-
-    width: 100%;
-  }
-
-
-  .nav__cta .btn {
-    width: 100%;
-
-    min-height: 52px;
-
-    font-size: 1rem;
-  }
-
-
-  .nav__quick {
-    display: grid;
-
-    grid-template-columns:
-      1fr 1fr;
-
-    gap: 0.75rem;
-
-    width: 100%;
-
-    margin-top: auto;
-  }
-
-
-  .nav__action {
-    min-height: 50px;
-
-    transition:
-      transform 0.22s ease,
-      box-shadow 0.22s ease;
-  }
-
-
-  .nav__action:hover {
-    transform: translateY(-2px);
-  }
-
-
-  .nav__theme--desktop {
     display: none;
   }
 }
@@ -1185,27 +874,6 @@ onBeforeUnmount(() => {
     width: 44px;
     height: 44px;
   }
-
-
-  .nav {
-    padding:
-      1rem
-      var(--gutter)
-      1.5rem;
-  }
-
-
-  .nav__link {
-    min-height: 54px;
-
-    font-size: 1.04rem;
-  }
-
-
-  .nav__quick {
-    grid-template-columns:
-      1fr 1fr;
-  }
 }
 
 
@@ -1233,10 +901,6 @@ onBeforeUnmount(() => {
   .menu-btn::before,
   .menu-btn__icon {
     transition: none !important;
-  }
-
-  .nav.is-open {
-    animation: none;
   }
 }
 

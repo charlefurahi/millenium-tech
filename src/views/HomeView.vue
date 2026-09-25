@@ -43,51 +43,50 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <!-- ================= HERO ================= -->
-    <section class="hero on-dark brand-surface hex-bg">
-      <div class="container hero__grid">
-        <div class="hero__copy">
-          <span class="eyebrow">{{ site.location.city }}, {{ site.location.country }}</span>
-          <h1>Technology that helps your business <span class="hero__accent">grow.</span></h1>
-          <p class="lead">
-            We build websites, digital brands and practical technology solutions for businesses in Tanzania.
-          </p>
-          <div class="btn-row btn-row--stack">
-            <router-link class="btn btn--accent btn--lg" to="/contact" data-track="cta_click" data-track-label="hero_consultation">
-              Get a free consultation
-            </router-link>
-            <router-link class="btn btn--outline btn--lg" to="/portfolio" data-track="cta_click" data-track-label="hero_work">
-              View our work
-            </router-link>
+    <section class="hero on-dark brand-surface hex-bg" :style="{ '--slide-ms': `${SLIDE_MS}ms` }">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__stage">
+          <div
+            v-for="(src, i) in heroSlides"
+            :key="i"
+            class="hero__slide"
+            :class="{ 'is-active': i === activeSlide }"
+          >
+            <img
+              :src="src"
+              alt=""
+              width="1600"
+              height="1000"
+              :loading="i === 0 ? 'eager' : 'lazy'"
+              decoding="async"
+            />
           </div>
-          <ul class="hero__trust">
-            <li><Icon name="languages" :size="18" /> Swahili &amp; English</li>
-            <li><Icon name="clock" :size="18" /> {{ site.replyPromise }}</li>
-          </ul>
         </div>
+        <div class="hero__overlay"></div>
+      </div>
 
-        <div class="hero__visual" aria-hidden="true" :style="{ '--slide-ms': `${SLIDE_MS}ms` }">
-          <div class="hero__glow"></div>
-          <div class="hero__stage">
-            <div
-              v-for="(src, i) in heroSlides"
-              :key="i"
-              class="hero__slide"
-              :class="{ 'is-active': i === activeSlide }"
-            >
-              <img
-                :src="src"
-                alt=""
-                width="800"
-                height="820"
-                :loading="i === 0 ? 'eager' : 'lazy'"
-                decoding="async"
-              />
-            </div>
-          </div>
-          <div class="hero__progress">
-            <span v-for="(src, i) in heroSlides" :key="i" :class="{ 'is-active': i === activeSlide }"></span>
-          </div>
+      <div class="container hero__copy">
+        <span class="eyebrow">{{ site.location.city }}, {{ site.location.country }}</span>
+        <h1>Technology that helps your business <span class="hero__accent">grow.</span></h1>
+        <p class="lead">
+          We build websites, digital brands and practical technology solutions for businesses in Tanzania.
+        </p>
+        <div class="btn-row btn-row--stack">
+          <router-link class="btn btn--accent btn--lg" to="/contact" data-track="cta_click" data-track-label="hero_consultation">
+            Get a free consultation
+          </router-link>
+          <router-link class="btn btn--outline btn--lg" to="/portfolio" data-track="cta_click" data-track-label="hero_work">
+            View our work
+          </router-link>
         </div>
+        <ul class="hero__trust">
+          <li><Icon name="languages" :size="18" /> Swahili &amp; English</li>
+          <li><Icon name="clock" :size="18" /> {{ site.replyPromise }}</li>
+        </ul>
+      </div>
+
+      <div class="hero__progress" aria-hidden="true">
+        <span v-for="(_, i) in heroSlides" :key="i" :class="{ 'is-active': i === activeSlide }"></span>
       </div>
     </section>
 
@@ -188,6 +187,7 @@ onBeforeUnmount(() => {
           eyebrow="How we work"
           title="A simple process, from first chat to ongoing support."
           lead="You always know what happens next."
+          class="section-head--band"
         />
         <ol class="steps">
           <li v-for="(s, i) in process" :key="s.title" v-reveal="i * 70">
@@ -291,81 +291,27 @@ onBeforeUnmount(() => {
 
 <style scoped>
 /* ---------- Hero ---------- */
+/* Full-bleed slideshow behind the copy, darkened toward the text for
+   legibility and fading to clear photo toward the far edge — see
+   https://www.apollohospitals.com/sw/facilities/hospitals for the
+   general shape. Cross-fade logic is unchanged; this is layout/CSS only. */
 .hero {
   position: relative;
   overflow: hidden;
   color: #fff;
-  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 5.5rem);
-}
-.hero__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: center;
-}
-.hero__copy {
-  display: grid;
-  gap: 1.4rem;
-  justify-items: start;
-}
-.hero__accent {
-  color: var(--aqua-400);
-}
-.hero__trust {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.5rem;
-  font-size: 0.92rem;
-  color: var(--on-dark-2);
-}
-.hero__trust li {
-  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  min-height: clamp(520px, 82vh, 720px);
+  padding-block: clamp(2.5rem, 6vw, 4rem);
 }
-.hero__trust svg {
-  color: var(--aqua-300);
-}
-.hero__visual {
-  position: relative;
-  width: 100%;
-  max-width: 660px;
-  justify-self: center;
-  padding-bottom: 1.75rem;
-}
-/* On wide screens let the visual bleed a little past the container edge */
-@media (min-width: 900px) {
-  .hero__visual {
-    justify-self: end;
-    margin-right: calc(-1 * clamp(0.5rem, 3vw, 3rem));
-  }
-}
-
-/* ---- Hero slideshow ----
-   Three stacked images that cross-fade on a timer (see script).
-   There is no visible frame: the stage is masked with soft gradients on
-   every side, so the pictures melt into the hero background instead of
-   ending at a hard edge. */
-.hero__glow {
+.hero__bg {
   position: absolute;
-  inset: 6% 2% 12%;
+  inset: 0;
   z-index: 0;
-  background: radial-gradient(closest-side, rgba(34, 197, 230, 0.3), rgba(34, 197, 230, 0));
-  filter: blur(36px);
 }
 .hero__stage {
-  --fade-x: 18%;
-  --fade-y: 16%;
-  position: relative;
-  z-index: 1;
-  aspect-ratio: 1 / 1.02;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-x), #000 calc(100% - var(--fade-x)), transparent),
-    linear-gradient(to bottom, transparent, #000 var(--fade-y), #000 calc(100% - var(--fade-y)), transparent);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, transparent, #000 var(--fade-x), #000 calc(100% - var(--fade-x)), transparent),
-    linear-gradient(to bottom, transparent, #000 var(--fade-y), #000 calc(100% - var(--fade-y)), transparent);
-  mask-composite: intersect;
+  position: absolute;
+  inset: 0;
 }
 .hero__slide {
   position: absolute;
@@ -388,16 +334,55 @@ onBeforeUnmount(() => {
 .hero__slide.is-active img {
   transform: scale(1.08);
 }
+/* Dark/brand-colour near the text, fading to transparent toward the image */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    100deg,
+    rgba(4, 13, 32, 0.94) 0%,
+    rgba(4, 13, 32, 0.74) 34%,
+    rgba(4, 13, 32, 0.32) 60%,
+    transparent 84%
+  );
+}
+.hero__copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 1.4rem;
+  justify-items: start;
+  max-width: 640px;
+}
+.hero__accent {
+  color: var(--aqua-400);
+}
+.hero__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  font-size: 0.92rem;
+  color: var(--on-dark-2);
+}
+.hero__trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero__trust svg {
+  color: var(--aqua-300);
+}
 
 /* Progress bars are just an indicator, not controls */
 .hero__progress {
   position: absolute;
-  left: 12%;
-  bottom: 0;
+  right: clamp(1.25rem, 4vw, 3rem);
+  bottom: clamp(1.25rem, 4vw, 2rem);
   z-index: 2;
   display: flex;
   gap: 0.4rem;
-  width: min(36%, 150px);
+  width: min(30%, 150px);
 }
 .hero__progress span {
   position: relative;
@@ -438,25 +423,16 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 899px) {
-  .hero__grid {
-    grid-template-columns: minmax(0, 1fr);
+  .hero {
+    min-height: clamp(460px, 86vh, 620px);
   }
-  .hero__visual {
-    max-width: 520px;
-    justify-self: start;
-    margin-top: 0.5rem;
-  }
-  .hero__stage {
-    aspect-ratio: 1 / 0.95;
-  }
-}
-@media (max-width: 479px) {
-  .hero__visual {
-    max-width: none;
-  }
-  .hero__stage {
-    --fade-x: 12%;
-    --fade-y: 14%;
+  .hero__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(4, 13, 32, 0.9) 0%,
+      rgba(4, 13, 32, 0.82) 55%,
+      rgba(4, 13, 32, 0.6) 100%
+    );
   }
 }
 
@@ -483,7 +459,7 @@ onBeforeUnmount(() => {
   font-size: clamp(1.6rem, 3vw, 2.25rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--navy-900);
+  color: var(--ink);
 }
 .proof__list span {
   font-size: 0.9rem;
@@ -644,7 +620,7 @@ onBeforeUnmount(() => {
   top: 28px;
   left: 68px;
   right: -1rem;
-  border-top: 2px dashed rgba(95, 216, 238, 0.35);
+  border-top: 2px dashed var(--line-strong);
 }
 .steps__icon {
   display: grid;
@@ -652,19 +628,18 @@ onBeforeUnmount(() => {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: var(--aqua-300);
+  background: var(--blue-50);
+  color: var(--blue-700);
 }
 .steps__no {
   font-family: var(--font-display);
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: var(--aqua-300);
+  color: var(--text-brand);
 }
 .steps p {
-  color: var(--on-dark-2);
+  color: var(--muted);
   font-size: var(--text-sm);
 }
 @media (max-width: 1023px) {

@@ -88,10 +88,13 @@ const routes: RouteRecordRaw[] = [
     path: '/contact',
     name: 'contact',
     component: () => import('@/views/ContactView.vue'),
-    meta: seo(
-      'Contact & Free Consultation | Millenium Tech',
-      'Contact Millenium Tech by WhatsApp, phone, email or enquiry form for websites, design, IT support and business systems in Tanzania.'
-    )
+    meta: {
+      requiresAuth: true,
+      ...seo(
+        'Contact & Free Consultation | Millenium Tech',
+        'Contact Millenium Tech by WhatsApp, phone, email or enquiry form for websites, design, IT support and business systems in Tanzania.'
+      )
+    }
   },
   {
     path: '/privacy',

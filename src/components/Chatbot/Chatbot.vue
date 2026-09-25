@@ -154,7 +154,7 @@ function blocks(text: string) {
   <transition name="chat">
     <section v-if="open" class="chat" role="dialog" aria-label="Chat with MilleBot" @keydown.esc="emit('close')">
       <header class="chat__head brand-surface hex-bg">
-        <span class="chat__avatar"><Icon name="message" :size="20" /><i class="chat__online" aria-hidden="true"></i></span>
+        <span class="chat__avatar"><Icon name="bot" :size="20" /><i class="chat__online" aria-hidden="true"></i></span>
         <div>
           <strong>MilleBot</strong>
           <small>Millenium Tech assistant · Online</small>
@@ -408,7 +408,7 @@ function blocks(text: string) {
   border: 1.5px solid var(--blue-500);
   border-radius: 999px;
   background: var(--card);
-  color: var(--blue-700);
+  color: var(--text-brand);
   font-size: 0.86rem;
   font-weight: 600;
   text-align: left;

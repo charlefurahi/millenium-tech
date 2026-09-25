@@ -108,7 +108,7 @@ defineProps<{
   color: var(--ink-2);
 }
 .page-hero :deep(.btn--outline) {
-  color: var(--blue-700);
+  color: var(--text-brand);
   border-color: var(--blue-500);
 }
 .page-hero :deep(.btn--outline:hover) {

@@ -31,8 +31,8 @@ import { site } from '@/config/site'
       </div>
     </section>
 
-    <section class="section section--dark">
-      <div class="container mission">
+    <section class="section">
+      <div class="container mission section-head--band">
         <Icon name="quote" :size="40" class="mission__mark" />
         <blockquote v-reveal>{{ about.motto }}</blockquote>
         <p class="mission__by">Our mission</p>
@@ -156,6 +156,14 @@ import { site } from '@/config/site'
   text-align: center;
   max-width: 880px;
 }
+/* Locks the quote card's width to 880px regardless of stylesheet load
+   order now that .section-head--band (global, ui.css) is mixed onto the
+   same element -- two classes gives this selector higher specificity
+   than either .mission or .section-head--band alone. */
+.mission.section-head--band {
+  max-width: 880px;
+  margin-inline: auto;
+}
 .mission__mark {
   color: var(--aqua-400);
 }
@@ -186,7 +194,7 @@ import { site } from '@/config/site'
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--blue-700);
+  color: var(--text-brand);
 }
 .facts span {
   color: var(--muted);
@@ -250,7 +258,7 @@ import { site } from '@/config/site'
 .timeline__year {
   font-family: var(--font-display);
   font-weight: 800;
-  color: var(--blue-700);
+  color: var(--text-brand);
 }
 .timeline li > div {
   padding-left: 1.1rem;

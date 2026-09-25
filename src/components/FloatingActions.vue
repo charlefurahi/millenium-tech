@@ -19,7 +19,7 @@ const chatOpen = ref(false)
         :aria-label="chatOpen ? 'Close chat' : 'Chat with MilleBot'"
         @click="chatOpen = !chatOpen"
       >
-        <Icon :name="chatOpen ? 'x' : 'message'" :size="24" />
+        <Icon :name="chatOpen ? 'x' : 'bot'" :size="24" />
       </button>
     </div>
     <div class="fab-item">
@@ -75,7 +75,7 @@ const chatOpen = ref(false)
   background: var(--green-700);
 }
 .fab--wa:hover {
-  background: #0b6a37;
+  background: color-mix(in srgb, var(--green-700) 85%, black);
 }
 .fab--chat {
   border: 1px solid var(--line-dark);

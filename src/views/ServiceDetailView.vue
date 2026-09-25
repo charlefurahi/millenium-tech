@@ -94,7 +94,7 @@ const enquiry = computed(() => ({ path: '/contact', query: { service: service.va
     <!-- Process -->
     <section class="section section--dark">
       <div class="container">
-        <SectionHeader center eyebrow="Process" title="How the work comes together." />
+        <SectionHeader center eyebrow="Process" title="How the work comes together." class="section-head--band" />
         <ol class="steps">
           <li v-for="(s, i) in page.process" :key="s.title" v-reveal="i * 70">
             <span class="steps__no">0{{ i + 1 }}</span>
@@ -200,19 +200,18 @@ const enquiry = computed(() => ({ path: '/contact', query: { service: service.va
   gap: 0.5rem;
   align-content: start;
   padding: var(--s-4);
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line);
   border-radius: var(--radius-l);
-  background: rgba(255, 255, 255, 0.03);
 }
 .steps__no {
   font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: 0.12em;
   font-size: 0.85rem;
-  color: var(--aqua-300);
+  color: var(--text-brand);
 }
 .steps p {
-  color: var(--on-dark-2);
+  color: var(--muted);
   font-size: var(--text-sm);
 }
 .narrow {

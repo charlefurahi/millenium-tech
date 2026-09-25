@@ -49,7 +49,7 @@ import { needsGuide, process } from '@/data/content'
 
     <section class="section section--dark">
       <div class="container">
-        <SectionHeader center eyebrow="How we work" title="A clear process from first conversation to support." />
+        <SectionHeader center eyebrow="How we work" title="A clear process from first conversation to support." class="section-head--band" />
         <ol class="flow">
           <li v-for="(s, i) in process" :key="s.title" v-reveal="i * 60">
             <span class="flow__icon"><Icon :name="s.icon" :size="22" /></span>
@@ -105,7 +105,7 @@ import { needsGuide, process } from '@/data/content'
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.93rem;
-  color: var(--blue-700);
+  color: var(--text-brand);
 }
 @media (max-width: 699px) {
   .guide__row {
@@ -130,15 +130,15 @@ import { needsGuide, process } from '@/data/content'
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid rgba(95, 216, 238, 0.45);
-  color: var(--aqua-300);
+  background: var(--blue-50);
+  color: var(--blue-700);
 }
 .flow h3 {
   font-size: 1.05rem;
   margin-bottom: 0.25rem;
 }
 .flow p {
-  color: var(--on-dark-2);
+  color: var(--muted);
   font-size: var(--text-sm);
 }
 @media (max-width: 1023px) {

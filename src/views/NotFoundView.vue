@@ -48,7 +48,7 @@ import { waLink } from '@/config/site'
   flex-wrap: wrap;
   gap: 0.5rem 1.25rem;
   margin-top: 0.5rem;
-  color: var(--blue-700);
+  color: var(--text-brand);
   font-weight: 600;
 }
 .nf__links a {

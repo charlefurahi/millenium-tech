@@ -132,15 +132,27 @@ main p a:not(.btn) {
 
 
 /* ==========================================================================
-   COLOUR SYSTEM v2 — bright, useful gradients instead of very dark navy
-   Inspired by modern healthcare/enterprise sites: light airy heroes on inner
-   pages, one vivid brand gradient for feature bands, white cards.
+   COLOUR SYSTEM v2 — dark-navy brand gradient with a soft login-style glow
+   Replaces the old vivid-blue #0a4f96/#0d63b3/#0b7bb0 family (that hex set
+   used to be specific to the navbar, then got reused for brand surfaces
+   too) -- built on the existing --navy-800/--navy-900 tokens instead, with
+   the same soft --glow-a/--glow-b radial highlights the login page's
+   .auth__glow uses directly (both share the same underlying rgb hues),
+   reused here at the positions/opacities already proven against a navy
+   base. Now the single source of truth for every brand-colored surface,
+   header and footer included (see the header/footer rules further down),
+   so the whole site reads as one consistent brand surface and all of it
+   follows light/dark theme automatically via this token's own
+   [data-theme='dark'] override below.
    ========================================================================== */
 :root {
-  /* Vivid brand gradient (white text on it stays >= 4.5:1 on the left/centre) */
-  --grad-brand: radial-gradient(38rem 20rem at 92% -8%, rgba(95, 216, 238, 0.42), transparent 62%),
-    radial-gradient(28rem 18rem at -4% 110%, rgba(255, 255, 255, 0.12), transparent 60%),
-    linear-gradient(128deg, #0b62b6 0%, #1176d4 52%, #0e8fc6 100%);
+  /* Dark-navy brand gradient (white text on it stays >= 4.5:1 throughout).
+     Same glow positions/hues as the login page's .auth__glow (both draw
+     on --glow-a/--glow-b, which share the exact rgb bases auth__glow uses
+     directly), layered over solid --navy-900 instead of a vivid blue. */
+  --grad-brand: radial-gradient(90% 100% at 100% 0%, var(--glow-a), transparent 65%),
+    radial-gradient(90% 100% at 0% 100%, var(--glow-b), transparent 65%),
+    var(--navy-900);
 
   /* Light hero: sky tint at the top fading to white, with a soft aqua glow */
   --grad-hero-soft: radial-gradient(48rem 22rem at 92% -20%, rgba(22, 191, 224, 0.3), transparent 62%),
@@ -154,8 +166,9 @@ main p a:not(.btn) {
   --grad-accent: linear-gradient(90deg, var(--blue-600), var(--aqua-400));
 }
 [data-theme='dark'] {
-  --grad-brand: radial-gradient(38rem 20rem at 92% -8%, rgba(95, 216, 238, 0.28), transparent 62%),
-    linear-gradient(128deg, #0a4f96 0%, #0d63b3 55%, #0b7aa8 100%);
+  --grad-brand: radial-gradient(90% 100% at 100% 0%, var(--glow-a), transparent 65%),
+    radial-gradient(90% 100% at 0% 100%, var(--glow-b), transparent 65%),
+    var(--navy-950);
   --grad-hero-soft: radial-gradient(48rem 22rem at 92% -20%, rgba(22, 191, 224, 0.22), transparent 62%),
     linear-gradient(180deg, #0f2d52 0%, #0a1c33 100%);
   --grad-section: linear-gradient(180deg, #0a1c33 0%, #0c2340 100%);
@@ -167,11 +180,31 @@ body .brand-surface {
   background-color: var(--blue-700);
   background-image: var(--grad-brand);
 }
-/* Feature sections that used a translucent navy wash */
-body .section--dark:not(.brand-surface) {
+/* Feature sections that used a translucent navy wash. Sections with a
+   .section-head--band inside now carry the gradient on the header only
+   (see the SECTION HEAD BAND rule just below) -- this stays out of their
+   way so the steps/list content reads with normal ink/muted text. */
+body .section--dark:not(.brand-surface):not(:has(.section-head--band)) {
   background-color: var(--blue-700);
   background-image: var(--grad-brand);
   color: #fff;
+}
+
+/* SECTION HEAD BAND -- shares the exact vivid gradient used by
+   .brand-surface / .section--dark, scoped to just the header (see
+   .section-head--band shape rules in ui.css). */
+body .section-head--band {
+  background-color: var(--blue-700);
+  background-image: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+body .section-head--band .eyebrow {
+  color: rgba(255, 255, 255, 0.92);
+}
+body .section-head--band .eyebrow::before {
+  background: rgba(255, 255, 255, 0.7);
 }
 body .section--alt {
   background-color: transparent;
@@ -228,22 +261,37 @@ body .hero h1 .hero__accent {
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
-body .hero .hero__trust svg,
-body .section--dark .steps__no {
+body .hero .hero__trust svg {
   color: #fff;
 }
 
-/* Header + footer: rich brand blue instead of near-black navy */
+/* Header + footer: same dark-navy brand gradient as everything else now
+   (was a separate vivid-blue hex gradient specific to these two — now
+   unified on --grad-brand so header/footer/bands/hero all read as one
+   consistent brand surface, and both automatically follow the light/dark
+   theme via --grad-brand's own [data-theme='dark'] override). */
 body .site-header {
-  background: linear-gradient(90deg, #0a4f96 0%, #0d63b3 60%, #0b7bb0 100%);
+  background: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
   border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 body .site-header.is-scrolled {
-  background: linear-gradient(90deg, rgba(10, 79, 150, 0.88), rgba(13, 99, 179, 0.88) 60%, rgba(11, 123, 176, 0.88));
-  box-shadow: 0 10px 30px -18px rgba(7, 40, 90, 0.7);
+  background-color: color-mix(in srgb, var(--navy-900) 88%, transparent);
+  background-image:
+    radial-gradient(90% 100% at 100% 0%, var(--glow-a), transparent 65%),
+    radial-gradient(90% 100% at 0% 100%, var(--glow-b), transparent 65%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: 0 10px 30px -18px rgba(4, 13, 32, 0.7);
 }
 body .site-footer {
-  background: linear-gradient(180deg, #0c5aa8 0%, #0a4885 100%);
+  background: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 /* The legacy .hex-bg class sets a 48px background-size that tiled the new
@@ -257,31 +305,69 @@ body .section--alt {
 }
 /* beat the scoped header rule (attribute selector) */
 body header.site-header {
-  background: linear-gradient(90deg, #0a4f96 0%, #0d63b3 60%, #0b7bb0 100%);
+  background: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
   border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 body header.site-header.is-scrolled {
-  background: linear-gradient(90deg, rgba(10, 79, 150, 0.88), rgba(13, 99, 179, 0.88) 60%, rgba(11, 123, 176, 0.88));
+  background-color: color-mix(in srgb, var(--navy-900) 88%, transparent);
+  background-image:
+    radial-gradient(90% 100% at 100% 0%, var(--glow-a), transparent 65%),
+    radial-gradient(90% 100% at 0% 100%, var(--glow-b), transparent 65%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 body footer.site-footer {
-  background: linear-gradient(180deg, #0c5aa8 0%, #0a4885 100%);
+  background: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 /* Specificity note: type selectors (body, header) never outrank a scoped
    `.class[data-v-…]` rule, so the header/footer overrides repeat the class. */
 .site-header.site-header {
-  background: linear-gradient(90deg, #0a4f96 0%, #0d63b3 60%, #0b7bb0 100%);
+  background: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
   border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 .site-header.site-header.is-scrolled {
-  background: linear-gradient(90deg, rgba(10, 79, 150, 0.9), rgba(13, 99, 179, 0.9) 60%, rgba(11, 123, 176, 0.9));
+  background-color: color-mix(in srgb, var(--navy-900) 88%, transparent);
+  background-image:
+    radial-gradient(90% 100% at 100% 0%, var(--glow-a), transparent 65%),
+    radial-gradient(90% 100% at 0% 100%, var(--glow-b), transparent 65%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
   -webkit-backdrop-filter: saturate(170%) blur(16px);
   backdrop-filter: saturate(170%) blur(16px);
-  box-shadow: 0 10px 30px -18px rgba(7, 40, 90, 0.7);
+  box-shadow: 0 10px 30px -18px rgba(4, 13, 32, 0.7);
 }
 .site-footer.site-footer {
-  background: linear-gradient(180deg, #0c5aa8 0%, #0a4885 100%);
+  background: var(--grad-brand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .fab-stack .fab--chat.brand-surface {
   background: var(--grad-brand);
+}
+
+
+/* ==========================================================================
+   COLOUR SYSTEM v3 — textured card surface
+   v2 kept cards flat white in light mode and flat navy in dark mode. Give
+   every .card the same faint dot grain in both themes, layered over --card
+   (a flat colour in light mode, the subtle gradient token in dark mode) so
+   dark cards stop reading as a single dead-flat navy block.
+   ========================================================================== */
+body .card {
+  background:
+    radial-gradient(circle at center, var(--dot-color) 1px, transparent 1.6px) 0 0 / var(--dot-size) var(--dot-size),
+    var(--card);
 }

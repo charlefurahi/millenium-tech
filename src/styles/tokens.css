@@ -117,6 +117,20 @@
   /* Theme-able surfaces */
   --card: #ffffff;
 
+  /*
+   * Brand-blue TEXT color (eyebrows, stat numbers, step numbers, link
+   * arrows, "read more" links…). Kept separate from --blue-700 itself
+   * because --blue-700 is also used as a flat, non-themed background
+   * color in a few places (badges, buttons) that must stay put. Only
+   * this token is allowed to shift for dark mode, so brand-blue text
+   * never goes dark-on-dark and disappears.
+   */
+  --text-brand: var(--blue-700);
+
+  /* Card dot texture — kept faint so it reads as grain, not decoration */
+  --dot-color: rgba(11, 27, 51, 0.05);
+  --dot-size: 22px;
+
   color-scheme: light;
 
   /* ================================================================
@@ -189,7 +203,16 @@
 
   --mist: #07121f;
   --paper: #02080d;
-  --card: #0d2040;
+  --card: linear-gradient(155deg, #123259 0%, #0d2040 60%, #091830 100%);
+
+  /* Lighter brand blue so eyebrows, stat numbers and links stay readable
+     against the near-black dark-theme page background instead of going
+     dark-blue-on-black. */
+  --text-brand: var(--blue-500);
+
+  /* Card dot texture — aqua-tinted so it reads against the darker gradient */
+  --dot-color: rgba(95, 216, 238, 0.07);
+  --dot-size: 22px;
 
   /*
    * Subtle football pattern for dark mode.

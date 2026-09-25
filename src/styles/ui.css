@@ -318,11 +318,19 @@ body::before {
    ========================================================================== */
 
 .section--dark {
-  color: var(--on-dark);
+  position: relative;
 }
 
-.section--dark:not(.brand-surface) {
-  position: relative;
+/*
+ * Full-section dark/gradient treatment. Sections that carry the new
+ * header-only band (see SECTION HEAD -- DARK BAND below) opt out here via
+ * :has() -- their steps/list content falls back to the section's normal
+ * ink/muted text on its regular background instead of on-dark white.
+ * AboutView's mission pull-quote (no SectionHeader) is currently the only
+ * section still using this full-area version.
+ */
+.section--dark:not(.brand-surface):not(:has(.section-head--band)) {
+  color: var(--on-dark);
 
   /*
    * Keep dark sections visually separated without bringing back the
@@ -467,7 +475,7 @@ body::before {
 
   text-transform: uppercase;
 
-  color: var(--blue-700);
+  color: var(--text-brand);
 }
 
 
@@ -545,6 +553,37 @@ body::before {
 
 .section--dark .section-head p {
   color: var(--on-dark-2);
+}
+
+
+/* ==========================================================================
+   SECTION HEAD -- DARK BAND
+   Header-only dark/gradient treatment (Services "How we work", Pricing
+   "Getting a quotation", Service detail "Process", Home "How we work").
+   The gradient fill itself lives in modern.css's COLOUR SYSTEM v2 so both
+   layers stay in sync with .brand-surface; this block only supplies shape
+   and text colour, and works even if used outside a .section--dark parent.
+   ========================================================================== */
+
+.section-head--band {
+  position: relative;
+
+  color: var(--on-dark);
+
+  padding:
+    clamp(1.75rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+
+  border-radius: var(--radius-l);
+}
+
+
+.section-head--band p {
+  color: var(--on-dark-2);
+}
+
+
+.section-head--band .eyebrow {
+  color: var(--aqua-300);
 }
 
 
@@ -725,7 +764,7 @@ body::before {
 
 
 .btn--wa:hover {
-  background: #0b6a37;
+  background: color-mix(in srgb, var(--green-700) 85%, black);
 }
 
 
@@ -787,7 +826,7 @@ body::before {
 
   font-size: 0.95rem;
 
-  color: var(--blue-700);
+  color: var(--text-brand);
 
   transition:
     gap 0.2s var(--ease),
@@ -798,7 +837,7 @@ body::before {
 .link-arrow:hover {
   gap: 0.7rem;
 
-  color: var(--navy-900);
+  color: var(--text-brand);
 }
 
 
@@ -1253,7 +1292,7 @@ body::before {
 
 .prose a {
   color:
-    var(--blue-700);
+    var(--text-brand);
 
   text-decoration:
     underline;

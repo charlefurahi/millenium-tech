@@ -68,7 +68,7 @@ const pricingFaqs = faqs.filter((f) => /cost|long|maintenance|quotation/i.test(f
 
     <section class="section section--dark">
       <div class="container">
-        <SectionHeader center eyebrow="Getting a quotation" title="Three simple steps." />
+        <SectionHeader center eyebrow="Getting a quotation" title="Three simple steps." class="section-head--band" />
         <ol class="quote-steps">
           <li v-for="(s, i) in quoteSteps" :key="s.title" v-reveal="i * 70">
             <span class="quote-steps__no">{{ i + 1 }}</span>
@@ -127,7 +127,7 @@ const pricingFaqs = faqs.filter((f) => /cost|long|maintenance|quotation/i.test(f
 .support__list svg {
   flex: none;
   margin-top: 2px;
-  color: var(--blue-700);
+  color: var(--text-brand);
 }
 .support__list strong {
   display: block;
@@ -161,7 +161,7 @@ const pricingFaqs = faqs.filter((f) => /cost|long|maintenance|quotation/i.test(f
   gap: 0.6rem;
   align-content: start;
   padding: var(--s-4);
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line);
   border-radius: var(--radius-l);
 }
 .quote-steps__no {
@@ -176,7 +176,7 @@ const pricingFaqs = faqs.filter((f) => /cost|long|maintenance|quotation/i.test(f
   font-weight: 800;
 }
 .quote-steps p {
-  color: var(--on-dark-2);
+  color: var(--muted);
   font-size: var(--text-sm);
 }
 @media (max-width: 799px) {
